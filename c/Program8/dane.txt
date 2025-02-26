@@ -1,0 +1,8 @@
+The Large Hadron Collider (LHC) is the world's largest and highest-energy particle collider.
+It was built by the European Organization for Nuclear Research (CERN) between 1998 and 2008 in collaboration with over 10000 
+scientists and hundreds of universities and laboratories across more than 100 countries. 
+It lies in a tunnel 27 kilometres (17 mi) in circumference and as deep as 175 metres (574 ft) 
+beneath the France Switzerland border near Geneva.
+The first collisions were achieved in 2010 at an energy of 3.5 teraelectronvolts (TeV) per beam, 
+about four times the previous world record. The discovery of the Higgs boson at the LHC was announced in 2012. 
+Between 2013 and 2015, the LHC was shut down and upgraded; after those upgrades it reached 6.5 TeV per beam (13.0 TeV total collision energy).
