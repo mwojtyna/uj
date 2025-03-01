@@ -9,7 +9,19 @@ Autor: Mateusz Wojtyna                                Krakow, ??.03.2025
 1c.c - program z podpunktu (c) 
 1d.c - program z podpunktu (d) 
 1e.c - program z podpunktu (e) 
+lib.c, lib.h - biblioteka z funkcjami dzielonymi przez kilka programów
 odpowiedzi.txt - odpowiedzi na dodatkowe pytania
+
+* Uruchamianie:
+===============
+Aby uruchomić poszczególne programy:
+$ make
+$ ./1a.x
+$ ./1b.x
+...
+
+Usuwanie plików *.o, *.x:
+$ make clean
 
 * Treść zadania:
 ================

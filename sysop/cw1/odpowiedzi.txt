@@ -1,1 +1,5 @@
-lorem ipsum
+1. Ile procesow powstanie przy n-krotnym wywolaniu funkcji fork i dlaczego?
+lorem
+
+2. Ile procesow powstanie przy n-krotnym wywolaniu funkcji fork-exec jak wyzej i dlaczego?
+lorem
