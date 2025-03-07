@@ -7,10 +7,30 @@
 
 `systemd` adoptuje osierocone procesy
 
-2. Drzewo genealogiczne
+2. Drzewo genealogiczne (wykonywane na MacOS)
+Wynik programu: ```
+Rodzic: UID=501, GID=20, PID=34556, PPID=98167, PGID=34556
+Potomek poziomu 1: UID=501, GID=20, PID=34558, PPID=34556, PGID=34556
+Potomek poziomu 1: UID=501, GID=20, PID=34559, PPID=34556, PGID=34556
+Potomek poziomu 1: UID=501, GID=20, PID=34560, PPID=34556, PGID=34556
+Potomek poziomu 2: UID=501, GID=20, PID=34561, PPID=1, PGID=34556
+Potomek poziomu 2: UID=501, GID=20, PID=34562, PPID=1, PGID=34556
+Potomek poziomu 2: UID=501, GID=20, PID=34563, PPID=1, PGID=34556
+Potomek poziomu 3: UID=501, GID=20, PID=34660, PPID=1, PGID=34556
+```
+
+Drzewo:
+			  --------------------------- (43044, 98167, 43044) -------------------------------
+			  |												|									|
+    (43045, 43044, 43044)							(43046, 43044, 43044)				(43047, 43044, 43044)
+	|					|									|
+(43050, 43045, 43044) (43048, 43045, 43044) 		(43049, 43046, 43044)
+							    |
+					  (43147, 43048, 43044)
 
 3. Ile procesow powstanie przy n-krotnym wywolaniu funkcji fork i dlaczego?
 Powstaje 2^(n) - 1, ponieważ po każdym wywołaniu funkcji i rodzic i potomek wykonuje znowu funkcję fork() i tak się to powtarza n razy.
+Odejumujemy 1, ponieważ nie liczymy rodzica jako nowy proces przy forkowaniu.
 
 4. Ile procesow powstanie przy n-krotnym wywolaniu funkcji fork-exec jak wyzej i dlaczego?
 lorem
