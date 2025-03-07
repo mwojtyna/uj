@@ -17,6 +17,10 @@ int main(void) {
             exit(1);
         } else if (pid == 0) {
             // Potomek
+            if (setpgid(0, 0) == -1) {
+                perror("Błąd ustawiania PGID");
+                exit(1);
+            }
             printProcessData("Potomek");
         }
     }
