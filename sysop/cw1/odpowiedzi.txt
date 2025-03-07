@@ -29,8 +29,8 @@ Drzewo:
 					  (43147, 43048, 43044)
 
 3. Ile procesow powstanie przy n-krotnym wywolaniu funkcji fork i dlaczego?
-Powstaje 2^(n) - 1, ponieważ po każdym wywołaniu funkcji i rodzic i potomek wykonuje znowu funkcję fork() i tak się to powtarza n razy.
+Powstaje 2^(n) - 1, ponieważ po każdym wywołaniu funkcji fork i rodzic, i potomek wykonuje znowu funkcję fork() i tak się to powtarza n razy.
 Odejumujemy 1, ponieważ nie liczymy rodzica jako nowy proces przy forkowaniu.
 
 4. Ile procesow powstanie przy n-krotnym wywolaniu funkcji fork-exec jak wyzej i dlaczego?
-lorem
+Powstaje n procesów, ponieważ po każdym wywołaniu funkcji fork() potomek zostaje zastąpiony przez program wykonywany przez funkcję execlp, więc on już nie kontynuuje pętli z forkami, i nie wykonuje następnego fork(). Tylko program macierzysty będzie wykonywał funkcję fork().
