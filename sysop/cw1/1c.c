@@ -5,25 +5,20 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-#define N 3
-
 int main(void) {
     printProcessData("Rodzic");
 
-    for (int i = 0; i < N; i++) {
+    for (int i = 0; i < 3; i++) {
         pid_t pid = fork();
         if (pid == -1) {
             perror("Fork error");
             exit(1);
         } else if (pid == 0) {
             // Potomek
+            sleep(3);
             printProcessData("Potomek");
         }
     }
-
-	for (int i = 0; i < N; i++) {
-		wait(NULL);
-	}
 
     return 0;
 }

@@ -1,5 +1,16 @@
-1. Ile procesow powstanie przy n-krotnym wywolaniu funkcji fork i dlaczego?
-lorem
+1. Fragment drzewa procesów:
 
-2. Ile procesow powstanie przy n-krotnym wywolaniu funkcji fork-exec jak wyzej i dlaczego?
+|-systemd(21214)-+-(sd-pam)(21215)
+           |                |-1c.x(27149)
+           |                |-1c.x(27150)
+           |                |-1c.x(27151)
+
+`systemd` adoptuje osierocone procesy
+
+2. Drzewo genealogiczne
+
+3. Ile procesow powstanie przy n-krotnym wywolaniu funkcji fork i dlaczego?
+Powstaje 2^(n) - 1, ponieważ po każdym wywołaniu funkcji i rodzic i potomek wykonuje znowu funkcję fork() i tak się to powtarza n razy.
+
+4. Ile procesow powstanie przy n-krotnym wywolaniu funkcji fork-exec jak wyzej i dlaczego?
 lorem

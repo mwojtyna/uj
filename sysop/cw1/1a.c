@@ -2,8 +2,7 @@
 #include <stdio.h>
 
 int main(void) {
-    printf("Dane obecnego procesu:\n");
-    printProcessData();
+    printProcessData("Dane obecnego procesu");
 
     return 0;
 }

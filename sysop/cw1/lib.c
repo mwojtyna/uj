@@ -2,16 +2,12 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-void printProcessData() {
+void printProcessData(char* name) {
     uid_t uid = getuid();
     gid_t gid = getgid();
     pid_t pid = getpid();
     pid_t ppid = getppid();
     pid_t pgid = getpgrp();
 
-    printf("UID: %u\n", uid);
-    printf("GID: %u\n", gid);
-    printf("PID: %u\n", pid);
-    printf("PPID: %u\n", ppid);
-    printf("PGID: %u\n", pgid);
+    printf("%s: UID=%u, GID=%u, PID=%u, PPID=%u, PGID=%u\n", name, uid, gid, pid, ppid, pgid);
 }
