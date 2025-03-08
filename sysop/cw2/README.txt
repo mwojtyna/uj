@@ -17,6 +17,9 @@ $ ./2.x ./potomek.x      # ./potomek.x jest programem uruchamianym przez execlp(
 Usuwanie plików *.o, *.x:
 $ make clean
 
+Pakowanie do archiwum:
+$ make tar
+
 * Treść zadania:
 ================
 
