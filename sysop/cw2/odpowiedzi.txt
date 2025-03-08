@@ -1,0 +1,2 @@
+1. Ile procesow powstanie przy n-krotnym wywolaniu funkcji fork-exec jak wyzej i dlaczego?
+Powstaje n procesów, ponieważ po każdym wywołaniu funkcji fork potomek zostaje zastąpiony przez program wykonywany przez funkcję execlp, więc on już nie kontynuuje pętli z forkami, i nie wykonuje następnego fork. Tylko program macierzysty będzie wykonywał funkcję fork.

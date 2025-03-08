@@ -9,8 +9,6 @@ Autor: Mateusz Wojtyna                                        08.03.2025
 1c.c - kod programu 1, podpunkt c 
 1d.c - kod programu 1, podpunkt d 
 1e.c - kod programu 1, podpunkt e 
-2.c - kod programu 2
-potomek.c - kod programu pomocniczego do zadania 2, który wypisuje dane procesu
 lib.c, lib.h - biblioteka z funkcjami dzielonymi przez kilka programów
 odpowiedzi.txt - odpowiedzi na dodatkowe pytania
 
@@ -21,7 +19,6 @@ $ make
 $ ./1a.x
 $ ./1b.x
 ...
-$ ./2.x ./potomek.x      # ./potomek.x jest programem uruchamianym przez execlp() i wypisującym dane procesu
 
 Usuwanie plików *.o, *.x:
 $ make clean
@@ -55,9 +52,3 @@ nim identyfikatory PID, PPID i PGID.
 stawal sie liderem swojej wlasnej grupy procesow.
 
 Ile procesow powstanie przy n-krotnym wywolaniu funkcji fork i dlaczego?
-
-2. Zmodyfikowac program z cwiczenia 1b tak, aby komunikaty procesow potomnych byly
-wypisywane przez program uruchamiany przez funkcje execlp. Nazwe programu do uru-
-chomienia przekazywac przez argumenty programu procesu macierzystego.
-
-Ile procesow powstanie przy n-krotnym wywolaniu funkcji fork-exec jak wyzej i dlaczego?

@@ -1,14 +1,13 @@
 CC=gcc
 CFLAGS=-Wall -std=c99 -pedantic
 
-LIB=lib.o
-OBJS=1a.o 1b.o 1c.o 1d.o 1e.o potomek.o $(LIB)
-EXE=1a.x 1b.x 1c.x 1d.x 1e.x potomek.x
+OBJS=2.o potomek.o
+EXE=2.x potomek.x
 
 all: $(EXE)
 
-%.x: %.o $(LIB)
-	$(CC) $< $(LIB) -o $@
+%.x: %.o
+	$(CC) $< -o $@
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
