@@ -18,11 +18,12 @@ int main(void) {
         } else if (pid == 0) {
             // Potomek
             printProcessData("Potomek");
+        } else {
+            if (wait(NULL) == -1) {
+                perror("wait() error");
+                exit(1);
+            }
         }
-    }
-
-    for (int i = 0; i < N; i++) {
-        wait(NULL);
     }
 
     return 0;

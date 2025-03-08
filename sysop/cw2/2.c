@@ -35,11 +35,12 @@ int main(int argc, char** argv) {
             if (execlp(argv[1], argv[1], NULL) == -1) {
                 perror("execlp error");
             }
+        } else {
+            if (wait(NULL) == -1) {
+                perror("wait() error");
+                exit(1);
+            }
         }
-    }
-
-    for (int i = 0; i < N; i++) {
-        wait(NULL);
     }
 
     return 0;
