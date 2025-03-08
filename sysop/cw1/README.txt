@@ -28,7 +28,6 @@ $ make tar
 
 * Treść zadania:
 ================
-
 1.a Napisac program wypisujacy identyfikatory UID, GID, PID, PPID i PGID dla da-
 nego procesu.
 

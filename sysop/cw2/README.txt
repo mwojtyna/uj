@@ -22,7 +22,6 @@ $ make tar
 
 * Treść zadania:
 ================
-
 2. Zmodyfikowac program z cwiczenia 1b tak, aby komunikaty procesow potomnych byly
 wypisywane przez program uruchamiany przez funkcje execlp. Nazwe programu do uru-
 chomienia przekazywac przez argumenty programu procesu macierzystego.
