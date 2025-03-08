@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
             exit(1);
         } else if (pid == 0) {
             // Potomek
-            if (execlp(argv[1], NULL) == -1) {
+            if (execlp(argv[1], argv[1], NULL) == -1) {
                 perror("execlp error");
             }
         }
