@@ -2,7 +2,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
-int main(int argc, char** argv) {
+int main(void) {
     uid_t uid = getuid();
     gid_t gid = getgid();
     pid_t pid = getpid();
