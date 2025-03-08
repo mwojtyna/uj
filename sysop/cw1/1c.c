@@ -6,6 +6,7 @@
 #include <unistd.h>
 
 int main(void) {
+    printf("Poczekaj aż wypiszą się wszystkie komunikaty...\n");
     printProcessData("Rodzic");
 
     for (int i = 0; i < 3; i++) {
