@@ -2,8 +2,8 @@ CC=gcc
 CFLAGS=-Wall -std=c99 -pedantic
 
 DIR=$(notdir $(shell pwd))
-OBJS=2.o potomek.o
-EXE=2.x potomek.x
+OBJS=2.o
+EXE=2.x
 
 all: $(EXE)
 

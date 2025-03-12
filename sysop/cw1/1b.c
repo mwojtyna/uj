@@ -11,19 +11,24 @@ int main(void) {
     printProcessData("Rodzic");
 
     for (int i = 0; i < N; i++) {
-        pid_t pid = fork();
-        if (pid == -1) {
-            perror("Fork error");
-            exit(1);
-        } else if (pid == 0) {
-            // Potomek
-            printProcessData("Potomek");
-        } else {
-            if (wait(NULL) == -1) {
-                perror("wait() error");
-                exit(1);
-            }
-        }
+		switch(fork()) {
+			case -1: {
+				 perror("Fork error");
+				 exit(1);
+			} 
+			case 0: {
+				// Potomek
+				printProcessData("Potomek");
+				break;
+			}
+			default: {
+				if (wait(NULL) == -1) {
+			 		perror("wait() error");
+			 		exit(1);
+				}
+				break;
+			}
+		}
     }
 
     return 0;

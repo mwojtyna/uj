@@ -19,28 +19,41 @@ void printProcessData(char* name) {
 
 int main(int argc, char** argv) {
     if (argc == 1) {
-        printf("Wymagana jest ścieżka programu do uruchomienia w potomku!");
+        printf("Wymagana jest ścieżka programu do uruchomienia w potomku!\n");
         exit(1);
     }
 
     printProcessData("Rodzic");
 
     for (int i = 0; i < N; i++) {
-        pid_t pid = fork();
-        if (pid == -1) {
-            perror("Fork error");
-            exit(1);
-        } else if (pid == 0) {
-            // Potomek
-            if (execlp(argv[1], argv[1], NULL) == -1) {
-                perror("execlp error");
-            }
-        } else {
-            if (wait(NULL) == -1) {
-                perror("wait() error");
-                exit(1);
-            }
-        }
+		switch(fork()) {
+			case -1: {
+				perror("Fork error");
+				exit(1);
+			}
+			case 0: {
+				uid_t uid = getuid();
+				gid_t gid = getgid();
+				pid_t pid = getpid();
+				pid_t ppid = getppid();
+				pid_t pgid = getpgrp();
+
+				char text[128];
+				sprintf(text, "Potomek: UID=%u, GID=%u, PID=%u, PPID=%u, PGID=%u", uid, gid, pid, ppid, pgid);
+
+				if (execlp(argv[1], argv[1], text, NULL) == -1) {
+					perror("execlp error");
+				}
+				break;
+			}
+			default: {
+				if (wait(NULL) == -1) {
+					perror("wait() error");
+					exit(1);
+				}
+				break;
+			}
+		}
     }
 
     return 0;

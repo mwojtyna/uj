@@ -10,15 +10,18 @@ int main(void) {
     printProcessData("Rodzic");
 
     for (int i = 0; i < 3; i++) {
-        pid_t pid = fork();
-        if (pid == -1) {
-            perror("Fork error");
-            exit(1);
-        } else if (pid == 0) {
-            // Potomek
-            sleep(3); // 3 sekundy żebym miał czas na uruchomienie `pstree`
-            printProcessData("Potomek");
-        }
+		switch(fork()) {
+			case -1: {
+				 perror("Fork error");
+				 exit(1);
+			} 
+			case 0: {
+				// Potomek
+				sleep(3); // 3 sekundy żebym miał czas na uruchomienie `pstree`
+				printProcessData("Potomek");
+				break;
+			}
+		}
     }
 
     return 0;

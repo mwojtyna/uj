@@ -12,19 +12,22 @@ int main(void) {
 
     int gen = 0;
     for (int i = 0; i < N; i++) {
-        pid_t pid = fork();
-        if (pid == -1) {
-            perror("Fork error");
-            exit(1);
-        } else if (pid == 0) {
-            // Potomek
-            sleep(gen);
-            gen++;
+		switch(fork()) {
+			case -1: {
+				 perror("Fork error");
+				 exit(1);
+			} 
+			case 0: {
+				// Potomek
+				sleep(gen);
+				gen++;
 
-            char name[64];
-            sprintf(name, "Potomek poziomu %d", gen);
-            printProcessData(name);
-        }
+				char name[64];
+				sprintf(name, "Potomek poziomu %d", gen);
+				printProcessData(name);
+				break;
+			}
+		}
     }
 
     sleep(N + 1);
