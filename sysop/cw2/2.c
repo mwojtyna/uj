@@ -6,6 +6,7 @@
 
 #define N 3
 
+// Funkcja pomocnicza do wyświetlania danych procesu
 void printProcessData(char* name) {
     uid_t uid = getuid();
     gid_t gid = getgid();
@@ -17,6 +18,8 @@ void printProcessData(char* name) {
            pid, ppid, pgid);
 }
 
+// Mateusz Wojtyna
+// Dla każdego procesu potomnego, uruchamia program podany w argumencie i przekazuje mu treść do wyświetlenia
 int main(int argc, char** argv) {
     if (argc == 1) {
         printf("Wymagana jest ścieżka programu do uruchomienia w potomku!\n");
