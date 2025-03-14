@@ -14,24 +14,23 @@ int main(void) {
 
     int gen = 0;
     for (int i = 0; i < 3; i++) {
-        switch (fork()) {
-        case -1: {
-            perror("Fork error");
-            exit(1);
-        }
-        case 0: {
-            // Potomek
-            gen++;
-            sleep(3); // 3 sekundy żebym miał czas na uruchomienie `pstree`
-            printProcessData("Potomek");
-            break;
-        }
+        switch(fork()) {
+            case -1: {
+                 perror("Fork error");
+                 exit(1);
+            } 
+            case 0: {
+                // Potomek
+                gen++;
+                sleep(3); // 3 sekundy żebym miał czas na uruchomienie `pstree`
+                printProcessData("Potomek");
+                break;
+            }
         }
     }
 
     if (gen == 0) {
-        printf("Rodzic się zakończył, zaraz wypiszą się dane potomków "
-               "adoptowanych przez init/systemd\n");
+        printf("Rodzic się zakończył, zaraz wypiszą się dane potomków adoptowanych przez init/systemd\n");
     }
 
     return 0;
