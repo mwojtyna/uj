@@ -1,3 +1,5 @@
+#define _GNU_SOURCE
+
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,8 +13,8 @@
 // sygnaly przy pomocy sekwencji klawiszy oraz przy pomocy polecenia kill z poziomu
 // powloki.
 
-void customHandler(int signal) {
-    printf("Obsłużono sygnał - %s\n", strsignal(signal));
+void customHandler(int sig) {
+    printf("Obsłużono sygnał - %s\n", strsignal(sig));
 }
 
 int main(int argc, char* argv[]) {
