@@ -7,3 +7,4 @@ AllowShortFunctionsOnASingleLine: Empty
 AlwaysBreakTemplateDeclarations: true
 AccessModifierOffset: -4
 PointerAlignment: Left
+IndentCaseLabels: true
