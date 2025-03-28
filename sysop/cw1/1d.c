@@ -15,20 +15,20 @@ int main(void) {
     int gen = 0;
     for (int i = 0; i < N; i++) {
         switch (fork()) {
-        case -1: {
-            perror("Fork error");
-            exit(1);
-        }
-        case 0: {
-            // Potomek
-            sleep(gen);
-            gen++;
+            case -1: {
+                perror("Fork error");
+                exit(1);
+            }
+            case 0: {
+                // Potomek
+                sleep(gen);
+                gen++;
 
-            char name[64];
-            sprintf(name, "Potomek poziomu %d", gen);
-            printProcessData(name);
-            break;
-        }
+                char name[64];
+                sprintf(name, "Potomek poziomu %d", gen);
+                printProcessData(name);
+                break;
+            }
         }
     }
 

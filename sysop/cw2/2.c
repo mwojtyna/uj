@@ -30,33 +30,34 @@ int main(int argc, char** argv) {
 
     for (int i = 0; i < N; i++) {
         switch (fork()) {
-        case -1: {
-            perror("Fork error");
-            exit(1);
-        }
-        case 0: {
-            uid_t uid = getuid();
-            gid_t gid = getgid();
-            pid_t pid = getpid();
-            pid_t ppid = getppid();
-            pid_t pgid = getpgrp();
-
-            char text[128];
-            sprintf(text, "Potomek: UID=%u, GID=%u, PID=%u, PPID=%u, PGID=%u",
-                    uid, gid, pid, ppid, pgid);
-
-            if (execlp(argv[1], argv[1], text, NULL) == -1) {
-                perror("execlp error");
-            }
-            break;
-        }
-        default: {
-            if (wait(NULL) == -1) {
-                perror("wait() error");
+            case -1: {
+                perror("Fork error");
                 exit(1);
             }
-            break;
-        }
+            case 0: {
+                uid_t uid = getuid();
+                gid_t gid = getgid();
+                pid_t pid = getpid();
+                pid_t ppid = getppid();
+                pid_t pgid = getpgrp();
+
+                char text[128];
+                sprintf(text,
+                        "Potomek: UID=%u, GID=%u, PID=%u, PPID=%u, PGID=%u",
+                        uid, gid, pid, ppid, pgid);
+
+                if (execlp(argv[1], argv[1], text, NULL) == -1) {
+                    perror("execlp error");
+                }
+                break;
+            }
+            default: {
+                if (wait(NULL) == -1) {
+                    perror("wait() error");
+                    exit(1);
+                }
+                break;
+            }
         }
     }
 

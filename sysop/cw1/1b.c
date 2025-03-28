@@ -14,22 +14,22 @@ int main(void) {
 
     for (int i = 0; i < N; i++) {
         switch (fork()) {
-        case -1: {
-            perror("Fork error");
-            exit(1);
-        }
-        case 0: {
-            // Potomek
-            printProcessData("Potomek");
-            break;
-        }
-        default: {
-            if (wait(NULL) == -1) {
-                perror("wait() error");
+            case -1: {
+                perror("Fork error");
                 exit(1);
             }
-            break;
-        }
+            case 0: {
+                // Potomek
+                printProcessData("Potomek");
+                break;
+            }
+            default: {
+                if (wait(NULL) == -1) {
+                    perror("wait() error");
+                    exit(1);
+                }
+                break;
+            }
         }
     }
 

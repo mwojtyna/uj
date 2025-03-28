@@ -41,22 +41,22 @@ int main(int argc, char* argv[]) {
     sighandler_t handler;
 
     switch (op) {
-    case 0: {
-        handler = SIG_DFL;
-        break;
-    }
-    case 1: {
-        handler = SIG_IGN;
-        break;
-    }
-    case 2: {
-        handler = customHandler;
-        break;
-    }
-    default: {
-        printf("Niepoprawny typ operacji: %s", argv[2]);
-        exit(1);
-    }
+        case 0: {
+            handler = SIG_DFL;
+            break;
+        }
+        case 1: {
+            handler = SIG_IGN;
+            break;
+        }
+        case 2: {
+            handler = customHandler;
+            break;
+        }
+        default: {
+            printf("Niepoprawny typ operacji: %s", argv[2]);
+            exit(1);
+        }
     }
 
     if (signal(sig, handler) == SIG_ERR) {
