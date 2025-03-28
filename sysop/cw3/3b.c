@@ -1,4 +1,7 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <sys/wait.h>
+#include <unistd.h>
 
 // Uruchomic powyzszy program poprzez funkcje execlp w procesie potomnym innego
 // procesu (z uzyciem funkcji fork) i wysylac do niego sygnaly poprzez funkcje syste-
@@ -11,7 +14,25 @@
 // wyluskania numeru sygnalu ze statusu zakonczenia uzyc makr opisanych w podroz-
 // dziale 2.4.
 int main() {
-	printf("asd");
+    switch (fork()) {
+        case -1:
+            perror("fork() error");
+            exit(1);
+            break;
 
-	return 0;
+        // Potomek
+        case 0:
+            execlp("./3a.x", "./3a.x", "10", "2", NULL);
+            break;
+
+        // Macierzysty
+        default:
+            if (wait(NULL) == -1) {
+                perror("wait() error");
+                exit(1);
+            }
+            break;
+    }
+
+    return 0;
 }
