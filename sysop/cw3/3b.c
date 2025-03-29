@@ -1,6 +1,6 @@
 #define _GNU_SOURCE
 
-#include <errno.h>
+#include "lib.h"
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,6 +8,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+// Mateusz Wojtyna                                                          29.03.2025
 // Uruchomic powyzszy program poprzez funkcje execlp w procesie potomnym innego
 // procesu (z uzyciem funkcji fork) i wysylac do niego sygnaly poprzez funkcje syste-
 // mowa kill z procesu macierzystego. ! Uwaga: Przed wyslaniem sygnalu sprawdzic,
@@ -19,20 +20,7 @@
 // wyluskania numeru sygnalu ze statusu zakonczenia uzyc makr opisanych w podroz-
 // dziale 2.4.
 int main(int argc, char* argv[]) {
-    if (argc != 3) {
-        printf("Niepoprawna liczba argumentów\n");
-        printf("%s <nr_sygnału> <operacja>\n", argv[0]);
-        printf("<operacja>:\n");
-        printf(" - 0: operacja domyślna\n");
-        printf(" - 1: zignorowanie sygnału\n");
-        printf(" - 2: przechywcenie sygnału\n");
-        exit(1);
-    }
-
-    int sig;
-    if (sscanf(argv[1], "%d", &sig) != 1) {
-        printf("Niepoprawny nr sygnału: %s", argv[1]);
-    }
+    Args args = handleArgs(argc, argv);
 
     int childPid = fork();
     switch (childPid) {
@@ -59,7 +47,7 @@ int main(int argc, char* argv[]) {
                 exit(1);
             }
 
-            if (kill(childPid, sig) == -1) {
+            if (kill(childPid, args.sig) == -1) {
                 perror("kill() error");
                 exit(1);
             }
@@ -69,10 +57,16 @@ int main(int argc, char* argv[]) {
                 perror("wait() error");
                 exit(1);
             }
-
             if (WIFSIGNALED(status)) {
                 int killedBy = WTERMSIG(status);
-                printf("Proces potomny zabity przez %s", strsignal(killedBy));
+                int exitStatus = WEXITSTATUS(status);
+                printf("Proces potomny o PID=%d zabity (status=%d) przez %d "
+                       "(%s)\n",
+                       childPid, exitStatus, killedBy, strsignal(killedBy));
+            } else {
+                int exitStatus = WEXITSTATUS(status);
+                printf("Proces potomny o PID=%d zabity (status=%d)\n", childPid,
+                       exitStatus);
             }
             break;
     }

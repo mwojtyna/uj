@@ -4,17 +4,20 @@ CC=gcc
 CFLAGS=-Wall -std=c99 -pedantic
 
 DIR=$(notdir $(shell pwd))
-OBJS=3a.o 3b.o
-EXE=3a.x 3b.x
+OBJS=3a.o 3b.o 3c.o
+EXE=3a.x 3b.x 3c.x
+LIB=lib.c
+LIB_H=lib.h
 
 all: $(EXE)
 
 3b.x: 3a.x
+3c.x: 3a.x 3c1.x
 
-%.x: %.o
-	$(CC) $< -o $@
+%.x: %.o $(LIB)
+	$(CC) $< $(LIB) -o $@
 
-%.o: %.c
+%.o: %.c $(LIB_H)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
