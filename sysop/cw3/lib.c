@@ -17,6 +17,10 @@ Args handleArgs(int argc, char* argv[]) {
         printf("Niepoprawny nr sygnału: %s\n", argv[1]);
         exit(1);
     }
+    if (sig == 9 || sig == 19) {
+        printf("Sygnału %d nie można obsłużyć\n", sig);
+        exit(1);
+    }
     if (sscanf(argv[2], "%d", &op) != 1 || !(op >= 0 && op <= 2)) {
         printf("Niepoprawny typ operacji: %s\n", argv[2]);
         exit(1);
