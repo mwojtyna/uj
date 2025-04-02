@@ -59,14 +59,12 @@ int main(int argc, char* argv[]) {
             }
             if (WIFSIGNALED(status)) {
                 int killedBy = WTERMSIG(status);
-                int exitStatus = WEXITSTATUS(status);
                 printf("Proces potomny o PID=%d zabity (status=%d) przez %d "
                        "(%s)\n",
-                       childPid, exitStatus, killedBy, strsignal(killedBy));
+                       childPid, status, killedBy, strsignal(killedBy));
             } else {
-                int exitStatus = WEXITSTATUS(status);
                 printf("Proces potomny o PID=%d zabity (status=%d)\n", childPid,
-                       exitStatus);
+                       status);
             }
             break;
     }

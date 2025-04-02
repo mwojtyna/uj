@@ -13,7 +13,10 @@
 // Pomocnik do 3c, tworzy kilka procesów potomnych
 int main(int argc, char* argv[]) {
     Args args = handleArgs(argc, argv);
-    signal(args.sig, SIG_IGN);
+    if(signal(args.sig, SIG_IGN) == SIG_ERR) {
+        perror("signal() error");
+        exit(1);
+    }
 
     for (int i = 0; i < N; ++i) {
         switch (fork()) {
@@ -22,7 +25,10 @@ int main(int argc, char* argv[]) {
                 _exit(1);
 
             case 0:
-                execlp("./3a.x", "./3a.x", argv[1], argv[2], NULL);
+                if(execlp("./3a.x", "./3a.x", argv[1], argv[2], NULL) == -1) {
+                    perror("execlp() error");
+                    _exit(1);
+                }
                 break;
         }
     }
@@ -36,14 +42,12 @@ int main(int argc, char* argv[]) {
         }
         if (WIFSIGNALED(status)) {
             int killedBy = WTERMSIG(status);
-            int exitStatus = WEXITSTATUS(status);
             printf("Proces potomny o PID=%d zabity (status=%d) przez sygnał "
                    "%d (%s)\n",
-                   killedPid, exitStatus, killedBy, strsignal(killedBy));
+                   killedPid, status, killedBy, strsignal(killedBy));
         } else {
-            int exitStatus = WEXITSTATUS(status);
             printf("Proces potomny o PID=%d się zakończył (status=%d)\n",
-                   killedPid, exitStatus);
+                   killedPid, status);
         }
     }
 

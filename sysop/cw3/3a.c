@@ -45,9 +45,9 @@ int main(int argc, char* argv[]) {
     }
     printf("PID: %d\n", getpid());
 
-    while (1) {
+    //while (1) {
         pause();
-    }
+    //}
 
     return 0;
 }
