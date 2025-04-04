@@ -5,9 +5,7 @@ Autor: Mateusz Wojtyna                                        xx.04.2025
 * Uruchamianie:
 ===============
 Aby uruchomić program:
-a) producent
-$ ./4prod.c plik_wejsciowy.txt
-$ ./4kons.c plik_wyjsciowy.txt
+$ make run
 
 Usuwanie plików *.o, *.x:
 $ make clean

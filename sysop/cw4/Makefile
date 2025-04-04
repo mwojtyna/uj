@@ -28,4 +28,4 @@ tar: clean
 run: $(ZAD4).x
 	./$(ZAD4).x $(INFILE) $(OUTFILE) && diff -s $(INFILE) $(OUTFILE)
 
-.PHONY: all clean tar run_4
+.PHONY: all clean tar run
