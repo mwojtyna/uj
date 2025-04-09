@@ -5,11 +5,13 @@ CFLAGS=-Wall -std=c99 -pedantic -g
 
 DIR=$(notdir $(shell pwd))
 ZAD4=4
-INFILE=wejscie.txt
-OUTFILE=wyjscie.txt
+INFILE ?= wejscie.txt
+OUTFILE ?= wyjscie.txt
 
 OBJS=$(ZAD4).o
 EXE=$(ZAD4).x
+
+.PHONY: all clean tar run
 
 all: $(EXE)
 
@@ -20,12 +22,10 @@ all: $(EXE)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJS) $(EXE)
+	rm -f $(OBJS) $(EXE) $(OUTFILE)
 
 tar: clean
 	tar czf ../$(DIR).tar.gz ../$(DIR)
 
 run: $(ZAD4).x
 	./$(ZAD4).x $(INFILE) $(OUTFILE) && diff -s $(INFILE) $(OUTFILE)
-
-.PHONY: all clean tar run

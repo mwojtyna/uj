@@ -3,8 +3,10 @@
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
+#include <sys/wait.h>
 
-#define BUF_SIZE 128
+#define BUF_SIZE_P 100
+#define BUF_SIZE_K 80
 
 // Mateusz Wojtyna                                                            Kraków, 04.04
 // Przy pomocy potokow nienazwanych systemu UNIX zaimplementowac problem "Pro-
@@ -30,12 +32,6 @@ int main(int argc, char* argv[]) {
 
     srand(time(NULL));
 
-    int infile_fd = open(infile_name, O_RDONLY);
-    if (infile_fd == -1) {
-        perror("open infile error");
-        exit(1);
-    }
-
     int pipe_fds[2]; // 0: read, 1: write
     if (pipe(pipe_fds) == -1) {
         perror("pipe() error");
@@ -59,15 +55,15 @@ int main(int argc, char* argv[]) {
                 _exit(1);
             }
 
-            char buf[BUF_SIZE + 1]; // +1 dla '\0'
+            char buf[BUF_SIZE_K]; 
             int bytes;
-            while ((bytes = read(pipe_fds[0], buf, BUF_SIZE)) > 0) {
+            while ((bytes = read(pipe_fds[0], buf, BUF_SIZE_K)) != 0) {
                 if (bytes == -1) {
                     perror("read pipe error");
                     _exit(1);
                 }
 
-                sleep(rand() % 2);
+                sleep(rand() % 3);
 
                 printf("\n>>> [KONSUMENT]: Czytam %d bajtów z pipe:\n", bytes);
                 if (write(STDOUT_FILENO, buf, bytes) == -1) {
@@ -98,9 +94,15 @@ int main(int argc, char* argv[]) {
                 _exit(1);
             }
 
-            char buf[BUF_SIZE + 1]; // +1 dla '\0'
+            int infile_fd = open(infile_name, O_RDONLY);
+            if (infile_fd == -1) {
+                perror("open infile error");
+                exit(1);
+            }
+
+            char buf[BUF_SIZE_P]; 
             int bytes;
-            while ((bytes = read(infile_fd, buf, BUF_SIZE)) > 0) {
+            while ((bytes = read(infile_fd, buf, BUF_SIZE_P)) != 0) {
                 if (bytes == -1) {
                     perror("read infile error");
                     _exit(1);
