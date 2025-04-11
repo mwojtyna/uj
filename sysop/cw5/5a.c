@@ -6,6 +6,11 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+// Mateusz Wojtyna                                                   Kraków, 10.04
+// 5a) Utworzyc potok FIFO z poziomu programu, a nastepnie uruchomic procesy Produ-
+// centa i Konsumenta w tym samym programie (w procesie macierzystym i potomnym
+// lub w dwoch potomnych). Potok usuwac w funkcji zarejestrowanej przez atexit.
+
 char* pipe_name = "EMPTY";
 void delete_pipe(void) {
     fprintf(stderr, "Deleting pipe...\n");
@@ -23,10 +28,6 @@ void delete_pipe_sig(int sig) {
     _exit(sig);
 }
 
-// Mateusz Wojtyna                                                   Kraków, 10.04
-// 5a) Utworzyc potok FIFO z poziomu programu, a nastepnie uruchomic procesy Produ-
-// centa i Konsumenta w tym samym programie (w procesie macierzystym i potomnym
-// lub w dwoch potomnych). Potok usuwac w funkcji zarejestrowanej przez atexit.
 int main(int argc, char* argv[]) {
     if (argc != 6) {
         fprintf(stderr, "Nie podano poprawnych argumentów!\n");

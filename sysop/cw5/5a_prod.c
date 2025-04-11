@@ -40,7 +40,7 @@ int main(int argc, char* argv[]) {
             exit(1);
         }
 
-        sleep(rand() % 2);
+        sleep(rand() % 3);
 
         printf("\n>>> [PRODUCENT]: Wpisuję %d bajtów do pipe:\n", bytes);
         if (write(STDOUT_FILENO, buf, bytes) == -1) {
