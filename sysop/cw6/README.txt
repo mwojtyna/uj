@@ -5,8 +5,9 @@ Autor: Mateusz Wojtyna                                        11.04.2025
 * Zawartość:
 ============
 dup.c - program do powielania procesów
-lib.h - nagłówek biblioteki
-lib.c - biblioteka 
+worker.c - program realizujący wzajemne wykluczanie
+libsem.c - biblioteka 
+libsem.h - nagłówek biblioteki
 Makefile
 
 * Uruchamianie:

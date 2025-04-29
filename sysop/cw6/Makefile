@@ -12,7 +12,7 @@ WORKER=worker
 PROCESS_N ?= 3
 SECTIONS_N ?= 3
 
-OBJS=$(DUP).o $(WORKER).o $(LIB).o
+OBJS=$(DUP).o $(WORKER).o 
 EXE=$(DUP).x $(WORKER).x
 
 .PHONY: all clean tar run
@@ -28,7 +28,7 @@ all: $(EXE)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJS) $(EXE)
+	rm -f $(OBJS) $(LIB).o $(EXE) numer.txt
 
 run: $(EXE)
 	./$(DUP).x ./$(WORKER).x $(PROCESS_N) $(SECTIONS_N)

@@ -3,6 +3,9 @@
 
 #include <semaphore.h>
 
+// Mateusz Wojtyna           29.04
+// Biblioteka do obsługi semaforów
+
 /*
 =======================================================
 Makro CheckError: wskaz lokalizacje bledu, wypisz nazwe

@@ -34,7 +34,7 @@ int main(int argc, char* argv[]) {
         // ------- sekcja prywatna ------
         CheckError(libsem_get_value(sem, &sem_val));
         offset += sprintf(out + offset,
-                          "\n[PID=%d, i=%d, sem=%d] sekcja prywatna, przed sekcją krytyczną\n",
+                          "\n[PID=%d, i=%d, sem=%d] sekcja prywatna przed sekcją krytyczną\n",
                           getpid(), i, sem_val);
 
         sleep(rand() % 3);
@@ -76,8 +76,8 @@ int main(int argc, char* argv[]) {
         // ------- koniec sekcji krytycznej ------
         CheckError(libsem_post(sem));
         CheckError(libsem_get_value(sem, &sem_val));
-        offset += sprintf(out + offset, "[PID=%d, i=%d, sem=%d] po wyjściu z sekcji krytycznej\n",
-                          getpid(), i, sem_val);
+        offset += sprintf(out + offset, "[PID=%d, i=%d, sem=%d] po sekcji krytycznej\n", getpid(),
+                          i, sem_val);
 
         printf("%s", out);
     }
