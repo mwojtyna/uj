@@ -44,3 +44,19 @@ int libsem_unlink(const char* name) {
     }
     return 1;
 }
+
+int libsem_wait(sem_t* sem) {
+    if (sem_wait(sem) == -1) {
+        perror("sem_wait error");
+        return 0;
+    }
+    return 1;
+}
+
+int libsem_post(sem_t* sem) {
+    if (sem_post(sem) == -1) {
+        perror("sem_post error");
+        return 0;
+    }
+    return 1;
+}

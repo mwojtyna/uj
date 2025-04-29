@@ -4,7 +4,7 @@ Autor: Mateusz Wojtyna                                        11.04.2025
 
 * Zawartość:
 ============
-6.c - kod do zadania 6
+dup.c - program do powielania procesów
 lib.h - nagłówek biblioteki
 lib.c - biblioteka 
 Makefile

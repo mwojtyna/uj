@@ -7,12 +7,13 @@ LFLAGS=-pthread
 DIR=$(notdir $(shell pwd))
 DUP=dup
 LIB=libsem
-WORKER ?= ./worker.x
+WORKER=worker
+
 PROCESS_N ?= 3
 SECTIONS_N ?= 3
 
-OBJS=$(DUP).o $(LIB).o 
-EXE=$(DUP).x
+OBJS=$(DUP).o $(WORKER).o $(LIB).o
+EXE=$(DUP).x $(WORKER).x
 
 .PHONY: all clean tar run
 
@@ -30,7 +31,7 @@ clean:
 	rm -f $(OBJS) $(EXE)
 
 run: $(EXE)
-	./$(EXE) $(WORKER) $(PROCESS_N) $(SECTIONS_N)
+	./$(DUP).x ./$(WORKER).x $(PROCESS_N) $(SECTIONS_N)
 
 tar: clean
 	tar czf ../$(DIR).tar.gz ../$(DIR)
