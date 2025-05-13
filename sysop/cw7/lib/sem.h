@@ -1,5 +1,5 @@
-#ifndef LIBSEM_H
-#define LIBSEM_H
+#ifndef SEM_H
+#define SEM_H
 
 #include <semaphore.h>
 

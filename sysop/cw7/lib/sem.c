@@ -1,4 +1,4 @@
-#include "libsem.h"
+#include "sem.h"
 #include <fcntl.h>
 #include <stdio.h>
 

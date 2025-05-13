@@ -1,6 +1,7 @@
-#include "libshm.h"
+#include "shm.h"
 #include <stdio.h>
 #include <sys/mman.h>
+#include <sys/types.h>
 #include <unistd.h>
 
 int libshm_open(const char* name, int flags, mode_t mode) {

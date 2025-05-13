@@ -1,5 +1,5 @@
-#ifndef LIBSHM_H
-#define LIBSHM_H
+#ifndef SHM_H
+#define SHM_H
 
 #include <semaphore.h>
 #include <stdio.h>

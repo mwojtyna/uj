@@ -1,6 +1,8 @@
 *.out
 *.o
 *.x
+*.a
+*.so
 *.tar.gz
 .DS_Store
 *.swp

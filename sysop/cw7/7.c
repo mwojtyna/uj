@@ -1,7 +1,8 @@
 #include "buffer.h"
-#include "lib/libsem.h"
-#include "lib/libshm.h"
+#include "lib/sem.h"
+#include "lib/shm.h"
 #include "utils.h"
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 
