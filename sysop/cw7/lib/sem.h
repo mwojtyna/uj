@@ -26,7 +26,7 @@ int libsem_close(sem_t* sem);
 
 // Usuwa semafor
 // Error: zwraca 0
-int libsem_unlink(const char* name);
+int libsem_delete(const char* name);
 
 // Wstrzymuje proces aż do momentu, gdy semafor będzie miał wartość większą od 0
 // Error: zwraca 0

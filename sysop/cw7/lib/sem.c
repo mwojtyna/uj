@@ -37,7 +37,7 @@ int libsem_close(sem_t* sem) {
     return 1;
 }
 
-int libsem_unlink(const char* name) {
+int libsem_delete(const char* name) {
     if (sem_unlink(name) == -1) {
         perror("sem_unlink error");
         return 0;

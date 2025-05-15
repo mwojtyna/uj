@@ -1,3 +1,6 @@
+#ifndef UTILS_H
+#define UTILS_H
+
 #include <stdlib.h>
 
 /*
@@ -12,3 +15,5 @@ przekazywanego argumentu (#Arg) i zakoncz program.
                 __func__, #Arg);                                                                   \
         exit(EXIT_FAILURE);                                                                        \
     }
+
+#endif

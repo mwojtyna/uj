@@ -8,6 +8,8 @@ DIR=$(notdir $(shell pwd))
 EXE=7
 EXED1=7_dyn1
 EXED2=7_dyn2
+PROD=producent
+KONS=konsument
 LIB_DIR=./lib
 LIB_NAME=libsysop
 LIBSEM=$(LIB_DIR)/sem
@@ -17,16 +19,16 @@ DLIB=$(LIB_DIR)/$(LIB_NAME).so
 
 .PHONY: all clean tar run_static run_dyn1 run_dyn2
 
-all: $(EXE).x $(EXED1).x $(EXED2).x
-
-$(EXE).x: $(EXE).o $(SLIB)
-	$(CC) $(LFLAGS) $< $(SLIB) -o $@
+all: $(EXE).x $(EXED1).x $(EXED2).x $(PROD).x $(KONS).x
 
 $(EXED1).x: $(EXE).o $(DLIB)
 	$(CC) $(LFLAGS) -L$(LIB_DIR) -lsysop $< -o $@ -Wl,-R $(LIB_DIR)
 
 $(EXED2).x: $(EXE).o $(DLIB)
 	$(CC) $(LFLAGS) -L$(LIB_DIR) -lsysop $< -o $@
+
+%.x: %.o $(SLIB)
+	$(CC) $(LFLAGS) $< $(SLIB) -o $@
 
 $(SLIB): $(LIBSEM).o $(LIBSHM).o
 	ar -rcs $(SLIB) $(LIBSEM).o $(LIBSHM).o
@@ -40,13 +42,13 @@ $(DLIB): $(LIBSEM).o $(LIBSHM).o
 clean:
 	rm -f *.{o,a,so,x} **/*.{o,a,so,x}
 
-run_static: $(EXE).x
-	./$(EXE).x
+run_static: $(EXE).x $(PROD).x $(KONS).x
+	./$(EXE).x ./$(PROD).x ./$(KONS).x infile.txt outfile.txt
 
-run_dynamic1: $(EXED1).x
+run_dynamic1: $(EXED1).x $(PROD).x $(KONS).x
 	./$(EXED1).x
 
-run_dynamic2: $(EXED2).x
+run_dynamic2: $(EXED2).x $(PROD).x $(KONS).x
 	export LD_LIBRARY_PATH=${LIB_DIR}:${LD_LIBRARY_PATH}; \
 	./$(EXED2).x \
 
