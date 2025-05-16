@@ -9,7 +9,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-void cleanup() {
+void cleanup(void) {
     CheckError(libsem_delete(SEM_WRITE));
     CheckError(libsem_delete(SEM_READ));
     CheckError(libshm_delete(SHM_NAME));
@@ -36,21 +36,28 @@ int main(int argc, char* argv[]) {
     char* prod_exe = argv[1];
     char* kons_exe = argv[2];
 
-    int shm_fd;
-    void* buf_addr;
-    sem_t* sem_read;
-    sem_t* sem_write;
-
-    CheckError((shm_fd = libshm_open(SHM_NAME, O_CREAT | O_EXCL | O_RDWR, 0666)) != -1);
+    int shm_fd = libshm_open(SHM_NAME, O_CREAT | O_EXCL | O_RDWR, 0666);
+    CheckError(shm_fd != -1);
     CheckError(libshm_set_size(shm_fd, SHM_SIZE));
-    CheckError((buf_addr = libshm_map(shm_fd, SHM_SIZE)) != NULL);
+    void* buf_addr = libshm_map(shm_fd, SHM_SIZE);
+    CheckError(buf_addr != NULL);
 
     SegmentPD* buf = (SegmentPD*)buf_addr;
     buf->wstaw = 0;
     buf->wyjmij = 0;
 
-    CheckError(sem_read = libsem_init(SEM_READ, N_BUF));
-    CheckError(sem_write = libsem_init(SEM_WRITE, 0));
+    sem_t* sem_read = libsem_init(SEM_READ, N_BUF);
+    CheckError(sem_read != NULL);
+    void* sem_write = libsem_init(SEM_WRITE, 0);
+    CheckError(sem_write != NULL);
+
+    int read_val;
+    int write_val;
+    CheckError(libsem_get_value(sem_read, &read_val));
+    CheckError(libsem_get_value(sem_write, &write_val));
+    printf("semafor read: adres=%p, wartość=%d\n", (void*)sem_write, write_val);
+    printf("semafor write: adres=%p, wartość=%d\n", (void*)sem_read, read_val);
+    printf("pamięć dzielona: fd=%d\n", shm_fd);
 
     switch (fork()) {
         case -1:

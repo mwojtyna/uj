@@ -4,21 +4,20 @@
 #include "utils.h"
 #include <fcntl.h>
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 
 int main(int argc, char* argv[]) {
-    int shm_fd;
-    void* buf_addr;
-    SegmentPD* buf;
+    int shm_fd = libshm_open(SHM_NAME, O_RDWR, 0666);
+    CheckError(shm_fd != -1);
+    void* buf_addr = libshm_map(shm_fd, SHM_SIZE);
+    CheckError(buf_addr != NULL);
+    SegmentPD* buf = (SegmentPD*)buf_addr;
 
-    CheckError((shm_fd = libshm_open(SHM_NAME, O_RDWR, 0666)) != -1);
-    CheckError((buf_addr = libshm_map(shm_fd, SHM_SIZE)) != NULL);
-    buf = (SegmentPD*)buf_addr;
-
-    sem_t* sem_read;
-    sem_t* sem_write;
-    CheckError(sem_read = libsem_open(SEM_READ));
-    CheckError(sem_write = libsem_open(SEM_WRITE));
+    sem_t* sem_read = libsem_open(SEM_READ);
+    CheckError(sem_read);
+    sem_t* sem_write = libsem_open(SEM_WRITE);
+    CheckError(sem_write);
 
     Towar towar;
     int counter = 1;
@@ -28,7 +27,10 @@ int main(int argc, char* argv[]) {
         CheckError(libsem_wait(sem_write));
 
         buf->bufor[buf->wstaw] = towar;
-        printf("[PRODUCENT] Wstawiam towar '%s' (index %d)\n", towar.element, buf->wstaw);
+        int sem_val;
+        libsem_get_value(sem_write, &sem_val);
+        printf("[PRODUCENT] Wstawiam towar '%s' (index=%d, sem=%d, bytes=%d)\n", towar.element,
+               buf->wstaw, sem_val, N_ELE);
 
         buf->wstaw = (buf->wstaw + 1) % N_BUF;
         CheckError(libsem_post(sem_read));

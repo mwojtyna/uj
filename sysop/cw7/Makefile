@@ -40,7 +40,7 @@ $(DLIB): $(LIBSEM).o $(LIBSHM).o
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f *.{o,a,so,x} **/*.{o,a,so,x}
+	rm -f ./*.{o,a,so,x} ./**/*.{o,a,so,x} /dev/shm/*
 
 run_static: $(EXE).x $(PROD).x $(KONS).x
 	./$(EXE).x ./$(PROD).x ./$(KONS).x infile.txt outfile.txt
