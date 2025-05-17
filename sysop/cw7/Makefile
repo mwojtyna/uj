@@ -1,8 +1,8 @@
 DIR=$(notdir $(shell pwd))
 
 CC=gcc
-CFLAGS=-Wall -Wno-deprecated-declarations -std=gnu99 -pedantic -fpic -g
-LFLAGS=-pthread -lrt
+CFLAGS=-Wall -Wno-deprecated-declarations -std=gnu99 -pedantic -g
+LFLAGS=-lrt
 
 DIR=$(notdir $(shell pwd))
 EXE=7

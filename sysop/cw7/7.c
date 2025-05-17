@@ -10,8 +10,8 @@
 #include <unistd.h>
 
 void cleanup(void) {
-    CheckError(libsem_delete(SEM_WRITE));
-    CheckError(libsem_delete(SEM_READ));
+    CheckError(libsem_delete(SEM_PROD));
+    CheckError(libsem_delete(SEM_KONS));
     CheckError(libshm_delete(SHM_NAME));
 }
 
@@ -48,18 +48,18 @@ int main(int argc, char* argv[]) {
     buf->wstaw = 0;
     buf->wyjmij = 0;
 
-    sem_t* sem_read = libsem_init(SEM_READ, 0);
-    CheckError(sem_read != NULL);
-    void* sem_write = libsem_init(SEM_WRITE, N_BUF);
-    CheckError(sem_write != NULL);
+    sem_t* sem_kons = libsem_init(SEM_KONS, 0);
+    void* sem_prod = libsem_init(SEM_PROD, N_BUF);
+    CheckError(sem_kons != NULL);
+    CheckError(sem_prod != NULL);
 
-    int read_val;
-    int write_val;
-    CheckError(libsem_get_value(sem_read, &read_val));
-    CheckError(libsem_get_value(sem_write, &write_val));
-    printf("semafor read: adres=%p, wartość=%d\n", (void*)sem_write, write_val);
-    printf("semafor write: adres=%p, wartość=%d\n", (void*)sem_read, read_val);
-    printf("pamięć dzielona: deskryptor=%d\n", shm_fd);
+    int kons_val;
+    int prod_val;
+    CheckError(libsem_get_value(sem_kons, &kons_val));
+    CheckError(libsem_get_value(sem_prod, &prod_val));
+    printf("semafor konsumenta: adres=%p, wartość=%d\n", (void*)sem_kons, kons_val);
+    printf("semafor producenta: adres=%p, wartość=%d\n", (void*)sem_prod, prod_val);
+    printf("pamięć dzielona: deskryptor=%d\n\n", shm_fd);
 
     switch (fork()) {
         case -1:
@@ -67,8 +67,7 @@ int main(int argc, char* argv[]) {
             exit(1);
 
         case 0:
-            if (execlp(prod_exe, prod_exe, SEM_READ, SEM_WRITE, SHM_NAME, infile_name, NULL) ==
-                -1) {
+            if (execlp(prod_exe, prod_exe, SEM_KONS, SEM_PROD, SHM_NAME, infile_name, NULL) == -1) {
                 perror("fork producer error");
                 _exit(1);
             }
@@ -79,7 +78,7 @@ int main(int argc, char* argv[]) {
             exit(1);
 
         case 0:
-            if (execlp(kons_exe, kons_exe, SEM_READ, SEM_WRITE, SHM_NAME, outfile_name, NULL) ==
+            if (execlp(kons_exe, kons_exe, SEM_KONS, SEM_PROD, SHM_NAME, outfile_name, NULL) ==
                 -1) {
                 perror("fork consument error");
                 _exit(1);

@@ -15,8 +15,8 @@ typedef struct {
     int wyjmij;
 } SegmentPD;
 
-#define SEM_WRITE "/sem_write"
-#define SEM_READ "/sem_read"
+#define SEM_KONS "/sem_kons"
+#define SEM_PROD "/sem_prod"
 #define SHM_NAME "/shared_buf"
 #define SHM_SIZE sizeof(SegmentPD)
 
