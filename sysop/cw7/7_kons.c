@@ -54,7 +54,7 @@ int main(int argc, char* argv[]) {
             buf->wyjmij = (buf->wyjmij + 1) % N_BUF;
 
             // Zakończ pętlę jeśli koniec danych
-            if (towar.size > 0 && towar.element[towar.size] == '\0') {
+            if (towar.size > 0 && towar.size < N_ELE && towar.element[towar.size] == '\0') {
                 CheckError(libsem_post(sem_write));
                 break;
             }

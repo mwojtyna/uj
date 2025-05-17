@@ -48,9 +48,9 @@ int main(int argc, char* argv[]) {
     buf->wstaw = 0;
     buf->wyjmij = 0;
 
-    sem_t* sem_read = libsem_init(SEM_READ, N_BUF);
+    sem_t* sem_read = libsem_init(SEM_READ, 0);
     CheckError(sem_read != NULL);
-    void* sem_write = libsem_init(SEM_WRITE, 0);
+    void* sem_write = libsem_init(SEM_WRITE, N_BUF);
     CheckError(sem_write != NULL);
 
     int read_val;

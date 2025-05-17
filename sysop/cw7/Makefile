@@ -42,7 +42,7 @@ $(DLIB): $(LIBSEM).o $(LIBSHM).o
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f ./*.{o,a,so,x} ./**/*.{o,a,so,x} /dev/shm/*
+	rm -f ./*.{o,a,so,x} ./**/*.{o,a,so,x} wyjscie.txt
 
 run_static: $(EXE).x $(PROD).x $(KONS).x
 	./$(EXE).x ./$(PROD).x ./$(KONS).x $(INFILE) $(OUTFILE)
