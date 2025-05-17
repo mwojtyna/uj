@@ -9,9 +9,6 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-#define INFILE "wejscie.txt"
-#define OUTFILE "wyjscie.txt"
-
 void cleanup(void) {
     CheckError(libsem_delete(SEM_WRITE));
     CheckError(libsem_delete(SEM_READ));
@@ -38,6 +35,8 @@ int main(int argc, char* argv[]) {
     }
     char* prod_exe = argv[1];
     char* kons_exe = argv[2];
+    char* infile_name = argv[3];
+    char* outfile_name = argv[4];
 
     int shm_fd = libshm_open(SHM_NAME, O_CREAT | O_EXCL | O_RDWR, 0666);
     CheckError(shm_fd != -1);
@@ -68,9 +67,9 @@ int main(int argc, char* argv[]) {
             exit(1);
 
         case 0:
-            if (execlp(prod_exe, prod_exe, SEM_READ, SEM_WRITE, SHM_NAME, INFILE, OUTFILE, NULL) ==
+            if (execlp(prod_exe, prod_exe, SEM_READ, SEM_WRITE, SHM_NAME, infile_name, NULL) ==
                 -1) {
-                perror("fork prod error");
+                perror("fork producer error");
                 _exit(1);
             }
     }
@@ -80,9 +79,9 @@ int main(int argc, char* argv[]) {
             exit(1);
 
         case 0:
-            if (execlp(kons_exe, kons_exe, SEM_READ, SEM_WRITE, SHM_NAME, INFILE, OUTFILE, NULL) ==
+            if (execlp(kons_exe, kons_exe, SEM_READ, SEM_WRITE, SHM_NAME, outfile_name, NULL) ==
                 -1) {
-                perror("fork kons error");
+                perror("fork consument error");
                 _exit(1);
             }
     }

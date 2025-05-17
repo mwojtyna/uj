@@ -1,12 +1,12 @@
 #ifndef BUFFER_H
 #define BUFFER_H
 
-#define N_ELE 20
-#define N_BUF 5
-#define N_TOWAR 10
+#define N_ELE 20 // Rozmiar elementu bufora (jednostki towaru) w bajtach
+#define N_BUF 5  // Liczba elementow bufora
 
 typedef struct {
     char element[N_ELE];
+    int size;
 } Towar;
 
 typedef struct {

@@ -8,8 +8,10 @@ DIR=$(notdir $(shell pwd))
 EXE=7
 EXED1=7_dyn1
 EXED2=7_dyn2
-PROD=producent
-KONS=konsument
+PROD=7_prod
+KONS=7_kons
+INFILE=wejscie.txt
+OUTFILE=wyjscie.txt
 LIB_DIR=./lib
 LIB_NAME=libsysop
 LIBSEM=$(LIB_DIR)/sem
@@ -43,14 +45,17 @@ clean:
 	rm -f ./*.{o,a,so,x} ./**/*.{o,a,so,x} /dev/shm/*
 
 run_static: $(EXE).x $(PROD).x $(KONS).x
-	./$(EXE).x ./$(PROD).x ./$(KONS).x infile.txt outfile.txt
+	./$(EXE).x ./$(PROD).x ./$(KONS).x $(INFILE) $(OUTFILE)
+	diff -s $(INFILE) $(OUTFILE)
 
 run_dynamic1: $(EXED1).x $(PROD).x $(KONS).x
-	./$(EXED1).x
+	./$(EXED1).x ./$(PROD).x ./$(KONS).x $(INFILE) $(OUTFILE)
+	diff -s $(INFILE) $(OUTFILE)
 
 run_dynamic2: $(EXED2).x $(PROD).x $(KONS).x
 	export LD_LIBRARY_PATH=${LIB_DIR}:${LD_LIBRARY_PATH}; \
-	./$(EXED2).x \
+	./$(EXED2).x ./$(PROD).x ./$(KONS).x $(INFILE) $(OUTFILE)
+	diff -s $(INFILE) $(OUTFILE)
 
 tar: clean
 	tar czf ../$(DIR).tar.gz ../$(DIR)
