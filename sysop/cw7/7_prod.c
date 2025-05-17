@@ -4,7 +4,6 @@
 #include "utils.h"
 #include <fcntl.h>
 #include <stdio.h>
-#include <string.h>
 #include <time.h>
 #include <unistd.h>
 
@@ -51,25 +50,24 @@ int main(int argc, char* argv[]) {
         CheckError(libsem_wait(sem_write));
         {
             buf->bufor[buf->wstaw] = towar;
+
             int sem_val;
             CheckError(libsem_get_value(sem_write, &sem_val));
-
             printf("[PRODUCENT] Wstawiam towar '%s' (index=%d, sem=%d, bytes=%d)\n", towar.element,
                    buf->wstaw, sem_val, N_ELE);
+
+            // Jeżeli koniec pliku, to wstaw zakończ towar specjalnym znakiem
+            if (towar.size > 0 && towar.size < N_ELE) {
+                towar.element[towar.size] = '\0';
+                buf->bufor[buf->wstaw] = towar;
+            }
+
             buf->wstaw = (buf->wstaw + 1) % N_BUF;
         }
         CheckError(libsem_post(sem_read));
 
         sleep(rand() % 3);
     }
-
-    // Dodaj znak zakończenia
-    CheckError(libsem_wait(sem_write));
-    {
-        buf->bufor[buf->wstaw].element[0] = '\0';
-        buf->bufor[buf->wstaw].element[1] = '1';
-    }
-    CheckError(libsem_post(sem_write));
 
     CheckError(libsem_close(sem_write));
     CheckError(libsem_close(sem_read));

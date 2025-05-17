@@ -43,28 +43,21 @@ int main(int argc, char* argv[]) {
         CheckError(libsem_wait(sem_read));
         {
             Towar towar = buf->bufor[buf->wyjmij];
+
             int sem_val;
             CheckError(libsem_get_value(sem_read, &sem_val));
-
-            if (towar.element[0] == '\0') {
-                if (towar.element[1] == '\0') {
-                    CheckError(libsem_post(sem_write));
-                    continue;
-                } else {
-                    CheckError(libsem_post(sem_write));
-                    break;
-                }
-            }
-
             printf("[KONSUMENT] Odbieram towar '%s' (index=%d, sem=%d, bytes=%d)\n", towar.element,
                    buf->wyjmij, sem_val, towar.size);
 
-            if (write(outfile_fd, towar.element, towar.size) == -1) {
-                perror("[KONSUMENT] error writing to file");
-                exit(1);
-            }
+            CheckError((write(outfile_fd, towar.element, towar.size)) != -1);
 
             buf->wyjmij = (buf->wyjmij + 1) % N_BUF;
+
+            // Zakończ pętlę jeśli koniec danych
+            if (towar.size > 0 && towar.element[towar.size] == '\0') {
+                CheckError(libsem_post(sem_write));
+                break;
+            }
         }
         CheckError(libsem_post(sem_write));
 
