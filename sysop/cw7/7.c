@@ -9,6 +9,9 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+#define INFILE "wejscie.txt"
+#define OUTFILE "wyjscie.txt"
+
 void cleanup(void) {
     CheckError(libsem_delete(SEM_WRITE));
     CheckError(libsem_delete(SEM_READ));
@@ -57,7 +60,7 @@ int main(int argc, char* argv[]) {
     CheckError(libsem_get_value(sem_write, &write_val));
     printf("semafor read: adres=%p, wartość=%d\n", (void*)sem_write, write_val);
     printf("semafor write: adres=%p, wartość=%d\n", (void*)sem_read, read_val);
-    printf("pamięć dzielona: fd=%d\n", shm_fd);
+    printf("pamięć dzielona: deskryptor=%d\n", shm_fd);
 
     switch (fork()) {
         case -1:
@@ -65,7 +68,8 @@ int main(int argc, char* argv[]) {
             exit(1);
 
         case 0:
-            if (execlp(prod_exe, prod_exe, NULL) == -1) {
+            if (execlp(prod_exe, prod_exe, SEM_READ, SEM_WRITE, SHM_NAME, INFILE, OUTFILE, NULL) ==
+                -1) {
                 perror("fork prod error");
                 _exit(1);
             }
@@ -76,7 +80,8 @@ int main(int argc, char* argv[]) {
             exit(1);
 
         case 0:
-            if (execlp(kons_exe, kons_exe, NULL) == -1) {
+            if (execlp(kons_exe, kons_exe, SEM_READ, SEM_WRITE, SHM_NAME, INFILE, OUTFILE, NULL) ==
+                -1) {
                 perror("fork kons error");
                 _exit(1);
             }

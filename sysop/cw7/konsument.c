@@ -7,14 +7,28 @@
 #include <unistd.h>
 
 int main(int argc, char* argv[]) {
-    int shm_fd = libshm_open(SHM_NAME, O_RDWR, 0666);
+    if (argc != 6) {
+        fprintf(stderr, "Nie podano poprawnych argumentów!\n");
+        fprintf(stderr,
+                "%s <semafor_read> <semafor_write> <nazwa_pamieci_dzielonej> <plik_wejsciowy> "
+                "<plik_wyjsciowy>\n",
+                argv[0]);
+        exit(1);
+    }
+    char* sem_read_name = argv[1];
+    char* sem_write_name = argv[2];
+    char* shm_name = argv[3];
+    char* infile_name = argv[4];
+    char* outfile_name = argv[5];
+
+    int shm_fd = libshm_open(shm_name, O_RDWR, 0666);
     CheckError(shm_fd != -1);
     void* buf_addr = libshm_map(shm_fd, SHM_SIZE);
     CheckError(buf_addr != NULL);
     SegmentPD* buf = (SegmentPD*)buf_addr;
 
-    sem_t* sem_read = libsem_open(SEM_READ);
-    sem_t* sem_write = libsem_open(SEM_WRITE);
+    sem_t* sem_read = libsem_open(sem_read_name);
+    sem_t* sem_write = libsem_open(sem_write_name);
     CheckError(sem_read != NULL);
     CheckError(sem_write != NULL);
 
