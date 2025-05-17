@@ -1,0 +1,44 @@
+#define N ? // rozmiar bufora
+
+typedef struct { ... } Towar;
+
+Towar bufor[N];
+int wstaw = 0, wyjmij = 0;
+
+semaphore PROD = N;         // początkowo cały bufor pusty
+semaphore KONS = 0;         // początkowo nic do konsumpcji
+semaphore mutex_wstaw = 1;  // chroni wskaźnik wstawiania
+semaphore mutex_wyjmij = 1; // chroni wskaźnik wyjmowania
+
+// Proces producenta
+// -----------------
+Towar towar;
+while (true) {
+    towar = PRODUKUJ_TOWAR();
+
+    P(PROD);                // czekaj aż będzie miejsce
+    P(mutex_wstaw);         // wejdź do sekcji krytycznej bufora (wstawianie)
+    {
+        bufor[wstaw] = towar;
+        wstaw = (wstaw + 1) % N;
+    }
+    V(mutex_wstaw);         // wyjdź z sekcji krytycznej
+
+    V(KONS);                // zwiększ liczbę dostępnych elementów
+}
+
+// Proces konsumenta
+// -----------------
+Towar towar;
+while (true) {
+    P(KONS);                // czekaj aż coś będzie do wyjęcia
+    P(mutex_wyjmij);        // wejdź do sekcji krytycznej (wyjmowanie)
+    {
+        towar = bufor[wyjmij];
+        wyjmij = (wyjmij + 1) % N;
+    }
+    V(mutex_wyjmij);        // wyjdź z sekcji krytycznej
+    V(PROD);                // zwiększ liczbę wolnych miejsc
+
+    KONSUMUJ_TOWAR(towar)
+}

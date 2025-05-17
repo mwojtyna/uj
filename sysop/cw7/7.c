@@ -9,6 +9,10 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
+// Mateusz Wojtyna      17.05
+// Program realizujący problem producenta-konsumenta za pomocą bufora cyklicznego.
+// Dostęp do bufora synchronizowany przez semafory.
+
 void cleanup(void) {
     CheckError(libsem_delete(SEM_PROD));
     CheckError(libsem_delete(SEM_KONS));
