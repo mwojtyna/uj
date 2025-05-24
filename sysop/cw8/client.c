@@ -9,6 +9,9 @@
 #include <time.h>
 #include <unistd.h>
 
+// Mateusz Wojtyna      24.05.2025
+// Klient
+
 mqd_t client_queue;
 mqd_t server_queue;
 char client_queue_name[CLIENT_QUEUE_NAME_LEN];

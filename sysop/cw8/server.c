@@ -8,6 +8,9 @@
 #include <time.h>
 #include <unistd.h>
 
+// Mateusz Wojtyna      24.05.2025
+// Serwer
+
 mqd_t server_queue;
 
 void cleanup(void) {
