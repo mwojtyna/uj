@@ -37,12 +37,14 @@ int main(int argc, char* argv[]) {
     printf("[SERVER] descriptor=%d maxmsg=%ld msgsize=%ld\n", server_queue, attr.mq_maxmsg,
            attr.mq_msgsize);
 
-    char msg[MSG_SIZE];
-    char expr[MSG_SIZE];
-    char res_str[MSG_SIZE];
-    char client_queue_name[CLIENT_QUEUE_NAME_LEN];
     while (1) {
+        char msg[MSG_SIZE];
+        char expr[MSG_SIZE];
+        char res[MSG_SIZE];
+        char client_queue_name[CLIENT_QUEUE_NAME_LEN];
+
         // Odbierz wiadomość
+        memset(res, 0, sizeof res);
         CheckError(libmq_receive(server_queue, msg, sizeof msg, NULL));
 
         // Oblicz wynik
@@ -54,39 +56,42 @@ int main(int argc, char* argv[]) {
         } else {
             printf("[SERVER] Received message from PID %d: '%s'\n", pid, msg);
 
-            double a, b, res;
+            double a, b, num_res;
             char op;
 
             if (sscanf(expr, "%lf %c %lf", &a, &op, &b) != 3 &&
                 sscanf(expr, "%lf%c%lf", &a, &op, &b) != 3) {
                 printf("[SERVER] Error: invalid expression format: '%s'\n", expr);
-                continue;
-            }
-
-            switch (op) {
-                case '+':
-                    res = a + b;
-                    break;
-                case '-':
-                    res = a - b;
-                    break;
-                case '*':
-                    res = a * b;
-                    break;
-                case '/':
-                    if (b == 0) {
-                        printf("[SERVER] Error: dividing by zero\n");
-                        continue;
-                    } else {
-                        res = a / b;
+                res_len = snprintf(res, sizeof res, "ERROR: invalid format");
+            } else {
+                switch (op) {
+                    case '+':
+                        num_res = a + b;
+                        res_len = snprintf(res, sizeof res, "%.6lf", num_res);
                         break;
-                    }
+                    case '-':
+                        num_res = a - b;
+                        res_len = snprintf(res, sizeof res, "%.6lf", num_res);
+                        break;
+                    case '*':
+                        num_res = a * b;
+                        res_len = snprintf(res, sizeof res, "%.6lf", num_res);
+                        break;
+                    case '/':
+                        if (b == 0) {
+                            printf("[SERVER] Error: dividing by zero\n");
+                            res_len = snprintf(res, sizeof res, "ERROR: division by 0");
+                        } else {
+                            num_res = a / b;
+                            res_len = snprintf(res, sizeof res, "%.6lf", num_res);
+                            break;
+                        }
 
-                default:
-                    printf("[SERVER] Error: invalid operation '%c'\n", op);
-                    continue;
+                    default:
+                        printf("[SERVER] Error: invalid operation '%c'\n", op);
+                        res_len = snprintf(res, sizeof res, "ERROR: invalid operation");
+                }
             }
-            res_len = snprintf(res_str, sizeof res_str, "%.6lf", res);
         }
 
         // Nazwa kolejki klienta
@@ -95,12 +100,13 @@ int main(int argc, char* argv[]) {
 
         sleep(rand() % 2);
 
+        // Wyślij wiadomość
         mqd_t client_queue = libmq_open(client_queue_name, O_WRONLY);
         CheckError(client_queue);
-        libmq_send(client_queue, res_str, res_len, 0);
+        libmq_send(client_queue, res, res_len, 0);
         libmq_close(client_queue);
 
-        printf("[SERVER] Sent '%s'\n", res_str);
+        printf("[SERVER] Sent '%s'\n", res);
     }
 
     return 0;

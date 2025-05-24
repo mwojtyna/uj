@@ -52,10 +52,11 @@ int main(int argc, char* argv[]) {
 
     printf("[CLIENT] Enter expression or Ctrl+D to close: ");
 
-    char expr[MSG_SIZE];
-    char msg[MSG_SIZE];
-    char res[MSG_SIZE];
     while (1) {
+        char expr[MSG_SIZE];
+        char msg[MSG_SIZE];
+        char res[MSG_SIZE];
+
         if (!fgets(expr, sizeof expr, stdin)) {
             if (feof(stdin)) {
                 printf("\n[CLIENT] EOF, closing...");
@@ -75,10 +76,16 @@ int main(int argc, char* argv[]) {
         sleep(rand() % 2);
 
         // Odbierz wiadomość
+        memset(res, 0, sizeof res);
         CheckError(libmq_receive(client_queue, res, sizeof res, NULL));
         res[sizeof res - 1] = '\0';
 
-        printf("[CLIENT] Result: %s\n", res);
+        if (strncmp(res, "ERROR:", 6) == 0) {
+            char* reason = res + 7; // pomiń "ERROR: "
+            printf("[CLIENT] Error: %s\n", reason);
+        } else {
+            printf("[CLIENT] Result: %s\n", res);
+        }
         printf("[CLIENT] Enter expression or Ctrl+D to close: ");
     }
 
