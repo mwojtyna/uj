@@ -1,5 +1,5 @@
-#ifndef UTILS_H
-#define UTILS_H
+#ifndef COMMON_H
+#define COMMON_H
 
 /*
 =======================================================
@@ -13,5 +13,10 @@ przekazywanego argumentu (#Arg) i zakoncz program.
                 __func__, #Arg);                                                                   \
         exit(EXIT_FAILURE);                                                                        \
     }
+
+#define CLIENT_QUEUE_NAME_LEN 32
+#define SERVER_QUEUE_NAME "/server_queue"
+#define MSG_SIZE 256
+#define MSG_NUM 10
 
 #endif

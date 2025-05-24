@@ -30,6 +30,12 @@ int libmq_getattr(mqd_t fd, struct mq_attr* attr);
 // Error: zwraca 0
 int libmq_setattr(mqd_t fd, struct mq_attr* newattr, struct mq_attr* oldattr);
 
+// Wysyła wiadomość do kolejki
+// Error: zwraca 0
 int libmq_send(mqd_t fd, const char* msg_ptr, size_t msg_len, unsigned int msg_prio);
+
+// Odbiera wiadomość z kolejki
+// Error: zwraca 0
+int libmq_receive(mqd_t fd, char* msg_ptr, size_t msg_len, unsigned int* msg_prio);
 
 #endif
