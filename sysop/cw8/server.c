@@ -1,12 +1,12 @@
 #include "common.h"
 #include "libmq.h"
-#include "utils.h"
 #include <mqueue.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
+#include <memory.h>
 
 // Mateusz Wojtyna      24.05.2025
 // Serwer
@@ -84,6 +84,7 @@ int main(int argc, char* argv[]) {
                         if (b == 0) {
                             printf("[SERVER] Error: dividing by zero\n");
                             res_len = snprintf(res, sizeof res, "ERROR: division by 0");
+                            break;
                         } else {
                             num_res = a / b;
                             res_len = snprintf(res, sizeof res, "%.6lf", num_res);

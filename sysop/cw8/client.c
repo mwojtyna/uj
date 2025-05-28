@@ -62,7 +62,7 @@ int main(int argc, char* argv[]) {
 
         if (!fgets(expr, sizeof expr, stdin)) {
             if (feof(stdin)) {
-                printf("\n[CLIENT] EOF, closing...");
+                printf("\n[CLIENT] EOF, closing...\n");
                 break;
             }
             perror("[CLIENT] fgets error");
