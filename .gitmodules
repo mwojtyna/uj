@@ -40,3 +40,6 @@
 [submodule "c++/laboratorium-12-mwojtyna"]
 	path = c++/laboratorium-12-mwojtyna
 	url = git@github.com:wfais/laboratorium-12-mwojtyna.git
+[submodule "c++/laboratorium-13-mwojtyna"]
+	path = c++/laboratorium-13-mwojtyna
+	url = git@github.com:wfais/laboratorium-13-mwojtyna.git
