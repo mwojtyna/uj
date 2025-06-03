@@ -1,6 +1,6 @@
-// Mateusz Wojtyna 30.05
+// Mateusz Wojtyna 03.06
 // Program realizuje problem wzajemnego wykluczania wątków przy użyciu mutexów.
-// Przyjmuje jao argumenty liczbę wątków oraz liczbe ich sekcji krytycznych.
+// Przyjmuje jako argumenty liczbę wątków oraz liczbę sekcji krytycznych.
 
 #include <pthread.h>
 #include <stdio.h>
@@ -9,7 +9,7 @@
 #include <time.h>
 #include <unistd.h>
 
-#define MAX_SLEEP 3
+#define MAX_SLEEP 2
 
 // 1-indexed
 void gotoXY(int y, int x) {
@@ -18,6 +18,10 @@ void gotoXY(int y, int x) {
 
 void clear_line() {
     printf("\x1b[2K");
+}
+
+void rand_sleep() {
+    sleep(rand() % MAX_SLEEP + 1);
 }
 
 int g_thread_log_start = 3;
@@ -30,14 +34,14 @@ void* thread_fun(void* arg) {
     int thread_num = *((int*)arg);
     int print_line = g_thread_log_start + thread_num;
 
-    sleep(rand() % MAX_SLEEP);
+    rand_sleep();
 
     for (int i = 0; i < g_crit_section_count; i++) {
         gotoXY(print_line, 0);
         clear_line();
         printf("Thread %d at iteration %d\n", thread_num, i);
 
-        sleep(rand() % MAX_SLEEP);
+        rand_sleep();
 
         int mutex_lock_ret = 0;
         {
@@ -48,13 +52,13 @@ void* thread_fun(void* arg) {
             }
 
             gotoXY(print_line, 40);
-            printf("Thread %d at crit section at iteration %d with counter at %d\n", thread_num, i,
+            printf("Thread %d in critical section, iteration %d, counter %d\n", thread_num, i,
                    g_counter);
 
             int local_counter = g_counter;
             local_counter++;
 
-            sleep(rand() % MAX_SLEEP);
+            rand_sleep();
 
             g_counter = local_counter;
 

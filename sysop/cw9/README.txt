@@ -1,5 +1,5 @@
 ========================================================================
-Autor: Mateusz Wojtyna                                        27.05.2025
+Autor: Mateusz Wojtyna                                        03.06.2025
 ========================================================================
 
 * Opis:
@@ -8,6 +8,7 @@ Program realizuje problem wzajemnego wykluczania wątków przy użyciu mutexów.
 
 * Zawartość:
 ============
+9.c - kod programu
 Makefile
 
 * Uruchamianie:

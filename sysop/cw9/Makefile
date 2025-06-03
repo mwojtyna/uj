@@ -5,7 +5,6 @@ CFLAGS=-Wall -Wno-deprecated-declarations -std=c99 -pedantic -g
 LFLAGS=-pthread
 
 DIR=$(notdir $(shell pwd))
-LIB=libsem
 PROG=9
 OBJS=$(PROG).o
 EXE=$(PROG).x
@@ -16,16 +15,14 @@ SECTIONS_N=3
 
 all: $(EXE)
 
-$(OBJS): $(LIB).h
-
-%.x: %.o $(LIB).o
-	$(CC) $(LFLAGS) $< $(LIB).o -o $@
+%.x: %.o
+	$(CC) $(LFLAGS) $< -o $@
 
 %.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJS) $(LIB).o $(EXE) numer.txt
+	rm -f $(OBJS) $(EXE)
 
 run: $(EXE)
 	./$(EXE) $(PROCESS_N) $(SECTIONS_N)
