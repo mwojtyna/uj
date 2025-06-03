@@ -11,6 +11,15 @@
 
 #define MAX_SLEEP 3
 
+// 1-indexed
+void gotoXY(int y, int x) {
+    printf("\x1b[%d;%dH", y, x);
+}
+
+void clear_line() {
+    printf("\x1b[2K");
+}
+
 int g_thread_log_start = 3;
 int g_crit_section_count = 0;
 int g_thread_count = 0;
@@ -24,21 +33,22 @@ void* thread_fun(void* arg) {
     sleep(rand() % MAX_SLEEP);
 
     for (int i = 0; i < g_crit_section_count; i++) {
-        printf("\x1b[%d;%dH\x1b[2K", print_line, 0);
-        printf("Thread %d at iteration %d \n", thread_num, i);
+        gotoXY(print_line, 0);
+        clear_line();
+        printf("Thread %d at iteration %d\n", thread_num, i);
 
         sleep(rand() % MAX_SLEEP);
 
         int mutex_lock_ret = 0;
         {
             if ((mutex_lock_ret = pthread_mutex_lock(&thread_mutex) != 0)) {
-                fprintf(stderr, "Mutex lock error %s \n", strerror(mutex_lock_ret));
+                fprintf(stderr, "Mutex lock error %s\n", strerror(mutex_lock_ret));
                 int ret = 1;
                 pthread_exit(&ret);
             }
 
-            printf("\x1b[%d;%dH\x1b[2K", print_line, 40);
-            printf("Thread %d at crit section %d with counter at start %d \n", thread_num, i,
+            gotoXY(print_line, 40);
+            printf("Thread %d at crit section at iteration %d with counter at %d\n", thread_num, i,
                    g_counter);
 
             int local_counter = g_counter;
@@ -47,18 +57,19 @@ void* thread_fun(void* arg) {
             sleep(rand() % MAX_SLEEP);
 
             g_counter = local_counter;
-        }
 
-        int mutex_unlock_ret = 0;
-        if ((mutex_unlock_ret = pthread_mutex_unlock(&thread_mutex) != 0)) {
-            fprintf(stderr, "Mutex unlock error %s \n", strerror(mutex_lock_ret));
-            int ret = 1;
-            pthread_exit(&ret);
+            int mutex_unlock_ret = 0;
+            if ((mutex_unlock_ret = pthread_mutex_unlock(&thread_mutex) != 0)) {
+                fprintf(stderr, "Mutex unlock error %s\n", strerror(mutex_lock_ret));
+                int ret = 1;
+                pthread_exit(&ret);
+            }
         }
     }
 
-    printf("\x1b[%d;%dH\x1b[2K", print_line, 0);
-    printf("Thread %d finished \n", thread_num);
+    gotoXY(print_line, 0);
+    clear_line();
+    printf("Thread %d finished\n", thread_num);
     return NULL;
 }
 
@@ -69,8 +80,8 @@ int main(int argc, char* argv[]) {
     }
 
     if (argc != 3) {
-        fprintf(stderr, "Nie podano poprawnych argumentów!\n");
-        fprintf(stderr, "%s <ilosc_watkow> <ilosc_sekcji_krytycznych>\n", argv[0]);
+        fprintf(stderr, "Invalid arguments!\n");
+        fprintf(stderr, "%s <thread_num> <crit_sections_num>\n", argv[0]);
         exit(1);
     }
 
@@ -82,10 +93,10 @@ int main(int argc, char* argv[]) {
 
     int mutex_init_ret = 0;
     if ((mutex_init_ret = pthread_mutex_init(&thread_mutex, NULL) != 0)) {
-        fprintf(stderr, "Mutex creation error %s \n", strerror(mutex_init_ret));
+        fprintf(stderr, "Mutex creation error %s\n", strerror(mutex_init_ret));
         exit(1);
     }
-    printf("Thread mutex created at %p \n", (void*)&thread_mutex);
+    printf("Thread mutex created at %p\n", (void*)&thread_mutex);
 
     pthread_t thread_handles[g_thread_count];
     int thread_args[g_thread_count];
@@ -95,28 +106,26 @@ int main(int argc, char* argv[]) {
         thread_args[i] = i;
         int ret = 0;
         if ((ret = pthread_create(&thread_handles[i], NULL, &thread_fun, &thread_args[i]) != 0)) {
-            fprintf(stderr, "Mutex create error %s \n", strerror(ret));
+            fprintf(stderr, "Mutex create error %s\n", strerror(ret));
             exit(1);
         }
-        printf("Created thread %d with id %lu \n", i, thread_handles[i]);
+        printf("Created thread %d with id %lu\n", i, thread_handles[i]);
     }
 
     // Join all threads
     for (int i = 0; i < g_thread_count; i++) {
         int thread_join_ret = 0;
         if ((thread_join_ret = pthread_join(thread_handles[i], NULL) != 0)) {
-            fprintf(stderr, "Thread join error %s \n", strerror(thread_join_ret));
+            fprintf(stderr, "Thread join error %s\n", strerror(thread_join_ret));
         }
     }
 
-    // Fix print position
-    printf("\x1b[%d;%dH\x1b[2K", g_thread_log_start + g_thread_count + 1, 0);
-    printf("Global counter %d expected %d \n", g_counter, g_thread_count * g_crit_section_count);
+    gotoXY(g_thread_log_start + g_thread_count + 1, 0);
+    printf("Global counter %d expected %d\n", g_counter, g_thread_count * g_crit_section_count);
 
-    // Destroy mutex
     int mutex_destroy_ret = 0;
     if ((mutex_destroy_ret = pthread_mutex_destroy(&thread_mutex) != 0)) {
-        fprintf(stderr, "Mutex destroy error %s \n", strerror(mutex_destroy_ret));
+        fprintf(stderr, "Mutex destroy error %s\n", strerror(mutex_destroy_ret));
         exit(1);
     }
 
