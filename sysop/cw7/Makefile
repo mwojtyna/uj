@@ -26,14 +26,15 @@ all: $(EXE).x $(EXED1).x $(EXED2).x $(PROD).x $(KONS).x
 %.x: %.o $(SLIB)
 	$(CC) $(LDFLAGS) $< $(SLIB) -o $@
 
+# Nadpisuje regułę wyżej
 $(EXE).x: $(EXE).o $(SLIB)
 	$(CC) $(LDFLAGS) $< $(SLIB) -o $@
 
 $(EXED1).x: $(EXE).o $(DLIB)
-	$(CC) $(LDFLAGS) -L$(LIB_DIR) -lsysop $< -o $@ -Wl,-R$(LIB_DIR)
+	$(CC) $(LDFLAGS) -o $@ $< -L$(LIB_DIR) -lsysop -Wl,-R$(LIB_DIR)
 
 $(EXED2).x: $(EXE).o $(DLIB)
-	$(CC) $(LDFLAGS) -L$(LIB_DIR) -lsysop $< -o $@
+	$(CC) $(LDFLAGS) -o $@ $< -L$(LIB_DIR) -lsysop
 
 $(SLIB): $(LIBSEM).o $(LIBSHM).o
 	ar rcs $@ $^
@@ -42,6 +43,12 @@ $(DLIB): $(LIBSEM).o $(LIBSHM).o
 	$(CC) -shared -o $@ $^
 
 %.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBSEM).o: $(LIBSEM).c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+$(LIBSHM).o: $(LIBSHM).c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
