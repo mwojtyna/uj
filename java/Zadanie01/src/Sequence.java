@@ -90,6 +90,7 @@ public class Sequence extends AbstractSequence {
         System.out.println("decoded: " + Arrays.toString(decoded));
         System.out.println("encoded: " + Arrays.toString(encoded));
         System.out.println("encoded(4): " + Arrays.toString(encoded4));
+        System.out.println("equals: " + s.equals(encoded4, 4));
     }
 
     public void sequence(int[] data, int deltaSegmentSize) {
@@ -135,6 +136,11 @@ public class Sequence extends AbstractSequence {
     }
 
     public boolean equals(int[] data, int deltaSegmentSize) {
-        return false;
+        int[] myDecoded = decode();
+        Sequence theirs = new Sequence();
+        theirs.sequence(data, deltaSegmentSize);
+        int[] theirsDecoded = theirs.decode();
+
+        return Arrays.equals(myDecoded, theirsDecoded);
     }
 }
