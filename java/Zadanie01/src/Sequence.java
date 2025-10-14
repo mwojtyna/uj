@@ -74,32 +74,39 @@ abstract class AbstractSequence {
 }
 
 public class Sequence extends AbstractSequence {
-    private int[] encoded;
-    private int N;
+    // Encoded
+    private int[] data;
+    private int deltaSegmentSize;
 
     public static void main(String[] args) {
         AbstractSequence s = new Sequence();
-        s.sequence(new int[]{10, 5, -3, 2, 20, 2, 8, 1, 31}, 3);
+        int[] original = new int[]{10, 5, -3, 2, 20, 2, 8, 1, 31, -1, 70, 20};
+        s.sequence(original, 3);
 
         int[] decoded = s.decode();
+        int[] encoded = s.encode(3);
+        int[] encoded4 = s.encode(4);
+        System.out.println("original: " + Arrays.toString(original));
         System.out.println("decoded: " + Arrays.toString(decoded));
+        System.out.println("encoded: " + Arrays.toString(encoded));
+        System.out.println("encoded(4): " + Arrays.toString(encoded4));
     }
 
     public void sequence(int[] data, int deltaSegmentSize) {
-        this.encoded = data;
-        this.N = deltaSegmentSize;
+        this.data = data;
+        this.deltaSegmentSize = deltaSegmentSize;
     }
 
     public int[] decode() {
-        int[] decoded = new int[encoded.length];
+        int[] decoded = new int[data.length];
 
-        for (int i = 0; i < encoded.length; i += N + 1) {
+        for (int i = 0; i < data.length; i += deltaSegmentSize + 1) {
             // Wypełnij początek segmentu
-            decoded[i] = encoded[i];
+            decoded[i] = data[i];
 
-            // Zdekoduj segment
-            for (int j = i + 1; j - i <= N && j < encoded.length; j++) {
-                decoded[j] = decoded[j - 1] + encoded[j];
+            // Dekoduj segment
+            for (int j = i + 1; j - i <= deltaSegmentSize && j < data.length; j++) {
+                decoded[j] = decoded[j - 1] + data[j];
             }
         }
 
@@ -107,7 +114,24 @@ public class Sequence extends AbstractSequence {
     }
 
     public int[] encode(int deltaSegmentSize) {
-        return new int[0];
+        if (deltaSegmentSize == this.deltaSegmentSize) {
+            return this.data;
+        }
+
+        int[] decoded = decode();
+        int[] encoded = new int[decoded.length];
+
+        for (int i = 0; i < decoded.length; i += deltaSegmentSize + 1) {
+            // Wypełnij początek segmentu
+            encoded[i] = decoded[i];
+
+            // Enkoduj segment
+            for (int j = i + 1; j - i <= deltaSegmentSize && j < decoded.length; j++) {
+                encoded[j] = decoded[j] - decoded[j - 1];
+            }
+        }
+
+        return encoded;
     }
 
     public boolean equals(int[] data, int deltaSegmentSize) {
