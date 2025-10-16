@@ -51,11 +51,13 @@ public class Sequence extends AbstractSequence {
         System.out.println(sequence.equals(data1, 13));
     }
 
+    @Override
     public void sequence(int[] data, int deltaSegmentSize) {
         this.data = data;
         this.deltaSegmentSize = deltaSegmentSize;
     }
 
+    @Override
     public int[] decode() {
         int[] decoded = new int[data.length];
 
@@ -72,6 +74,7 @@ public class Sequence extends AbstractSequence {
         return decoded;
     }
 
+    @Override
     public int[] encode(int deltaSegmentSize) {
         if (deltaSegmentSize == this.deltaSegmentSize) {
             return this.data;
@@ -93,6 +96,7 @@ public class Sequence extends AbstractSequence {
         return encoded;
     }
 
+    @Override
     public boolean equals(int[] data, int deltaSegmentSize) {
         int[] myDecoded = decode();
         Sequence theirs = new Sequence();
