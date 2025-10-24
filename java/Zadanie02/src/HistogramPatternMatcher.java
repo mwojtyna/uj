@@ -3,7 +3,7 @@ import java.util.*;
 class HistogramPatternMatcher extends AbstractHistogramPatternMatcher {
     private int min = Integer.MAX_VALUE;
     private int max = Integer.MIN_VALUE;
-    private final TreeMap<Integer, Integer> histogram = new TreeMap<>();
+    private final Map<Integer, Integer> histogram = new HashMap<>();
 
     public static void main(String[] args) {
         {
@@ -36,8 +36,8 @@ class HistogramPatternMatcher extends AbstractHistogramPatternMatcher {
      */
     @Override
     public void data(int value) {
-        min = Integer.min(min, value);
-        max = Integer.max(max, value);
+        min = Math.min(min, value);
+        max = Math.max(max, value);
         histogram.put(value, histogram.getOrDefault(value, 0) + 1);
     }
 
