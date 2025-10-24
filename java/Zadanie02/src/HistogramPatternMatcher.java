@@ -26,6 +26,7 @@ class HistogramPatternMatcher extends AbstractHistogramPatternMatcher {
             System.out.println(h.histogram());
             System.out.println(h.match(List.of(1, 1, 2)));
             System.out.println(h.match(List.of(1, 0, 0)));
+            System.out.println(h.match(List.of(1, 2)));
         }
     }
 
@@ -82,7 +83,13 @@ class HistogramPatternMatcher extends AbstractHistogramPatternMatcher {
         int startFreq = histogram.getOrDefault(start, 0);
 
         for (int i = 1; i < pattern.size(); i++) {
-            if (histogram.getOrDefault(start + i, 0) != pattern.get(i) * startFreq) {
+            int curFreq = histogram.getOrDefault(start + i, 0);
+
+            // Only patterns 1:1:..., 2:2:..., etc. should match [0, 0, ...]
+            if (!pattern.get(i).equals(pattern.getFirst()) && startFreq == 0 && curFreq == 0) {
+                return false;
+            }
+            if (curFreq != pattern.get(i) * startFreq) {
                 return false;
             }
         }
