@@ -54,6 +54,7 @@ def heap_sort(nums: list[int]):
 
 
 def quicksort(nums: list[int], lo: int = 0, hi: int | None = None):
+    # For convenience
     if hi is None:
         hi = len(nums) - 1
 
@@ -78,6 +79,7 @@ def quicksort(nums: list[int], lo: int = 0, hi: int | None = None):
 
 
 def merge_sort(nums: list[int], lo: int = 0, hi: int | None = None):
+    # For convenience
     if hi is None:
         hi = len(nums) - 1
 
