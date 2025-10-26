@@ -52,7 +52,7 @@ class HistogramPatternMatcher extends AbstractHistogramPatternMatcher {
      */
     @Override
     public Map<Integer, Integer> histogram() {
-        return histogram;
+        return new HashMap<>(histogram);
     }
 
     /**
