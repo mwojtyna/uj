@@ -1,14 +1,13 @@
 import numpy as np
 from numpy.typing import NDArray
 
-
 matrix = NDArray[np.float64]
 vector = NDArray[np.float64]
 
 
 def cholesky(A: matrix) -> matrix:
     N = len(A)
-    L = A.copy()
+    L = np.zeros_like(A, dtype=np.float64)
 
     for i in range(N):
         l_ii = A[i][i]
@@ -72,7 +71,21 @@ def sherman_morrison(z: vector, v: vector, q: vector) -> vector:
 
 
 def main():
+    np.set_printoptions(linewidth=np.inf)
+
     # Dane
+    A_1 = np.array(
+        [
+            [4, 1, 0, 0, 0, 0, 1],
+            [1, 4, 1, 0, 0, 0, 0],
+            [0, 1, 4, 1, 0, 0, 0],
+            [0, 0, 1, 4, 1, 0, 0],
+            [0, 0, 0, 1, 4, 1, 0],
+            [0, 0, 0, 0, 1, 4, 1],
+            [1, 0, 0, 0, 0, 1, 4],
+        ],
+        dtype=np.float64,
+    )
     A = np.array(
         [
             [3, 1, 0, 0, 0, 0, 0],
@@ -100,7 +113,10 @@ def main():
 
     # 4. Rozwiąż równanie z wykorzystaniem wzoru Shermana-Morrisona, O(2n)
     x = sherman_morrison(z, v, q)
-    print(x)
+    print("Wynik:", x)
+
+    # Wypisz różnicę
+    print("Różnica:", np.matmul(A_1, x) - b)
 
 
 if __name__ == "__main__":
