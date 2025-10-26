@@ -3,6 +3,7 @@ from numpy.typing import NDArray
 
 
 matrix = NDArray[np.float64]
+vector = NDArray[np.float64]
 
 
 def cholesky(A: matrix) -> matrix:
@@ -29,7 +30,7 @@ def cholesky(A: matrix) -> matrix:
     return L
 
 
-def back_substitution(U: matrix, b: matrix) -> matrix:
+def back_substitution(U: matrix, b: vector) -> vector:
     N = len(U)
     x = np.array([0] * N, dtype=np.float64)
     x[N - 1] = b[N - 1] / U[N - 1][N - 1]
@@ -44,7 +45,7 @@ def back_substitution(U: matrix, b: matrix) -> matrix:
     return x
 
 
-def forward_substitution(L: matrix, b: matrix) -> matrix:
+def forward_substitution(L: matrix, b: vector) -> vector:
     N = len(L)
     x = np.array([0] * N, dtype=np.float64)
     x[0] = b[0] / L[0][0]
@@ -59,17 +60,15 @@ def forward_substitution(L: matrix, b: matrix) -> matrix:
     return x
 
 
-def tests():
-    mat = np.array([[4, 2, 2], [2, 5, 3], [2, 3, 6]])
-    print("cholesky", cholesky(mat))
+def solve_cholesky(C: matrix, C_T: matrix, b: vector) -> vector:
+    # Ax=b <=> C*(C^T*x)=b, C^T*x=y, Cy=b
+    y = forward_substitution(C, b)
+    x = back_substitution(C_T, y)
+    return x
 
-    U = np.array([[3, -2, 1], [0, 1, 4], [0, 0, 2]], dtype=float)
-    b = np.array([1, 2, 4], dtype=float)
-    print("back_substitution", back_substitution(U, b))
 
-    L = np.array([[2, 0, 0], [3, 1, 0], [1, -2, 1]], dtype=float)
-    b = np.array([2, 5, -1], dtype=float)
-    print("forward_substitution", forward_substitution(L, b))
+def sherman_morrison(z: vector, v: vector, q: vector) -> vector:
+    return z - ((np.dot(v, z)) / (1.0 + np.dot(v, q))) * q
 
 
 def main():
@@ -89,26 +88,18 @@ def main():
     b = np.array([1, 2, 3, 4, 5, 6, 7], dtype=np.float64)
     u = v = np.array([1, 0, 0, 0, 0, 0, 1], dtype=np.float64)
 
-    # 1. Faktoryzacja Cholesky'ego O(n^3)
+    # 1. Faktoryzacja Cholesky'ego, O(n^3)
     C = cholesky(A)
     C_T = C.transpose()
 
-    # 2. Rozwiązanie Az=b <=> C*(C^T*z)=b
-    # 2.1 Rozwiązanie Cy=b metodą forward subsitution, złożoność O(n^2)
-    y_1 = forward_substitution(C, b)
+    # 2. Rozwiązanie Az=b, O(2*n^2)
+    z = solve_cholesky(C, C_T, b)
 
-    # 2.2 Rozwiązanie (C^T)*z=y metodą backsubsitution, złożoność O(n^2)
-    z = back_substitution(C_T, y_1)
+    # 3. Rozwiązanie Aq=u, O(2*n^2)
+    q = solve_cholesky(C, C_T, u)
 
-    # 3. Rozwiązanie Aq=u <=> C*(C^T*q)=u
-    # 3.1 Rozwiązanie Cy=u metodą forward substitution, złożoność O(n^2)
-    y_2 = forward_substitution(C, u)
-
-    # 3.2 Rozwiązanie (C^T)*q=y metodą backsubsitution, złożoność O(n^2)
-    q = back_substitution(C_T, y_2)
-
-    # 4. Rozwiąż równanie
-    x = z - ((np.dot(v, z)) / (1.0 + np.dot(v, q))) * q
+    # 4. Rozwiąż równanie z wykorzystaniem wzoru Shermana-Morrisona, O(2n)
+    x = sherman_morrison(z, v, q)
     print(x)
 
 
