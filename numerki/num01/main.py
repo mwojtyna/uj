@@ -1,68 +1,57 @@
 import numpy as np
 from numpy.typing import NDArray
 
-matrix = NDArray[np.float64]
+# Dla przejrzystości kodu
 vector = NDArray[np.float64]
 
 
-def cholesky(A: matrix) -> matrix:
-    N = len(A)
-    L = np.zeros_like(A, dtype=np.float64)
+def cholesky_tridiagonal(
+    diag: np.ndarray, subdiag: np.ndarray
+) -> tuple[np.ndarray, np.ndarray]:
+    N = len(diag)
+    C_diag = np.zeros(N, dtype=np.float64)
+    C_subdiag = np.zeros(N - 1, dtype=np.float64)
 
-    for i in range(N):
-        l_ii = A[i][i]
-        for k in range(0, i):
-            l_ii -= L[i][k] ** 2
-        l_ii = np.sqrt(l_ii)
-        L[i][i] = l_ii
-
-        for k in range(i + 1, N):
-            L[i][k] = 0.0
-
-        for j in range(i + 1, N):
-            l_ji = A[j][i]
-            for k in range(0, i):
-                l_ji -= L[j][k] * L[i][k]
-            l_ji /= l_ii
-            L[j][i] = l_ji
-
-    return L
-
-
-def back_substitution(U: matrix, b: vector) -> vector:
-    N = len(U)
-    x = np.array([0] * N, dtype=np.float64)
-    x[N - 1] = b[N - 1] / U[N - 1][N - 1]
-
-    for i in range(N - 2, -1, -1):
-        x_i = b[i]
-        for k in range(N - 1, i, -1):
-            x_i -= U[i][k] * x[k]
-        x_i /= U[i][i]
-        x[i] = x_i
-
-    return x
-
-
-def forward_substitution(L: matrix, b: vector) -> vector:
-    N = len(L)
-    x = np.array([0] * N, dtype=np.float64)
-    x[0] = b[0] / L[0][0]
-
+    C_diag[0] = np.sqrt(diag[0])
     for i in range(1, N):
-        x_i = b[i]
-        for k in range(0, i):
-            x_i -= L[i][k] * x[k]
-        x_i /= L[i][i]
-        x[i] = x_i
+        C_subdiag[i - 1] = subdiag[i - 1] / C_diag[i - 1]
+        C_diag[i] = np.sqrt(diag[i] - C_subdiag[i - 1] ** 2)
+
+    return C_diag, C_subdiag
+
+
+def back_substitution_tridiagonal(
+    diag: np.ndarray, subdiag: np.ndarray, b: vector
+) -> vector:
+    N = len(diag)
+    x = np.zeros(N, dtype=np.float64)
+
+    x[-1] = b[-1] / diag[-1]
+    for i in range(N - 2, -1, -1):
+        x[i] = (b[i] - subdiag[i] * x[i + 1]) / diag[i]
 
     return x
 
 
-def solve_cholesky(C: matrix, C_T: matrix, b: vector) -> vector:
+def forward_substitution_tridiagonal(
+    diag: np.ndarray, subdiag: np.ndarray, b: vector
+) -> vector:
+    N = len(diag)
+    x = np.zeros(N, dtype=np.float64)
+
+    x[0] = b[0] / diag[0]
+    for i in range(1, N):
+        x[i] = (b[i] - subdiag[i - 1] * x[i - 1]) / diag[i]
+
+    return x
+
+
+def solve_cholesky_tridiagonal(
+    C_diag: np.ndarray, C_subdiag: np.ndarray, b: vector
+) -> vector:
     # Ax=b <=> C*(C^T*x)=b, C^T*x=y, Cy=b
-    y = forward_substitution(C, b)
-    x = back_substitution(C_T, y)
+    y = forward_substitution_tridiagonal(C_diag, C_subdiag, b)
+    x = back_substitution_tridiagonal(C_diag, C_subdiag, y)
     return x
 
 
@@ -73,7 +62,27 @@ def sherman_morrison(z: vector, v: vector, q: vector) -> vector:
 def main():
     np.set_printoptions(linewidth=np.inf)
 
-    # Dane
+    # Rozpisanie elementów diagonalnych macierzy A, oszczędzamy pamięć!
+    A_diag = np.array([3, 4, 4, 4, 4, 4, 3], dtype=np.float64)
+    A_subdiag = np.array([1, 1, 1, 1, 1, 1], dtype=np.float64)
+
+    b = np.array([1, 2, 3, 4, 5, 6, 7], dtype=np.float64)
+    u = v = np.array([1, 0, 0, 0, 0, 0, 1], dtype=np.float64)
+
+    # 1. Faktoryzacja Cholesky'ego, O(n)
+    C_diag, C_subdiag = cholesky_tridiagonal(A_diag, A_subdiag)
+
+    # 2. Rozwiązanie Az=b, O(n)
+    z = solve_cholesky_tridiagonal(C_diag, C_subdiag, b)
+
+    # 3. Rozwiązanie Aq=u, O(n)
+    q = solve_cholesky_tridiagonal(C_diag, C_subdiag, u)
+
+    # 4. Rozwiąż równanie z wykorzystaniem wzoru Shermana-Morrisona, O(n)
+    x = sherman_morrison(z, v, q)
+    print("Wynik:", x)
+
+    # Wypisz różnicę
     A_1 = np.array(
         [
             [4, 1, 0, 0, 0, 0, 1],
@@ -86,36 +95,6 @@ def main():
         ],
         dtype=np.float64,
     )
-    A = np.array(
-        [
-            [3, 1, 0, 0, 0, 0, 0],
-            [1, 4, 1, 0, 0, 0, 0],
-            [0, 1, 4, 1, 0, 0, 0],
-            [0, 0, 1, 4, 1, 0, 0],
-            [0, 0, 0, 1, 4, 1, 0],
-            [0, 0, 0, 0, 1, 4, 1],
-            [0, 0, 0, 0, 0, 1, 3],
-        ],
-        dtype=np.float64,
-    )
-    b = np.array([1, 2, 3, 4, 5, 6, 7], dtype=np.float64)
-    u = v = np.array([1, 0, 0, 0, 0, 0, 1], dtype=np.float64)
-
-    # 1. Faktoryzacja Cholesky'ego, O(n^3)
-    C = cholesky(A)
-    C_T = C.transpose()
-
-    # 2. Rozwiązanie Az=b, O(2*n^2)
-    z = solve_cholesky(C, C_T, b)
-
-    # 3. Rozwiązanie Aq=u, O(2*n^2)
-    q = solve_cholesky(C, C_T, u)
-
-    # 4. Rozwiąż równanie z wykorzystaniem wzoru Shermana-Morrisona, O(2n)
-    x = sherman_morrison(z, v, q)
-    print("Wynik:", x)
-
-    # Wypisz różnicę
     print("Różnica:", np.matmul(A_1, x) - b)
 
 
