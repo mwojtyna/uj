@@ -1,6 +1,6 @@
 import java.util.Set;
 
-public class RectangularIntegration implements NumericalIntegration {
+class RectangularIntegration implements NumericalIntegration {
     private Function f;
 
     public static void main(String[] args) {
@@ -30,7 +30,7 @@ public class RectangularIntegration implements NumericalIntegration {
                 }
             };
             integration.setFunction(f);
-            double area = integration.integrate(range, 100);
+            double area = integration.integrate(range, 10_000);
             System.out.println(area);
         }
     }
@@ -46,8 +46,9 @@ public class RectangularIntegration implements NumericalIntegration {
 
         double area = 0;
         double dx = (range.max() - range.min()) / subintervals;
-        for (double x = range.min(); x <= range.max(); x += dx) {
-            double dy = f.apply(x + (dx / 2));
+        for (int i = 0; i < subintervals; i++) {
+            double x = range.min() + (i+0.5) * dx;
+            double dy = f.apply(x);
             area += dx * dy;
         }
 
