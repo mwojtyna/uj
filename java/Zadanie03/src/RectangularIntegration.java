@@ -10,12 +10,32 @@ class RectangularIntegration implements NumericalIntegration {
             Function f = new Function() {
                 @Override
                 public Set<Range> domainExclusions() {
-                    return Set.of();
+                    return Set.of(new Range() {
+                        @Override
+                        public double min() {
+                            return 5;
+                        }
+
+                        @Override
+                        public double max() {
+                            return 8;
+                        }
+                    }, new Range() {
+                        @Override
+                        public double min() {
+                            return 0;
+                        }
+
+                        @Override
+                        public double max() {
+                            return 1;
+                        }
+                    });
                 }
 
                 @Override
                 public double apply(double x) {
-                    return x;
+                    return 1 / x;
                 }
             };
             Range range = new Range() {
@@ -30,7 +50,7 @@ class RectangularIntegration implements NumericalIntegration {
                 }
             };
             integration.setFunction(f);
-            double area = integration.integrate(range, 10_000);
+            double area = integration.integrate(range, 1_000);
             System.out.println(area);
         }
     }
@@ -42,16 +62,28 @@ class RectangularIntegration implements NumericalIntegration {
 
     @Override
     public double integrate(Range range, int subintervals) {
-        // Na razie bez exclusions
-
         double area = 0;
         double dx = (range.max() - range.min()) / subintervals;
+
         for (int i = 0; i < subintervals; i++) {
-            double x = range.min() + (i+0.5) * dx;
+            double x = range.min() + (i + 0.5) * dx;
+            if (excluded(x)) {
+                continue;
+            }
+
             double dy = f.apply(x);
             area += dx * dy;
         }
 
         return area;
+    }
+
+    private boolean excluded(double x) {
+        for (Range range : this.f.domainExclusions()) {
+            if (range.min() <= x && x <= range.max()) {
+                return true;
+            }
+        }
+        return false;
     }
 }
