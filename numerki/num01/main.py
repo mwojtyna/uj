@@ -2,12 +2,15 @@ import numpy as np
 from numpy.typing import NDArray
 
 # Dla przejrzystości kodu
+array = NDArray[np.float64]
 vector = NDArray[np.float64]
 
 
-def cholesky_tridiagonal(
-    diag: np.ndarray, subdiag: np.ndarray
-) -> tuple[np.ndarray, np.ndarray]:
+def cholesky_tridiagonal(diag: array, subdiag: array) -> tuple[array, array]:
+    """
+    Zwraca (diagonala C, poddiagonala C)
+    """
+
     N = len(diag)
     C_diag = np.zeros(N, dtype=np.float64)
     C_subdiag = np.zeros(N - 1, dtype=np.float64)
@@ -20,9 +23,7 @@ def cholesky_tridiagonal(
     return C_diag, C_subdiag
 
 
-def back_substitution_tridiagonal(
-    diag: np.ndarray, subdiag: np.ndarray, b: vector
-) -> vector:
+def back_substitution_tridiagonal(diag: array, subdiag: array, b: vector) -> vector:
     N = len(diag)
     x = np.zeros(N, dtype=np.float64)
 
@@ -33,9 +34,7 @@ def back_substitution_tridiagonal(
     return x
 
 
-def forward_substitution_tridiagonal(
-    diag: np.ndarray, subdiag: np.ndarray, b: vector
-) -> vector:
+def forward_substitution_tridiagonal(diag: array, subdiag: array, b: vector) -> vector:
     N = len(diag)
     x = np.zeros(N, dtype=np.float64)
 
@@ -46,9 +45,7 @@ def forward_substitution_tridiagonal(
     return x
 
 
-def solve_cholesky_tridiagonal(
-    C_diag: np.ndarray, C_subdiag: np.ndarray, b: vector
-) -> vector:
+def solve_cholesky_tridiagonal(C_diag: array, C_subdiag: array, b: vector) -> vector:
     # Ax=b <=> C*(C^T*x)=b, C^T*x=y, Cy=b
     y = forward_substitution_tridiagonal(C_diag, C_subdiag, b)
     x = back_substitution_tridiagonal(C_diag, C_subdiag, y)
@@ -60,7 +57,7 @@ def sherman_morrison(z: vector, v: vector, q: vector) -> vector:
 
 
 def main():
-    np.set_printoptions(linewidth=np.inf)
+    np.set_printoptions(linewidth=np.inf)  # pyright: ignore[reportArgumentType]
 
     # Rozpisanie elementów diagonalnych macierzy A, oszczędzamy pamięć!
     A_diag = np.array([3, 4, 4, 4, 4, 4, 3], dtype=np.float64)
