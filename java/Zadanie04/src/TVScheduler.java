@@ -26,6 +26,39 @@ class TVScheduler implements Scheduler {
 
             System.out.println(scheduler.match(Set.of("yellow", "gray", "darkblue")));
         }
+        {
+            TVScheduler scheduler = new TVScheduler();
+
+            scheduler.addSlot(new Slot("TV1", "Zielony", 10, 0, 90));
+            scheduler.addSlot(new Slot("TV1", "Czerwony", 11, 31, 60));
+            scheduler.addSlot(new Slot("TV1", "Różowy", 12, 32, 75));
+            scheduler.addSlot(new Slot("TV1", "Szary", 13, 48, 30));
+            scheduler.addSlot(new Slot("TV1", "Zielony", 14, 19, 30));
+            scheduler.addSlot(new Slot("TV1", "Szary", 14, 50, 45));
+
+            // --- TV2 ---
+            scheduler.addSlot(new Slot("TV2", "Żółty", 10, 0, 135));
+            scheduler.addSlot(new Slot("TV2", "Niebieski", 12, 16, 90));
+            scheduler.addSlot(new Slot("TV2", "Żółty", 13, 47, 135));
+
+            // --- TV3 ---
+            scheduler.addSlot(new Slot("TV3", "Złoty", 10, 0, 165));
+            scheduler.addSlot(new Slot("TV3", "Brązowy", 12, 46, 60));
+            scheduler.addSlot(new Slot("TV3", "Granatowy", 13, 47, 30));
+            scheduler.addSlot(new Slot("TV3", "Brązowy", 14, 18, 45));
+            scheduler.addSlot(new Slot("TV3", "Biały", 15, 4, 30));
+            scheduler.addSlot(new Slot("TV3", "Granatowy", 15, 35, 30));
+            scheduler.addSlot(new Slot("PERF", "P1", 10, 0, 10));
+            scheduler.addSlot(new Slot("PERF", "P2", 10, 11, 10));
+            scheduler.addSlot(new Slot("PERF", "P3", 10, 22, 10));
+            scheduler.addSlot(new Slot("PERF", "P4", 10, 33, 10));
+            scheduler.addSlot(new Slot("PERF", "P5", 10, 44, 10));
+            scheduler.addSlot(new Slot("PERF", "P6", 10, 55, 10));
+            scheduler.addSlot(new Slot("PERF", "P7", 11, 6, 10));
+            scheduler.addSlot(new Slot("PERF", "P8", 11, 17, 10));
+
+            System.out.println(scheduler.match(Set.of("P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8")));
+        }
     }
 
     @Override
@@ -54,6 +87,10 @@ class TVScheduler implements Scheduler {
 
         for (int i = start; i < this.programs.size(); i++) {
             Slot program = this.programs.get(i);
+
+            if (favorite.size() - cur.size() > this.programs.size() - i) {
+                return;
+            }
 
             if (favorite.contains(program.program()) && !curNames.contains(program.program()) && mutuallyExclusive(cur, program)) {
                 cur.add(program);
