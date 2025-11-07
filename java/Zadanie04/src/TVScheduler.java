@@ -67,40 +67,36 @@ class TVScheduler implements Scheduler {
     }
 
     @Override
-    public Set<List<Slot>> match(Set<String> favorite) {
+    public Set<List<Slot>> match(Set<String> favoriteNames) {
+        List<Slot> favorites = this.programs.stream().filter(x -> favoriteNames.contains(x.program())).toList();
         Set<Slot> cur = new HashSet<>();
         Set<String> curNames = new HashSet<>();
         Set<List<Slot>> res = new HashSet<>();
 
-        backtrack(favorite, cur, curNames, res, 0);
+        backtrack(favorites, favoriteNames.size(), cur, curNames, res, 0);
 
         return res;
     }
 
-    private void backtrack(Set<String> favorite, Set<Slot> cur, Set<String> curNames, Set<List<Slot>> res, int start) {
-        if (start == this.programs.size()) {
-            if (cur.size() == favorite.size()) {
+    private void backtrack(List<Slot> favorites, int favoriteNamesCount, Set<Slot> cur, Set<String> curNames, Set<List<Slot>> res, int start) {
+        if (start == favorites.size()) {
+            if (cur.size() == favoriteNamesCount) {
                 res.add(new ArrayList<>(cur));
             }
             return;
         }
 
-        for (int i = start; i < this.programs.size(); i++) {
-            Slot program = this.programs.get(i);
-
-            if (favorite.size() - cur.size() > this.programs.size() - i) {
-                return;
-            }
-
-            if (favorite.contains(program.program()) && !curNames.contains(program.program()) && mutuallyExclusive(cur, program)) {
+        for (int i = start; i < favorites.size(); i++) {
+            Slot program = favorites.get(i);
+            if (!curNames.contains(program.program()) && mutuallyExclusive(cur, program)) {
                 cur.add(program);
                 curNames.add(program.program());
-                backtrack(favorite, cur, curNames, res, i + 1);
+                backtrack(favorites, favoriteNamesCount, cur, curNames, res, i + 1);
                 curNames.remove(program.program());
                 cur.remove(program);
             }
 
-            backtrack(favorite, cur, curNames, res, i + 1);
+            backtrack(favorites, favoriteNamesCount, cur, curNames, res, i + 1);
         }
     }
 
