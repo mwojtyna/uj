@@ -6,23 +6,23 @@ array = NDArray[np.float64]
 vector = NDArray[np.float64]
 matrix = NDArray[np.float64]
 
-N = 128
-
 
 class DiagMatrix:
     diag: array
     subdiag: array
     subdiag2: array
+    n: int
 
-    def __init__(self, diag: array, subdiag: array, subdiag2: array):
+    def __init__(self, diag: array, subdiag: array, subdiag2: array, n: int):
         self.diag = diag
         self.subdiag = subdiag
         self.subdiag2 = subdiag
+        self.n = n
 
     # Przeciążenie operatora mnożenia macierzy
     def __matmul__(self, x: np.ndarray) -> np.ndarray:
-        N = len(self.diag)
-        y = np.zeros_like(x)
+        N = self.n
+        y = np.zeros(N, dtype=np.float64)
 
         for i in range(N):
             y[i] += self.diag[i] * x[i]
@@ -58,7 +58,7 @@ def gauss_seidel(
         i = 124,125,126
         i = 127
         """
-
+        N = A.n
         x[0] = (b[0] - A.subdiag[0] * x_old[1] - A.subdiag2[0] * x_old[4]) / A.diag[0]
 
         for i in range(1, 3 + 1):
@@ -135,6 +135,7 @@ def conjugate_gradient(
 
 
 def check_solution(A_diag: DiagMatrix, x: vector, b: vector) -> None:
+    N = A_diag.n
     A = np.zeros((N, N), dtype=np.float64)
 
     # główna przekątna
@@ -168,11 +169,12 @@ def check_solution(A_diag: DiagMatrix, x: vector, b: vector) -> None:
 
 def main():
     np.set_printoptions(linewidth=np.inf)  # pyright: ignore[reportArgumentType]
+    N = 128
 
     diag = np.full(N, 4, dtype=np.float64)
     subdiag = np.ones(N - 1, dtype=np.float64)
     subdiag2 = np.ones(N - 4, dtype=np.float64)
-    A = DiagMatrix(diag, subdiag, subdiag2)
+    A = DiagMatrix(diag, subdiag, subdiag2, N)
     e = np.ones(N, dtype=np.float64)
 
     x = np.zeros(N, dtype=np.float64)
