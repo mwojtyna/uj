@@ -19,17 +19,22 @@ class DiagMatrix:
         self.subdiag = subdiag
         self.subdiag2 = subdiag
 
-    def mult(self, X: matrix) -> matrix:
-        y = self.diag * X
+    # Przeciążenie operatora mnożenia macierzy
+    def __matmul__(self, x: np.ndarray) -> np.ndarray:
+        N = len(self.diag)
+        y = np.zeros_like(x)
 
-        for i in range(N - 1):
-            y[i + 1] += self.subdiag[i] * X[i]
-            y += self.subdiag2[i] * X[i + 1]
+        for i in range(N):
+            y[i] += self.diag[i] * x[i]
 
-        for i in range(N - 4):
-            y[i + 4] += self.subdiag2[i] * X[i]
-            y[i] += self.subdiag2[i] * X[i + 4]
-
+            if i > 0:
+                y[i] += self.subdiag[i - 1] * x[i - 1]
+            if i < N - 1:
+                y[i] += self.subdiag[i] * x[i + 1]
+            if i >= 4:
+                y[i] += self.subdiag2[i - 4] * x[i - 4]
+            if i < N - 4:
+                y[i] += self.subdiag2[i] * x[i + 4]
         return y
 
 
@@ -41,10 +46,10 @@ def gauss_seidel(
     limit: int,
 ) -> int:
 
-    iteration = 0
+    steps = 0
     x_old = x.copy()
 
-    while iteration < limit:
+    while steps < limit:
         """
         Osobno dla:
         i = 0
@@ -91,9 +96,42 @@ def gauss_seidel(
             break
 
         x_old = x.copy()
-        iteration += 1
+        steps += 1
 
-    return iteration
+    return steps
+
+
+def conjugate_gradient(
+    A: DiagMatrix,
+    x: vector,
+    b: vector,
+    eps: float,
+    limit: int,
+) -> int:
+    steps = 0
+
+    r = b - A @ x
+    p = r
+
+    while steps < limit:
+        Ap = A @ p
+        r_dot = np.dot(r, r)
+
+        alpha = r_dot / (p.transpose() @ Ap)
+        r_new = r - alpha * Ap
+        beta = np.dot(r_new, r_new) / r_dot
+        p_new = r_new + beta * p
+        x += alpha * p
+
+        r = r_new
+        p = p_new
+
+        if np.linalg.norm(r) <= eps:
+            break
+
+        steps += 1
+
+    return steps
 
 
 def check_solution(A_diag: DiagMatrix, x: vector, b: vector) -> None:
@@ -129,20 +167,25 @@ def check_solution(A_diag: DiagMatrix, x: vector, b: vector) -> None:
 
 
 def main():
+    np.set_printoptions(linewidth=np.inf)  # pyright: ignore[reportArgumentType]
+
     diag = np.full(N, 4, dtype=np.float64)
     subdiag = np.ones(N - 1, dtype=np.float64)
     subdiag2 = np.ones(N - 4, dtype=np.float64)
     A = DiagMatrix(diag, subdiag, subdiag2)
+    e = np.ones(N, dtype=np.float64)
 
     x = np.zeros(N, dtype=np.float64)
-    u = np.ones(N, np.float64)
-
-    steps = gauss_seidel(x, A, u, eps=1e-12, limit=100)
-
+    steps = gauss_seidel(x, A, e, eps=1e-12, limit=100)
     print("Wynik po", steps, "iteracjach:")
     print(x)
+    check_solution(A, x, e)
 
-    check_solution(A, x, u)
+    x = np.zeros(N, dtype=np.float64)
+    steps = conjugate_gradient(A, x, e, eps=1e-12, limit=100)
+    print("Wynik po", steps, "iteracjach:")
+    print(x)
+    check_solution(A, x, e)
 
 
 if __name__ == "__main__":
