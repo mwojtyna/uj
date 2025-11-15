@@ -36,6 +36,11 @@ def power_method_second(A: matrix, e1: vector, eps: float, limit: int):
 
     # ortogonalizuj względem e1 i unormuj
     e2 -= e1 * np.dot(e1, e2)
+
+    # zabezpieczenie przed wylosowaniem wektora prawie identycznego do e1
+    while np.linalg.norm(e2) < 1e-14:
+        e2 = np.random.rand(N)
+        e2 -= e1 * np.dot(e1, e2)
     e2 /= np.linalg.norm(e2)
 
     z = np.zeros(N, dtype=np.float64)
@@ -50,6 +55,10 @@ def power_method_second(A: matrix, e1: vector, eps: float, limit: int):
         e2 = e2_new
 
     return e2, np.linalg.norm(z), limit
+
+
+def vec_error(v1, v2):
+    return min(np.linalg.norm(v1 - v2), np.linalg.norm(v1 + v2))
 
 
 def main():
@@ -75,9 +84,9 @@ def main():
 
     expected = np.linalg.eig(A)
     print(f"\n|lamda1 - expected lambda1|: {abs(lam1 - expected.eigenvalues[0])}")
-    print(f"||e1 - expected e1||: {np.linalg.norm(e1 - expected.eigenvectors[:,0])}")
+    print(f"||e1 - expected e1||: {vec_error(e1, expected.eigenvectors[:, 0])}")
     print(f"\n|lamda2 - expected lambda2|: {abs(lam2 - expected.eigenvalues[1])}")
-    print(f"||e2 - expected e2||: {np.linalg.norm(e2 - expected.eigenvectors[:,1])}")
+    print(f"||e2 - expected e2||: {vec_error(e2, expected.eigenvectors[:,1])}")
 
 
 if __name__ == "__main__":
