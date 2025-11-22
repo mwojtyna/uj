@@ -8,36 +8,49 @@ public class JavaTetris implements Tetris {
     private boolean[][] grid;
 
     public static void main(String[] args) {
-        {
+        Block block1 = new Block() {
+            @Override
+            public Position base() {
+                return new Position(2, 15);
+            }
+
+            @Override
+            public Set<Vector> squares() {
+                return Set.of(new Vector[]{new Vector(-1, 1), new Vector(1, 1), new Vector(2, 2)});
+            }
+        };
+        Block block2 = new Block() {
+            @Override
+            public Position base() {
+                return new Position(3, 15);
+            }
+
+            @Override
+            public Set<Vector> squares() {
+                return Set.of(new Vector[]{new Vector(-1, 1), new Vector(1, 1), new Vector(2, 2)});
+            }
+        };
+
+        /*{
             JavaTetris tetris = new JavaTetris();
             tetris.cols(11);
             tetris.rows(18);
-            Block block1 = new Block() {
-                @Override
-                public Position base() {
-                    return new Position(2, 15);
-                }
-
-                @Override
-                public Set<Vector> squares() {
-                    return Set.of(new Vector[]{new Vector(-1, 1), new Vector(1, 1), new Vector(2, 2)});
-                }
-            };
-            Block block2 = new Block() {
-                @Override
-                public Position base() {
-                    return new Position(3, 15);
-                }
-
-                @Override
-                public Set<Vector> squares() {
-                    return Set.of(new Vector[]{new Vector(-1, 1), new Vector(1, 1), new Vector(2, 2)});
-                }
-            };
 
             tetris.drop(block1);
             tetris.printGrid();
             tetris.drop(block2);
+            tetris.printGrid();
+        }*/
+
+        {
+            JavaTetris tetris = new JavaTetris();
+            tetris.cols(11);
+            tetris.rows(18);
+
+            tetris.optimalDrop(block1);
+            tetris.optimalDrop(block1);
+            tetris.printGrid();
+            tetris.optimalDrop(block1);
             tetris.printGrid();
         }
     }
@@ -57,24 +70,48 @@ public class JavaTetris implements Tetris {
     @Override
     public void drop(Block block) {
         List<Position> positions = fromOramusBlock(block);
-
-        for (int dRow = 0; dRow < this.rows; dRow++) {
-            for (Position pos : positions) {
-                if (pos.row() + dRow + 1 >= this.rows || this.grid[pos.row() + dRow + 1][pos.col()]) {
-                    placeBlock(positions, dRow);
-                    return;
-                }
-            }
-        }
-
-        // Didn't place block, but it has to
-        assert false;
+        dropBlock(positions, this.grid);
     }
 
     @Override
     public void optimalDrop(Block block) {
-        // Iterate through all **valid** columns (where the block doesn't stick out of bounds),
-        // and drop the one where calculateDropHeight is the smallest
+        // Get bounds for col
+        int leftmost = this.rows;
+        int rightmost = -1;
+        for (Vector dv : block.squares()) {
+            leftmost = Math.min(leftmost, dv.dCol());
+            rightmost = Math.max(rightmost, dv.dCol());
+        }
+
+        boolean[][] bestGrid = null;
+        int maxDRow = -1;
+
+        for (int dCol = Math.abs(leftmost); dCol < this.cols - rightmost; dCol++) {
+            int finalDCol = dCol;
+            Block cur = new Block() {
+                @Override
+                public Position base() {
+                    return new Position(finalDCol, block.base().row());
+                }
+
+                @Override
+                public Set<Vector> squares() {
+                    return block.squares();
+                }
+            };
+
+            boolean[][] simGrid = deepCopy(this.grid);
+            int dRow = dropBlock(fromOramusBlock(cur), simGrid);
+            if (dRow > maxDRow) {
+                maxDRow = dRow;
+                bestGrid = simGrid;
+            }
+        }
+
+        if (bestGrid == null) {
+            throw new IllegalStateException("Didn't choose optimal placement");
+        }
+        this.grid = bestGrid;
     }
 
     @Override
@@ -82,18 +119,68 @@ public class JavaTetris implements Tetris {
         return List.of();
     }
 
-    /// @param dRow change of row
-    private void placeBlock(List<Position> block, int dRow) {
-        for (Position pos : block) {
-            assert !this.grid[pos.row() + dRow][pos.col()];
-            this.grid[pos.row() + dRow][pos.col()] = true;
+    /// @return change in row
+    private int dropBlock(List<Position> block, boolean[][] grid) {
+        for (int dRow = 0; dRow < this.rows; dRow++) {
+            for (Position pos : block) {
+                if (pos.row() + dRow + 1 >= this.rows || grid[pos.row() + dRow + 1][pos.col()]) {
+                    int rowsErased = placeBlock(block, dRow, grid);
+                    return dRow - rowsErased;
+                }
+            }
         }
+
+        throw new IllegalStateException("Didn't place the block");
+    }
+
+    /// @return how many lines where erased
+    private int placeBlock(List<Position> block, int dRow, boolean[][] grid) {
+        int rowsErased = 0;
+
+        // Update grid
+        for (Position pos2 : block) {
+            assert !grid[pos2.row() + dRow][pos2.col()];
+            grid[pos2.row() + dRow][pos2.col()] = true;
+        }
+
+        // Check for row erasing
+        for (int row = this.rows - 1; row >= 0; ) {
+            boolean line = true;
+            for (int col = 0; col < this.cols; col++) {
+                if (!grid[row][col]) {
+                    line = false;
+                    break;
+                }
+            }
+
+            if (line) {
+                // Erase row
+                for (int col = 0; col < this.cols; col++) {
+                    grid[row][col] = false;
+                }
+
+                // Move every line down
+                for (int row2 = row; row2 >= 1; row2--) {
+                    grid[row2] = grid[row2 - 1];
+                }
+                // Edge case: clear out the top row
+                for (int col = 0; col < this.cols; col++) {
+                    grid[0][col] = false;
+                }
+
+                rowsErased++;
+            } else {
+                row--;
+            }
+        }
+
+        return rowsErased;
     }
 
     private List<Position> fromOramusBlock(Block block) {
         List<Position> res = new ArrayList<>(block.squares().size() + 1);
 
-        int baseRow = fromOramusRow(block.base().row());
+        int baseRow = convertRowCoords(block.base().row());
         int baseCol = block.base().col();
 
         res.add(new Position(baseCol, baseRow));
@@ -103,11 +190,12 @@ public class JavaTetris implements Tetris {
 
         return res;
     }
-    private int fromOramusRow(int row) {
+
+    private int convertRowCoords(int row) {
         return this.rows - row;
     }
 
-    /// Prints grid in Oramus coordinates, placing X where there is a block
+    /// Prints grid placing X where there is a block
     private void printGrid() {
         for (int i = 0; i < this.rows; i++) {
             for (int j = 0; j < this.cols; j++) {
@@ -117,5 +205,18 @@ public class JavaTetris implements Tetris {
             System.out.println();
         }
         System.out.println();
+    }
+
+    // https://stackoverflow.com/a/1564856/9854703
+    public static boolean[][] deepCopy(boolean[][] original) {
+        if (original == null) {
+            return null;
+        }
+
+        final boolean[][] result = new boolean[original.length][];
+        for (int i = 0; i < original.length; i++) {
+            result[i] = Arrays.copyOf(original[i], original[i].length);
+        }
+        return result;
     }
 }
