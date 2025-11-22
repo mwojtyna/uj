@@ -42,7 +42,7 @@ public class JavaTetris implements Tetris {
             tetris.printGrid();
         }*/
 
-        {
+        /*{
             JavaTetris tetris = new JavaTetris();
             tetris.cols(11);
             tetris.rows(18);
@@ -52,7 +52,8 @@ public class JavaTetris implements Tetris {
             tetris.printGrid();
             tetris.optimalDrop(block1);
             tetris.printGrid();
-        }
+            System.out.println(tetris.state());
+        }*/
     }
 
     @Override
@@ -76,8 +77,8 @@ public class JavaTetris implements Tetris {
     @Override
     public void optimalDrop(Block block) {
         // Get bounds for col
-        int leftmost = this.rows;
-        int rightmost = -1;
+        int leftmost = 0;
+        int rightmost = 0;
         for (Vector dv : block.squares()) {
             leftmost = Math.min(leftmost, dv.dCol());
             rightmost = Math.max(rightmost, dv.dCol());
@@ -116,7 +117,16 @@ public class JavaTetris implements Tetris {
 
     @Override
     public List<Integer> state() {
-        return List.of();
+        List<Integer> res = new ArrayList<>(Collections.nCopies(this.cols, 0));
+        for (int row = 0; row < this.rows; row++) {
+            for (int col = 0; col < this.cols; col++) {
+                if (this.grid[row][col] && res.get(col) == 0) {
+                    res.set(col, convertRowCoords(row));
+                }
+            }
+        }
+
+        return res;
     }
 
     /// @return change in row
@@ -125,7 +135,7 @@ public class JavaTetris implements Tetris {
             for (Position pos : block) {
                 if (pos.row() + dRow + 1 >= this.rows || grid[pos.row() + dRow + 1][pos.col()]) {
                     int rowsErased = placeBlock(block, dRow, grid);
-                    return dRow - rowsErased;
+                    return dRow + rowsErased;
                 }
             }
         }
@@ -153,7 +163,9 @@ public class JavaTetris implements Tetris {
                 }
             }
 
-            if (line) {
+            if (!line) {
+                row--;
+            } else {
                 // Erase row
                 for (int col = 0; col < this.cols; col++) {
                     grid[row][col] = false;
@@ -169,8 +181,6 @@ public class JavaTetris implements Tetris {
                 }
 
                 rowsErased++;
-            } else {
-                row--;
             }
         }
 
