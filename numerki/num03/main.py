@@ -6,16 +6,16 @@ array = NDArray[np.float64]
 vector = NDArray[np.float64]
 matrix = NDArray[np.float64]
 
-N = 6
-
 
 def power_method(A: matrix, eps: float, limit: int):
+    n = len(A[0])
+
     # wylosuj wektor i unormuj
-    e1 = np.random.rand(N)
+    e1 = np.random.rand(n)
     norm_y = np.linalg.norm(e1)
     e1 /= norm_y
 
-    z = np.zeros(N, dtype=np.float64)
+    z = np.zeros(n, dtype=np.float64)
     for i in range(limit):
         z = A @ e1
         e1_new = z / np.linalg.norm(z)
@@ -29,8 +29,10 @@ def power_method(A: matrix, eps: float, limit: int):
 
 
 def power_method_second(A: matrix, e1: vector, eps: float, limit: int):
+    n = len(A[0])
+
     # wylosuj wektor i unormuj
-    e2 = np.random.rand(N)
+    e2 = np.random.rand(n)
     norm_y = np.linalg.norm(e2)
     e2 /= norm_y
 
@@ -39,11 +41,11 @@ def power_method_second(A: matrix, e1: vector, eps: float, limit: int):
 
     # zabezpieczenie przed wylosowaniem wektora prawie identycznego do e1
     while np.linalg.norm(e2) < 1e-14:
-        e2 = np.random.rand(N)
+        e2 = np.random.rand(n)
         e2 -= e1 * np.dot(e1, e2)
     e2 /= np.linalg.norm(e2)
 
-    z = np.zeros(N, dtype=np.float64)
+    z = np.zeros(n, dtype=np.float64)
     for i in range(limit):
         z = A @ e2
         z -= e1 * np.dot(e1, z)
