@@ -33,15 +33,8 @@ def householder_tridiagonalize(A: matrix) -> matrix:
 
 
 # Działa in place
-def givens_row(T: matrix, i: int):
+def givens_row(T: matrix, i: int, c: float, s: float):
     n = len(T[0])
-
-    a = T[i, i]
-    b = T[i + 1, i]
-    r = np.hypot(a, b)
-    c = a / r
-    s = b / r
-
     left = max(0, i - 1)
     right = min(n - 1, i + 2)
 
@@ -54,14 +47,8 @@ def givens_row(T: matrix, i: int):
 
 
 # Działa in place
-def givens_col(T: matrix, i: int):
+def givens_col(T: matrix, i: int, c: float, s: float):
     n = len(T[0])
-
-    a = T[i, i]
-    b = T[i, i + 1]
-    r = np.hypot(a, b)
-    c = a / r
-    s = b / r
 
     top = max(0, i - 1)
     bottom = min(n - 1, i + 2)
@@ -82,8 +69,14 @@ def qr_algorithm(T: matrix, limit: int, eps: float) -> tuple[array, int]:
     for k in range(limit):
         diag_old = np.diag(T).copy()
         for i in range(n - 1):
-            givens_row(T, i)
-            givens_col(T, i)
+            a = T[i, i]
+            b = T[i + 1, i]
+            r = np.hypot(a, b)
+            c = a / r
+            s = b / r
+
+            givens_row(T, i, c, s)
+            givens_col(T, i, c, s)
         diag = np.diag(T)
 
         if np.linalg.norm(diag - diag_old) <= eps:
