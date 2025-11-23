@@ -17,6 +17,11 @@ public:
     ListNode* next = nullptr;
 };
 
+template <typename T>
+ListNode<T>* init() {
+    return new ListNode<T>();
+}
+
 // Dodaje wartość na początek listy.
 template <typename T>
 void insert(ListNode<T>* head, T val) {
@@ -28,7 +33,7 @@ void insert(ListNode<T>* head, T val) {
 // Zwraca ListNode **przed** pierwszym ListNode który ma podaną wartość.
 // Jeśli nie ma takiego ListNode, zwraca null.
 template <typename T>
-ListNode<T>* search(ListNode<T>* head, T val) {
+ListNode<T>* contains(ListNode<T>* head, T val) {
     ListNode<T>* cur = head;
     while (cur->next != nullptr) {
         if (cur->next->val == val) {
@@ -45,7 +50,7 @@ ListNode<T>* search(ListNode<T>* head, T val) {
 // Nie możemy nazwać funkcji "delete", bo jest to keyword w C++.
 template <typename T>
 void remove(ListNode<T>* head, T val) {
-    ListNode<T>* node = search(head, val);
+    ListNode<T>* node = contains(head, val);
     if (node == nullptr) {
         return;
     }
@@ -109,7 +114,7 @@ ListNode<T>* sort(ListNode<T>* head) {
 
 int main() {
     // 4->3->2->1
-    ListNode<int>* head = new ListNode<int>();
+    ListNode<int>* head = init<int>();
     insert(head, 1);
     insert(head, 2);
     insert(head, 3);
@@ -129,7 +134,7 @@ int main() {
     // 1->2->3->4
     //    ^
     //   node
-    ListNode<int>* node = search(head, 3);
+    ListNode<int>* node = contains(head, 3);
     assert(node->next->val == 3);
 
     // 1->2->4
