@@ -19,7 +19,7 @@ def householder_tridiagonalize(A: matrix) -> matrix:
     n = len(A[0])
     T = A.copy()
 
-    for k in range(0, n - 2):
+    for k in range(n - 2):
         x = T[k + 1 :, k]
         u = householder_vector(x)
         H = np.eye(n - k - 1) - 2.0 * (np.outer(u, u) / (np.linalg.norm(u) ** 2))
@@ -32,23 +32,61 @@ def householder_tridiagonalize(A: matrix) -> matrix:
     return T
 
 
-def qr_tridiagonal(A: matrix) -> tuple[matrix, matrix]:
-    qr = np.linalg.qr(A)
-    return qr.Q, qr.R
+# Działa in place
+def givens_row(T: matrix, i: int):
+    n = len(T[0])
+
+    a = T[i, i]
+    b = T[i + 1, i]
+    r = np.hypot(a, b)
+    c = a / r
+    s = b / r
+
+    left = max(0, i - 1)
+    right = min(n - 1, i + 2)
+
+    for col in range(left, right + 1):
+        A_i_j = T[i, col]
+        A_ip1_j = T[i + 1, col]
+
+        T[i, col] = c * A_i_j + s * A_ip1_j
+        T[i + 1, col] = -s * A_i_j + c * A_ip1_j
 
 
-def qr_algorithm(A: matrix, limit: int, eps: float) -> tuple[array, int]:
-    Q, R = qr_tridiagonal(A)
-    diag = np.diag(A)
-    A_k = A.copy()
+# Działa in place
+def givens_col(T: matrix, i: int):
+    n = len(T[0])
+
+    a = T[i, i]
+    b = T[i, i + 1]
+    r = np.hypot(a, b)
+    c = a / r
+    s = b / r
+
+    top = max(0, i - 1)
+    bottom = min(n - 1, i + 2)
+
+    for row in range(top, bottom + 1):
+        A_i_j = T[row, i]
+        A_i_jp1 = T[row, i + 1]
+
+        T[row, i] = c * A_i_j + s * A_i_jp1
+        T[row, i + 1] = -s * A_i_j + c * A_i_jp1
+
+
+def qr_algorithm(T: matrix, limit: int, eps: float) -> tuple[array, int]:
+    n = len(T[0])
+    diag = np.diag(T)
+    T = T.copy()
 
     for k in range(limit):
-        old_diag = np.diag(A_k)
-        A_k = R @ Q
-        Q, R = qr_tridiagonal(A_k)
-        diag = np.diag(A_k)
+        diag_old = np.diag(T).copy()
+        for i in range(n - 1):
+            givens_row(T, i)
+            givens_col(T, i)
+        diag = np.diag(T)
 
-        if np.linalg.norm(diag - old_diag) <= eps:
+        if np.linalg.norm(diag - diag_old) <= eps:
             return diag, k + 1
 
     return diag, limit
@@ -56,6 +94,7 @@ def qr_algorithm(A: matrix, limit: int, eps: float) -> tuple[array, int]:
 
 def main():
     np.set_printoptions(linewidth=np.inf)  # pyright: ignore[reportArgumentType]
+    np.set_printoptions(suppress=True)
 
     A = np.array(
         [
@@ -72,10 +111,12 @@ def main():
     T = householder_tridiagonalize(A)
     eigenvalues, steps = qr_algorithm(T, limit=1000, eps=1e-12)
 
+    expected = np.linalg.eig(A).eigenvalues
     print(f"Result after {steps} steps:", eigenvalues)
+    print("Expected:", expected)
     print(
         "Error:",
-        np.linalg.norm(np.sort(np.linalg.eig(A).eigenvalues) - np.sort(eigenvalues)),
+        np.linalg.norm(np.sort(expected) - np.sort(eigenvalues)),
     )
 
 
