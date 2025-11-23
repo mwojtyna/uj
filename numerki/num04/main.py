@@ -32,13 +32,29 @@ def householder_tridiagonalize(A: matrix) -> matrix:
     return T
 
 
-def main():
-    """
-    1. Householder do postaci trójdiagonalnej symetrycznej, O(n^3)
-    2. Algorytm QR dla trójdiagonalnej symetrycznej, O(n)
-    3. Zczytaj z diagonali wartości własne
-    """
+def qr_tridiagonal(A: matrix) -> tuple[matrix, matrix]:
+    qr = np.linalg.qr(A)
+    return qr.Q, qr.R
 
+
+def qr_algorithm(A: matrix, limit: int, eps: float) -> tuple[array, int]:
+    Q, R = qr_tridiagonal(A)
+    diag = np.diag(A)
+    A_k = A.copy()
+
+    for k in range(limit):
+        old_diag = np.diag(A_k)
+        A_k = R @ Q
+        Q, R = qr_tridiagonal(A_k)
+        diag = np.diag(A_k)
+
+        if np.linalg.norm(diag - old_diag) <= eps:
+            return diag, k + 1
+
+    return diag, limit
+
+
+def main():
     np.set_printoptions(linewidth=np.inf)  # pyright: ignore[reportArgumentType]
 
     A = np.array(
@@ -54,7 +70,13 @@ def main():
     )
 
     T = householder_tridiagonalize(A)
-    print(T)
+    eigenvalues, steps = qr_algorithm(T, limit=1000, eps=1e-12)
+
+    print(f"Result after {steps} steps:", eigenvalues)
+    print(
+        "Error:",
+        np.linalg.norm(np.sort(np.linalg.eig(A).eigenvalues) - np.sort(eigenvalues)),
+    )
 
 
 if __name__ == "__main__":
