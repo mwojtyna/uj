@@ -39,6 +39,7 @@ def givens_row(T: matrix, i: int, c: float, s: float):
     right = min(n - 1, i + 2)
 
     for col in range(left, right + 1):
+        # Należy zapisać te elementy wcześniej, ponieważ się zmieniają
         A_i_j = T[i, col]
         A_ip1_j = T[i + 1, col]
 
@@ -54,6 +55,7 @@ def givens_col(T: matrix, i: int, c: float, s: float):
     bottom = min(n - 1, i + 2)
 
     for row in range(top, bottom + 1):
+        # Należy zapisać te elementy wcześniej, ponieważ się zmieniają
         A_i_j = T[row, i]
         A_i_jp1 = T[row, i + 1]
 
@@ -69,6 +71,8 @@ def qr_algorithm(T: matrix, limit: int, eps: float) -> tuple[array, int]:
     for k in range(limit):
         diag_old = np.diag(T).copy()
         for i in range(n - 1):
+            # Należy obliczyć te elementy wcześniej, bo givens_row() je zmienia
+            # a givens_col() musi mieć takie same jak givens_row()
             a = T[i, i]
             b = T[i + 1, i]
             r = np.hypot(a, b)
@@ -104,12 +108,14 @@ def main():
     T = householder_tridiagonalize(A)
     eigenvalues, steps = qr_algorithm(T, limit=1000, eps=1e-12)
 
-    expected = np.linalg.eig(A).eigenvalues
+    # Sortujemy malejąco, żeby łatwo można było porównać
+    eigenvalues = -np.sort(-eigenvalues)
+    expected = -np.sort(-np.linalg.eig(A).eigenvalues)
     print(f"Result after {steps} steps:", eigenvalues)
     print("Expected:", expected)
     print(
         "Error:",
-        np.linalg.norm(np.sort(expected) - np.sort(eigenvalues)),
+        np.linalg.norm(expected - eigenvalues),
     )
 
 
