@@ -1,6 +1,5 @@
 #include <cassert>
 #include <iostream>
-#include <vector>
 
 /*
     Implementacja listy wskaźnikowej z dodatkowym węzłem na początku (czyli pierwsza wartość to head->next->val)
@@ -18,69 +17,43 @@ public:
     ListNode* next = nullptr;
 };
 
+// Dodaje wartość na początek listy.
 template <typename T>
-class LinkedList {
-public:
-    LinkedList() {
-        this->head = new ListNode<T>();
-    }
-    ~LinkedList() {
-        ListNode<T>* cur = this->head;
-        while (cur != nullptr) {
-            ListNode<T>* next = cur->next;
-            delete cur;
-            cur = next;
-        }
-    }
+void insert(ListNode<T>* head, T val) {
+    ListNode<T>* node = new ListNode<T>(val);
+    node->next = head->next;
+    head->next = node;
+}
 
-    // Dodaje wartość na początek listy.
-    void insert(T val) {
-        ListNode<T>* node = new ListNode<T>(val);
-        node->next = this->head->next;
-        this->head->next = node;
-        this->size++;
-    }
-
-    // Zwraca ListNode **przed** pierwszym ListNode który ma podaną wartość.
-    // Jeśli nie ma takiego ListNode, zwraca null.
-    ListNode<T>* search(T val) {
-        ListNode<T>* cur = this->head;
-        while (cur->next != nullptr) {
-            if (cur->next->val == val) {
-                return cur;
-            }
-
-            cur = cur->next;
+// Zwraca ListNode **przed** pierwszym ListNode który ma podaną wartość.
+// Jeśli nie ma takiego ListNode, zwraca null.
+template <typename T>
+ListNode<T>* search(ListNode<T>* head, T val) {
+    ListNode<T>* cur = head;
+    while (cur->next != nullptr) {
+        if (cur->next->val == val) {
+            return cur;
         }
 
-        return nullptr;
+        cur = cur->next;
     }
 
-    // Usuwa pierwszy ListNode z podaną wartością.
-    // Nie możemy nazwać funkcji "delete", bo jest to keyword w C++.
-    void remove(T val) {
-        ListNode<T>* node = this->search(val);
-        if (node == nullptr) {
-            return;
-        }
+    return nullptr;
+}
 
-        ListNode<T>* after = node->next->next;
-        delete node->next;
-        node->next = after;
+// Usuwa pierwszy ListNode z podaną wartością.
+// Nie możemy nazwać funkcji "delete", bo jest to keyword w C++.
+template <typename T>
+void remove(ListNode<T>* head, T val) {
+    ListNode<T>* node = search(head, val);
+    if (node == nullptr) {
+        return;
     }
 
-    ListNode<T>* getHead() {
-        return this->head;
-    }
-
-    size_t getSize() {
-        return this->size;
-    }
-
-private:
-    ListNode<T>* head;
-    size_t size = 0;
-};
+    ListNode<T>* after = node->next->next;
+    delete node->next;
+    node->next = after;
+}
 
 template <typename T>
 ListNode<T>* merge(ListNode<T>* l1, ListNode<T>* l2) {
@@ -136,35 +109,31 @@ ListNode<T>* sort(ListNode<T>* head) {
 
 int main() {
     // 4->3->2->1
-    LinkedList<int> list = LinkedList<int>();
-    list.insert(1);
-    list.insert(2);
-    list.insert(3);
-    list.insert(4);
-    assert(list.getHead()->next->val == 4);
+    ListNode<int>* head = new ListNode<int>();
+    insert(head, 1);
+    insert(head, 2);
+    insert(head, 3);
+    insert(head, 4);
+    assert(head->next->val == 4);
 
     // Sortuj (1->2->3->4)
-    sort(list.getHead());
+    sort(head);
 
     // Sprawdź czy posortowane
-    std::vector<int> result;
-    ListNode<int>* head = list.getHead();
-    for (int i = 0; i < list.getSize(); i++) {
-        result.emplace_back(head->next->val);
-        head = head->next;
-    }
-    for (int i = 0; i < result.size(); i++) {
-        assert(result[i] == i + 1);
+    ListNode<int>* cur = head->next;
+    for (int i = 1; i <= 4; i++) {
+        assert(cur->val == i);
+        cur = cur->next;
     }
 
     // 1->2->3->4
     //    ^
     //   node
-    ListNode<int>* node = list.search(3);
+    ListNode<int>* node = search(head, 3);
     assert(node->next->val == 3);
 
     // 1->2->4
-    list.remove(3);
+    remove(head, 3);
     assert(node->next->val == 4);
 
     std::cout << "Testy zakończyły się pomyślnie.\n";
