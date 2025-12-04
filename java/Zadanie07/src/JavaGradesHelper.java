@@ -2,6 +2,7 @@ import java.io.*;
 import java.util.*;
 
 public class JavaGradesHelper implements GradesHelper {
+    private final int STUDENTS_COLS = 3;
     private final int SCORING_COLS = 3;
     private final Map<Student, Integer> studentToId = new HashMap<>();
     private final Map<String, GradeRange> grades = new HashMap<>(); // grade name -> score range
@@ -11,14 +12,20 @@ public class JavaGradesHelper implements GradesHelper {
             JavaGradesHelper grading = new JavaGradesHelper();
 
             grading.loadStudents("./src/students.txt");
-            System.out.println(grading.studentToId);
+//            System.out.println(grading.studentToId);
 
             try {
                 grading.loadScoring("./src/scoring.txt");
+//                System.out.println(grading.grades);
             } catch (RangeConflictException | MarkConflictException e) {
                 throw new RuntimeException(e);
             }
-            System.out.println(grading.grades);
+
+            try {
+                System.out.println(grading.generateGrades("./src/grades.txt"));
+            } catch (AssessmentImpossible e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -27,8 +34,8 @@ public class JavaGradesHelper implements GradesHelper {
         try {
             FileReader reader = new FileReader(file);
             String line;
-            while (!(line = readUntil(reader, ';')).isEmpty()) {
-                String[] parts = line.split("[,;]");
+            while (!(line = readUntil(reader, ';', STUDENTS_COLS)).isEmpty()) {
+                String[] parts = line.split(";");
                 if (parts.length != 3) {
                     continue;
                 }
@@ -60,11 +67,41 @@ public class JavaGradesHelper implements GradesHelper {
 
     @Override
     public Map<Integer, String> generateGrades(String data) throws AssessmentImpossible {
-        return Map.of();
-    }
+        Map<Integer, String> idToGrade = new HashMap<>();
 
-    private String readUntil(Reader reader, char until) throws IOException {
-        return readUntil(reader, until, 1);
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(data));
+            String line;
+
+            readLoop:
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(";");
+                String name = parts[0];
+                String lastName = parts[1];
+                double[] grades = Arrays.stream(Arrays.copyOfRange(parts, 2, parts.length)).mapToDouble(Double::parseDouble).toArray();
+
+                double avg = 0;
+                for (double grade : grades) {
+                    avg += grade;
+                }
+                avg /= grades.length;
+
+                int id = this.studentToId.get(new Student(name, lastName));
+                for (Map.Entry<String, GradeRange> entry : this.grades.entrySet()) {
+                    String grade = entry.getKey();
+                    GradeRange range = entry.getValue();
+                    if (range.min() <= avg && avg <= range.max()) {
+                        idToGrade.put(id, grade);
+                        continue readLoop;
+                    }
+                }
+
+                throw new AssessmentImpossible(name, lastName);
+            }
+        } catch (IOException ignored) {
+        }
+
+        return idToGrade;
     }
 
     private String readUntil(Reader reader, char until, int nOccurrences) throws IOException {

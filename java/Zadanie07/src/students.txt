@@ -1,4 +1,4 @@
-100,Paweł,Nowak;
-101,Anna,Kowalska;
+100;Paweł;Nowak;
+101;Anna;Kowalska;
 
-102,Jan,Nepomucy;
+102;Jan;Nepomucy;
