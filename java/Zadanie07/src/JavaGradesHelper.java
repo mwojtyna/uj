@@ -58,8 +58,22 @@ public class JavaGradesHelper implements GradesHelper {
                 if (parts.length != 3) {
                     continue;
                 }
-                this.grades.put(parts[0], new GradeRange(Double.parseDouble(parts[1]), Double.parseDouble(parts[2])));
-                // TODO: handle exceptions
+
+                String gradeName = parts[0];
+                GradeRange gradeRange = new GradeRange(Double.parseDouble(parts[1]), Double.parseDouble(parts[2]));
+
+                if (this.grades.containsKey(gradeName) && (this.grades.get(gradeName).min() != gradeRange.min()
+                    || this.grades.get(gradeName).max() != gradeRange.max())) {
+                    throw new MarkConflictException(gradeName);
+                }
+
+                for (GradeRange otherRange : this.grades.values()) {
+                    if (gradeRange.min() <= otherRange.max() && otherRange.min() <= gradeRange.max()) {
+                        throw new RangeConflictException();
+                    }
+                }
+
+                this.grades.put(gradeName, gradeRange);
             }
         } catch (IOException ignored) {
         }
