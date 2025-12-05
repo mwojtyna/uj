@@ -1,5 +1,9 @@
-import java.io.*;
-import java.util.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class JavaGradesHelper implements GradesHelper {
     private final Map<Student, Integer> studentToId = new HashMap<>();
@@ -90,15 +94,19 @@ public class JavaGradesHelper implements GradesHelper {
 
                 String name = parts[0];
                 String lastName = parts[1];
-                double[] grades = Arrays.stream(Arrays.copyOfRange(parts, 2, parts.length)).mapToDouble(Double::parseDouble).toArray();
+                Student student = new Student(name, lastName);
+                if (!this.studentToId.containsKey(student)) {
+                    throw new AssessmentImpossible(name, lastName);
+                }
 
+                double[] grades = Arrays.stream(Arrays.copyOfRange(parts, 2, parts.length)).mapToDouble(Double::parseDouble).toArray();
                 double avg = 0;
                 for (double grade : grades) {
                     avg += grade;
                 }
                 avg /= grades.length;
 
-                int id = this.studentToId.get(new Student(name, lastName));
+                int id = this.studentToId.get(student);
                 String gradeName = gradeForAverage(avg);
                 if (gradeName == null) {
                     throw new AssessmentImpossible(name, lastName);
