@@ -29,8 +29,7 @@ public class JavaGradesHelper implements GradesHelper {
 
     @Override
     public void loadStudents(String file) {
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(file));
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(";");
@@ -48,8 +47,7 @@ public class JavaGradesHelper implements GradesHelper {
 
     @Override
     public void loadScoring(String file) throws RangeConflictException, MarkConflictException {
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(file));
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(";");
@@ -60,8 +58,7 @@ public class JavaGradesHelper implements GradesHelper {
                 String gradeName = parts[0];
                 GradeRange gradeRange = new GradeRange(Double.parseDouble(parts[1]), Double.parseDouble(parts[2]));
 
-                if (this.grades.containsKey(gradeName) && (this.grades.get(gradeName).min() != gradeRange.min()
-                    || this.grades.get(gradeName).max() != gradeRange.max())) {
+                if (this.grades.containsKey(gradeName) && (this.grades.get(gradeName).min() != gradeRange.min() || this.grades.get(gradeName).max() != gradeRange.max())) {
                     throw new MarkConflictException(gradeName);
                 }
 
@@ -83,10 +80,8 @@ public class JavaGradesHelper implements GradesHelper {
     public Map<Integer, String> generateGrades(String data) throws AssessmentImpossible {
         Map<Integer, String> idToGrade = new HashMap<>();
 
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(data));
+        try (BufferedReader reader = new BufferedReader(new FileReader(data))) {
             String line;
-
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(";");
                 if (parts.length <= 2) {
