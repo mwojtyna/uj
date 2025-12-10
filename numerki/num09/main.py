@@ -3,9 +3,7 @@ import matplotlib.pyplot as plt
 from numpy.typing import NDArray
 
 # Dla przejrzystości kodu
-array = NDArray[np.float64]
 vector = NDArray[np.float64]
-matrix = NDArray[np.float64]
 
 
 def lagrange_basis(j: int, x: float, nodes: vector) -> float:
