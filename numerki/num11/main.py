@@ -8,7 +8,7 @@ vector = NDArray[np.float64]
 matrix = NDArray[np.float64]
 
 
-def calc_ksi(nodes: array, values: array) -> np.ndarray:
+def calc_ksi(nodes: array, values: array) -> vector:
     n = len(nodes)
 
     # układ dla ksi_2, ..., ksi_(n-1)
