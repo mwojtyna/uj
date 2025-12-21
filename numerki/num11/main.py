@@ -8,36 +8,43 @@ vector = NDArray[np.float64]
 matrix = NDArray[np.float64]
 
 
-def calc_ksi(nodes: array, values: array) -> vector:
-    N = len(nodes)
-    underdiag = np.zeros(N - 3)
-    diag = np.zeros(N - 2)
-    overdiag = np.zeros(N - 3)
-    b = np.zeros(N - 2)
+def calc_ksi(nodes: array, values: array) -> np.ndarray:
+    n = len(nodes)
 
-    for i in range(N - 3):
-        j = i + 1
+    # układ dla ksi_2, ..., ksi_(n-1)
+    underdiag = np.zeros(n - 3)
+    diag = np.zeros(n - 2)
+    overdiag = np.zeros(n - 3)
+    b = np.zeros(n - 2)
 
-        h_k = nodes[j] - nodes[j - 1]
-        h_k1 = nodes[j + 1] - nodes[j]
+    h = np.diff(nodes)
 
-        underdiag[i] = h_k / 6
-        diag[i] = (h_k + h_k1) / 3
-        overdiag[i] = h_k1 / 6
+    # i = 0
+    diag[0] = (h[0] + h[1]) / 3
+    overdiag[0] = h[1] / 6
+    b[0] = (values[2] - values[1]) / h[1] - (values[1] - values[0]) / h[0]
 
-        b[i] = (values[j + 1] - values[j]) / h_k1 - (values[j] - values[j - 1]) / h_k
+    # i = 1, ..., n-4
+    for i in range(1, n - 4 + 1):
+        diag[i] = (h[i] + h[i + 1]) / 3
+        underdiag[i - 1] = h[i] / 6
+        overdiag[i] = h[i + 1] / 6
 
-    # ostatni wiersz
-    j = N - 2
-    h_k = nodes[j] - nodes[j - 1]
-    h_k1 = nodes[j + 1] - nodes[j]
-    diag[-1] = (h_k + h_k1) / 3
-    b[-1] = (values[j + 1] - values[j]) / h_k1 - (values[j] - values[j - 1]) / h_k
+        b[i] = (values[i + 2] - values[i + 1]) / h[i + 1] - (
+            values[i + 1] - values[i]
+        ) / h[i]
 
-    ksi = np.zeros(N)
-    ksi[1 : N - 1] = thomas_solve(diag, underdiag, overdiag, b)
+    # i = n-3
+    diag[n - 3] = (h[n - 3] + h[n - 2]) / 3
+    underdiag[n - 4] = h[n - 3] / 6
+    b[n - 3] = (values[n - 1] - values[n - 2]) / h[n - 2] - (
+        values[n - 2] - values[n - 3]
+    ) / h[n - 3]
 
-    return ksi
+    xi = np.zeros(n)
+    xi[1 : n - 1] = thomas_solve(diag, underdiag, overdiag, b)
+
+    return xi
 
 
 def thomas_solve(diag: array, underdiag: array, overdiag: array, b: vector) -> vector:
