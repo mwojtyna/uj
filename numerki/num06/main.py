@@ -65,7 +65,7 @@ def calc_eigenvector(
         z_k = sherman_morrison(p, v_sm, q)
         y_new = z_k / np.linalg.norm(z_k)
 
-        if np.linalg.norm(np.abs(y_new) - np.abs(y)) <= eps:
+        if abs(1 - abs(np.dot(y_new, y))) <= eps:
             return (y_new, i + 1)
 
         y = y_new
@@ -80,7 +80,7 @@ def main():
     tau = 0.38197
     underdiag = np.array([-1, 1, 1, -1], dtype=np.float64)
     diag = np.array([1, 2, 1, 2, 1], dtype=np.float64)
-    diag -= np.ones(len(diag), dtype=np.float64) * tau
+    diag -= np.full(len(diag), tau, dtype=np.float64)
     overdiag = np.array([-1, 1, 1, -1], dtype=np.float64)
     u = np.array([1, 0, 0, 0, 1], dtype=np.float64)
     v = np.array([1, 0, 0, 0, 1], dtype=np.float64)
