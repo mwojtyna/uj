@@ -6,25 +6,36 @@ vector = NDArray[np.float64]
 matrix = NDArray[np.float64]
 
 
-def LU_factor_tridiagonal(diag: array, underdiag: array) -> tuple[vector, vector]:
-    N = len(diag)
-    l = np.zeros(N - 1)
+def LU_factor_tridiagonal(
+    underdiag: array, diag: array, overdiag: array
+) -> tuple[vector, vector]:
+    n = len(diag)
+    u = np.zeros(n, dtype=np.float64)
+    l = np.zeros(n - 1, dtype=np.float64)
 
-    for i in range(1, N):
-        l[i - 1] = underdiag[i - 1] / diag[i - 1]
-        diag[i] -= l[i - 1] * underdiag[i - 1]
+    u[0] = diag[0]
 
-    return l, diag
+    for i in range(1, n):
+        l[i - 1] = underdiag[i - 1] / u[i - 1]
+        u[i] = diag[i] - l[i - 1] * overdiag[i - 1]
+
+    return l, u
 
 
-def LU_solve_tridiagonal(l: vector, u: vector, b: vector, overdiag: array) -> vector:
-    N = len(u)
+def LU_solve_tridiagonal(overdiag: array, l: vector, u: vector, b: vector) -> vector:
+    n = len(b)
 
-    # backsubstitution
-    x = np.zeros(N)
-    x[-1] = b[-1] / u[-1]
-    for i in range(N - 2, -1, -1):
-        x[i] = (b[i] - overdiag[i] * x[i + 1]) / u[i]
+    # Forward substitution (Ly = b)
+    y = np.zeros(n, dtype=float)
+    y[0] = b[0]
+    for i in range(1, n):
+        y[i] = b[i] - l[i - 1] * y[i - 1]
+
+    # Backsubstitution (Ux = y)
+    x = np.zeros(n, dtype=float)
+    x[-1] = y[-1] / u[-1]
+    for i in range(n - 2, -1, -1):
+        x[i] = (y[i] - overdiag[i] * x[i + 1]) / u[i]
 
     return x
 
@@ -37,8 +48,8 @@ def calc_eigenvector(
     diag: array,
     underdiag: array,
     overdiag: array,
-    u: vector,
-    v: vector,
+    u_sm: vector,
+    v_sm: vector,
     limit: int,
     eps: float,
 ):
@@ -46,15 +57,15 @@ def calc_eigenvector(
     y = np.ones(N, dtype=np.float64)
     y /= np.linalg.norm(y)
 
-    L, U = LU_factor_tridiagonal(diag, underdiag)
+    l, u = LU_factor_tridiagonal(underdiag, diag, overdiag)
 
     for i in range(limit):
-        z = LU_solve_tridiagonal(L, U, y, overdiag)
-        q = LU_solve_tridiagonal(L, U, u, overdiag)
-        z_k = sherman_morrison(z, v, q)
+        p = LU_solve_tridiagonal(overdiag, l, u, y)
+        q = LU_solve_tridiagonal(overdiag, l, u, u_sm)
+        z_k = sherman_morrison(p, v_sm, q)
         y_new = z_k / np.linalg.norm(z_k)
 
-        if np.linalg.norm(y_new - y) <= eps:
+        if np.linalg.norm(np.abs(y_new) - np.abs(y)) <= eps:
             return (y_new, i + 1)
 
         y = y_new
