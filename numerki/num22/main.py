@@ -32,13 +32,13 @@ def hessian(x: vector, lam: num) -> matrix:
 
 
 def levenberg_marquardt(
-    x_0: vector, lambda_0: num, lambda_max=1e12, eps=1e-8, limit=5000
+    x_0: vector, lambda_0: num, lambda_max=1e12, eps=1e-9, limit=5000
 ):
     x_k = x_0.copy()
-    lam = lambda_0
     path = [x_0]
 
     for i in range(limit):
+        lam = lambda_0
         grad = gradient(x_k)
         f_xk = f(x_k)
 
