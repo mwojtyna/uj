@@ -35,13 +35,14 @@ def hessian(x, lam):
     H = np.zeros((n, n))
 
     for i in range(n - 1):
-        H[i, i] += 800 * x[i] ** 2 - 400 * (x[i + 1] - x[i] ** 2) + lam
+        H[i, i] += 800 * x[i] ** 2 - 400 * (x[i + 1] - x[i] ** 2)
+        H[i, i] *= 1 + lam
         H[i, i + 1] = -400 * x[i]
         H[i + 1, i] = -400 * x[i]
         H[i + 1, i + 1] += 200
 
     H[0, 0] += 2
-    H[-1, -1] += lam
+    H[-1, -1] *= 1 + lam
 
     return H
 
@@ -83,8 +84,11 @@ def main():
 
     for i in range(5):
         x = np.random.uniform(-2, 2, size=4)
-        x_min, steps = levenberg_marquardt(x, 1 / 1024)
-        print(f"start={x}, minimum={x_min}, kroki={steps}")
+        try:
+            x_min, steps = levenberg_marquardt(x, 1 / 1024)
+            print(f"start={x}, minimum={x_min}, kroki={steps}")
+        except:
+            print(f"start={x}, minimum nie znalezione")
 
 
 if __name__ == "__main__":

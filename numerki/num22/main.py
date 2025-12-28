@@ -76,7 +76,7 @@ def plot_paths(paths):
 
     levels = np.logspace(-1, 5, 20)
     # Użycie mapy kolorów 'gray' i większej przezroczystości
-    cp = plt.contour(X, Y, Z, levels=levels, cmap="gray", alpha=0.3)
+    plt.contour(X, Y, Z, levels=levels, cmap="gray", alpha=0.3)
     # Usunięcie paska kolorów
 
     for i, path in enumerate(paths):
@@ -118,9 +118,12 @@ def main():
     for i in range(12):
         x: vector = np.random.uniform(-2, 2, size=2)
 
-        x_min, path = levenberg_marquardt(x, 1 / 1024)
-        print(f"start={x}, minimum={x_min}, kroki={len(path)}")
-        paths.append(path)
+        try:
+            x_min, path = levenberg_marquardt(x, 1 / 1024)
+            print(f"start={x}, minimum={x_min}, kroki={len(path)}")
+            paths.append(path)
+        except:
+            print(f"start={x}, minimum nie znalezione")
 
     plot_paths(paths)
 
