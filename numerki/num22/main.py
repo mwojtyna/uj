@@ -24,8 +24,8 @@ def hessian(x: vector, lam: num) -> matrix:
     h_22 = 200
     return np.array(
         [
-            [lam + h_11, h_12],
-            [h_12, lam + h_22],
+            [(1 + lam) * h_11, h_12],
+            [h_12, (1 + lam) * h_22],
         ],
         dtype=num,
     )
