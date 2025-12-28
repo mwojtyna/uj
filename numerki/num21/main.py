@@ -14,7 +14,7 @@ def lapunov_analytical(r: num):
     return np.log(2 * r)
 
 
-def lapunov_numerical(r: num, N=100_000):
+def lapunov_numerical(r: num, N=1_000_000):
     total = 0
     for _ in range(N):
         total += np.log(2 * r)
