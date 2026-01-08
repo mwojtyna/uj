@@ -58,7 +58,7 @@ public class MultithreadedIntegaration implements ParallelIntegaration {
             try {
                 thread.join();
             } catch (InterruptedException e) {
-                throw new RuntimeException("CHUJ");
+                throw new RuntimeException(e);
             }
         }
 
