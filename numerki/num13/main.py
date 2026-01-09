@@ -1,11 +1,15 @@
 import numpy as np
+from numpy.typing import NDArray
+
+num = np.float64
+array = NDArray[num]
 
 
-def f(x: float) -> float:
+def f(x: num) -> num:
     return np.sin(np.pi * (1 + np.sqrt(x)) / (1 + x * x)) * np.exp(-x)
 
 
-def trapezoidal_method(a: float, b: float, h: float) -> float:
+def trapezoidal_method(a: num, b: num, h: num) -> num:
     sum = f(a) / 2 + f(b) / 2
     while a + h < b:
         sum += f(a + h)
@@ -14,7 +18,7 @@ def trapezoidal_method(a: float, b: float, h: float) -> float:
     return sum
 
 
-def romberg(a: float, b: float, eps: float, limit: int) -> tuple[list[float], int]:
+def romberg(a: num, b: num, eps: num, limit: int) -> tuple[array, int]:
     # Wynik zawierający element diagonalny tabelki Romberga w każdym wierszu
     diag = []
 

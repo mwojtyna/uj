@@ -1,15 +1,20 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from numpy.typing import NDArray
+
+
+num = np.float64
+array = NDArray[num]
 
 A = -5
 B = 5
 
 
-def f(x: float) -> float:
+def f(x: num) -> num:
     return np.cos((1 + x) / (x * x + 0.04)) * np.exp(-(x * x))
 
 
-def trapezoidal_method(a: float, b: float, h: float) -> float:
+def trapezoidal_method(a: num, b: num, h: num) -> num:
     n = int((b - a) / h)
     sum = f(a) / 2 + f(b) / 2
     for _ in range(1, n):
@@ -19,7 +24,7 @@ def trapezoidal_method(a: float, b: float, h: float) -> float:
     return sum
 
 
-def romberg(a: float, b: float, eps: float = 1e-8, limit: int = 25) -> float:
+def romberg(a: num, b: num, eps: num = 1e-8, limit: int = 25) -> num:
     h = (b - a) / 2
 
     # indeksy odwrócone: A[k][n] = A[n][k] z wykładu
@@ -45,7 +50,7 @@ def romberg(a: float, b: float, eps: float = 1e-8, limit: int = 25) -> float:
     return prev[-1]
 
 
-def F(x: float):
+def F(x: num):
     limit = romberg(A, B)
 
     if A < x < B:
