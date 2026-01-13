@@ -4,7 +4,6 @@ import java.util.function.Function;
 public class MultithreadedIntegaration implements ParallelIntegaration {
     private Function<Double, Double> f;
     private int threadsNum = 0;
-
     private final AtomicInteger nextIndex = new AtomicInteger(0);
     private double result = 0;
 
@@ -43,12 +42,13 @@ public class MultithreadedIntegaration implements ParallelIntegaration {
         this.nextIndex.set(0);
 
         double dx = (range.max() - range.min()) / subintervals;
+        int intervalSize = Math.max(1, subintervals / (this.threadsNum * 20));
 
-        CalcIntegralPoint[] calculators = new CalcIntegralPoint[this.threadsNum];
+        CalcIntegralPoint[] workers = new CalcIntegralPoint[this.threadsNum];
         Thread[] threads = new Thread[this.threadsNum];
         for (int i = 0; i < threads.length; i++) {
-            calculators[i] = new CalcIntegralPoint(this.nextIndex, this.f, dx, range.min(), subintervals);
-            threads[i] = new Thread(calculators[i]);
+            workers[i] = new CalcIntegralPoint(dx, range.min(), intervalSize, subintervals);
+            threads[i] = new Thread(workers[i]);
         }
 
         for (var thread : threads) {
@@ -62,7 +62,7 @@ public class MultithreadedIntegaration implements ParallelIntegaration {
             }
         }
 
-        for (var calculator : calculators) {
+        for (var calculator : workers) {
             this.result += calculator.getSum();
         }
     }
@@ -76,38 +76,41 @@ public class MultithreadedIntegaration implements ParallelIntegaration {
     public double getResult() {
         return this.result;
     }
-}
 
-class CalcIntegralPoint implements Runnable {
-    private final AtomicInteger nextIndex;
-    private final Function<Double, Double> f;
-    private final double dx;
-    private final double rangeMin;
-    private final int N;
-    private double sum;
+    class CalcIntegralPoint implements Runnable {
+        private final double dx;
+        private final double rangeMin;
+        private final int intervalSize;
+        private final int N;
+        private double sum;
 
-    public CalcIntegralPoint(AtomicInteger nextIndex, Function<Double, Double> f, double dx, double rangeMin, int N) {
-        this.nextIndex = nextIndex;
-        this.f = f;
-        this.dx = dx;
-        this.rangeMin = rangeMin;
-        this.N = N;
-    }
+        public CalcIntegralPoint(double dx, double rangeMin, int intervalSize, int N) {
+            this.dx = dx;
+            this.rangeMin = rangeMin;
+            this.intervalSize = intervalSize;
+            this.N = N;
+        }
 
-    public double getSum() {
-        return this.sum;
-    }
+        public double getSum() {
+            return this.sum;
+        }
 
-    @Override
-    public void run() {
-        while (true) {
-            int i = this.nextIndex.getAndIncrement();
-            if (i >= N) {
-                break;
+        @Override
+        public void run() {
+            while (true) {
+                int start = nextIndex.getAndAdd(intervalSize);
+                if (start >= N) {
+                    break;
+                }
+
+                int end = Math.min(start + this.intervalSize, N);
+                for (int i = start; i < end; i++) {
+                    double mid = this.rangeMin + i * this.dx;
+                    double dy = f.apply(mid);
+                    this.sum += this.dx * dy;
+                }
             }
-            double x = this.rangeMin + (i + 0.5) * dx;
-            double dy = this.f.apply(x);
-            this.sum += this.dx * dy;
         }
     }
 }
+
