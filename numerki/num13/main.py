@@ -36,8 +36,9 @@ def romberg(a: num, b: num, eps: num, limit: int) -> tuple[array, int]:
         cur = [trapezoidal_method(a, b, h)]
 
         # Wypełnienie wiersza korzystając ze wzoru na A[k][n]
+        factor = 1
         for n in range(1, k + 1):
-            factor = 4**n
+            factor *= 4
             cur.append((factor * cur[n - 1] - prev[n - 1]) / (factor - 1))
 
         diag.append(cur[k])
@@ -55,9 +56,8 @@ def main():
 
     # e^(-A) < 10^(-7) => A > 16.1181
     diag, steps = romberg(0, 17, 1e-7, 25)
-    for n in diag:
-        print(n)
-    print(steps)
+    for i, n in enumerate(diag):
+        print(i, n)
 
 
 if __name__ == "__main__":
