@@ -38,8 +38,9 @@ def romberg(a: num, b: num, eps: num = 1e-8, limit: int = 25) -> num:
         cur = [trapezoidal_method(a, b, h)]
 
         # Wypełnienie wiersza korzystając ze wzoru na A[k][n]
+        factor = 1
         for n in range(1, k + 1):
-            factor = 4**n
+            factor *= 4
             cur.append((factor * cur[n - 1] - prev[n - 1]) / (factor - 1))
 
         if np.abs(cur[k] - prev[k - 1]) <= eps:
@@ -50,9 +51,7 @@ def romberg(a: num, b: num, eps: num = 1e-8, limit: int = 25) -> num:
     return prev[-1]
 
 
-def F(x: num):
-    limit = romberg(A, B)
-
+def F(x: num, limit: num):
     if A < x < B:
         return romberg(A, x)
     elif x <= A:
@@ -68,11 +67,11 @@ def main():
     # A < -4.03773
     # B > 4.03773
 
-    limit = F(B)
+    limit = romberg(A, B)
     print("Granica w ∞:", limit)
 
     nodes = np.linspace(A, B, 1000)
-    values = [F(x) for x in nodes]
+    values = [F(x, limit) for x in nodes]
 
     plt.plot(nodes, values)
     plt.xlabel("x")
