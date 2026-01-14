@@ -15,7 +15,7 @@ public class NetLinearRegression implements NetConnection {
     DecimalFormat df = new DecimalFormat();
     DecimalFormatSymbols dotDecimal = new DecimalFormatSymbols();
     DecimalFormatSymbols commaDecimal = new DecimalFormatSymbols();
-    BufferedWriter writer;
+    PrintWriter writer;
 
     public static void main(String[] args) {
         NetLinearRegression reg = new NetLinearRegression();
@@ -32,7 +32,7 @@ public class NetLinearRegression implements NetConnection {
         try (Socket sock = new Socket(host, port)) {
             System.out.println("Connected to " + host + ":" + port);
             BufferedReader reader = new BufferedReader(new InputStreamReader(sock.getInputStream()));
-            this.writer = new BufferedWriter(new OutputStreamWriter(sock.getOutputStream()));
+            this.writer = new PrintWriter(new OutputStreamWriter(sock.getOutputStream()), true);
 
             String line;
             long N = -1;
@@ -112,8 +112,7 @@ public class NetLinearRegression implements NetConnection {
     }
 
     private void write(String s) throws IOException {
-        this.writer.write(s + "\n");
-        this.writer.flush();
-        System.out.println("Wrote '" + s + "\\n" + "'");
+        this.writer.println(s);
+        System.out.println("Wrote '" + s + "'");
     }
 }
