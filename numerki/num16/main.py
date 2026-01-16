@@ -21,7 +21,6 @@ def jacobian(x: vector) -> matrix:
 
 
 def newton_method(x_0: vector, eps: float = 1e-8, limit: int = 1000):
-    N = 2
     x = x_0.copy()
 
     for i in range(limit):
