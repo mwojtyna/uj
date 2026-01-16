@@ -48,7 +48,7 @@ def golden_ratio(a: num, b: num, c: num, limit=100, eps=1e-6):
         else:
             d = b + w * abs(c - b)
 
-        if abs(c - a) < eps:
+        if abs(c - a) < eps * (abs(b) + abs(d)):
             return d, i + 1
 
         fd = f(d)
@@ -117,12 +117,14 @@ def brent(a: num, b: num, c: num, limit=100, eps=1e-6):
 
 def main():
     a, b, c = initial_interval(0)
+    print("Punkty", a, b, c)
     golden_value, golden_steps = golden_ratio(a, b, c)
     print(f"Złoty podział: {golden_value} po {golden_steps} krokach")
     brent_value, brent_steps = brent(a, b, c)
     print(f"Brent: {brent_value} po {brent_steps} krokach")
 
     a, b, c = initial_interval(-2)
+    print("\nPunkty", a, b, c)
     golden_value, golden_steps = golden_ratio(a, b, c)
     print(f"Złoty podział: {golden_value} po {golden_steps} krokach")
     brent_value, brent_steps = brent(a, b, c)
