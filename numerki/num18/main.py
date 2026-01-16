@@ -93,6 +93,7 @@ def brent(a: num, b: num, c: num, limit=100, eps=1e-6):
 
 def main():
     a, b, c = initial_interval(0)
+    print("Punkty: ", a, b, c)
     value, steps = brent(a, b, c)
     print(f"{value} po {steps} krokach")
 
