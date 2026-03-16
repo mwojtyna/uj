@@ -1,7 +1,8 @@
-#include <cmath>
+#include <cerrno>
 #include <cstdint>
+#include <cstring>
+#include <fstream>
 #include <iostream>
-#include <numeric>
 #include <random>
 #include <string>
 #include <utility>
@@ -18,6 +19,7 @@ constexpr num_t TASK_TIME_HC_LO = 1;
 constexpr num_t TASK_TIME_HC_HI = 200;
 constexpr num_t TASK_TIME_PP_LO = 201;
 constexpr num_t TASK_TIME_PP_HI = 500;
+constexpr num_t TASK_UNAVILABLE_CHANCE_PERCENT = 1;
 
 constexpr num_t BUS_CONN_COST_LO = 1;
 constexpr num_t BUS_CONN_COST_HI = 50;
@@ -98,7 +100,10 @@ Output generateDag(const Input& in) {
             } else if (out.processors[j].type == ProcessorType::HC) {
                 out.task_processor_time[i][j] = random_range(TASK_TIME_HC_LO, TASK_TIME_HC_HI);
             }
-            // TODO: chance to have -1
+
+            if (random_range(1, 100) <= TASK_UNAVILABLE_CHANCE_PERCENT) {
+                out.task_processor_time[i][j] = -1;
+            }
         }
     }
     for (int i = 0; i < in.tasks_n; i++) {
@@ -136,6 +141,64 @@ Output generateDag(const Input& in) {
     return out;
 }
 
+void writeFile(std::string filename, Output& out) {
+    std::ofstream file;
+    file.exceptions(std::ios::badbit | std::ios::failbit);
+    file.open(filename);
+
+    file << "@tasks " << out.adj_list.size() << '\n';
+    for (auto i = 0; i < out.adj_list.size(); i++) {
+        file << i << ' ' << out.adj_list[i].size();
+
+        for (auto& [_, edge] : out.adj_list[i]) {
+            auto& [node, weight] = edge;
+            file << ' ' << node << '(' << weight << ')';
+        }
+        file << '\n';
+    }
+    file << '\n';
+
+    file << "@proc " << out.processors.size() << '\n';
+    for (const Processor& proc : out.processors) {
+        num_t type = proc.type == ProcessorType::HC ? 0 : 1;
+        file << proc.cost << ' ' << 0 << ' ' << type << '\n';
+    }
+    file << '\n';
+
+    file << "@times\n";
+    for (auto i = 0; i < out.adj_list.size(); i++) {
+        for (auto j = 0; j < out.processors.size(); j++) {
+            file << out.task_processor_time[i][j] << ' ';
+        }
+        file << '\n';
+    }
+    file << '\n';
+
+    file << "@cost\n";
+    for (auto i = 0; i < out.adj_list.size(); i++) {
+        for (auto j = 0; j < out.processors.size(); j++) {
+            file << out.task_processor_cost[i][j] << ' ';
+        }
+        file << '\n';
+    }
+    file << '\n';
+
+    file << "@comm\n";
+    for (auto i = 0; i < out.buses.size(); i++) {
+        const Bus& bus = out.buses[i];
+        file << "chan" << i << ' ' << bus.cost << ' ' << bus.bandwidth;
+
+        for (bool connected : bus.connected_to_processor) {
+            file << ' ' << (int)connected;
+        }
+
+        file << '\n';
+    }
+    file << '\n';
+
+    file.close();
+}
+
 int main(int argc, char* argv[]) {
     if (argc != 6) {
         std::cout << "Złe argumenty! Poprawne argumenty:\n";
@@ -152,6 +215,12 @@ int main(int argc, char* argv[]) {
     input.outfile = argv[5];
 
     Output output = generateDag(input);
-
-    return 0;
+    try {
+        writeFile(input.outfile, output);
+        std::cout << "Pomyślnie zapisano dane do pliku\n";
+        return 0;
+    } catch (std::ios_base::failure e) {
+        std::cout << "Błąd zapisywania do pliku:\n\t" << std::strerror(errno) << '\n';
+        return 1;
+    }
 }
