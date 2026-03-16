@@ -9,13 +9,15 @@
 
 using num_t = std::int32_t;
 
-constexpr num_t PROC_HC_PRICE_LO = 100;
-constexpr num_t PROC_HC_PRICE_HI = 300;
-constexpr num_t PROC_PP_PRICE_LO = 300;
-constexpr num_t PROC_PP_PRICE_HI = 1000;
+constexpr num_t PROC_PP_PRICE_LO = 100;
+constexpr num_t PROC_PP_PRICE_HI = 300;
+constexpr num_t PROC_HC_PRICE_LO = 300;
+constexpr num_t PROC_HC_PRICE_HI = 1000;
 
-constexpr num_t TASK_TIME_LO = 1;
-constexpr num_t TASK_TIME_HI = 500;
+constexpr num_t TASK_TIME_HC_LO = 1;
+constexpr num_t TASK_TIME_HC_HI = 200;
+constexpr num_t TASK_TIME_PP_LO = 201;
+constexpr num_t TASK_TIME_PP_HI = 500;
 
 constexpr num_t BUS_CONN_COST_LO = 1;
 constexpr num_t BUS_CONN_COST_HI = 50;
@@ -91,13 +93,21 @@ Output generateDag(const Input& in) {
 
     for (int i = 0; i < in.tasks_n; i++) {
         for (int j = 0; j < proc_n; j++) {
-            out.task_processor_time[i][j] = random_range(TASK_TIME_LO, TASK_TIME_HI);
+            if (out.processors[j].type == ProcessorType::PP) {
+                out.task_processor_time[i][j] = random_range(TASK_TIME_PP_LO, TASK_TIME_PP_HI);
+            } else if (out.processors[j].type == ProcessorType::HC) {
+                out.task_processor_time[i][j] = random_range(TASK_TIME_HC_LO, TASK_TIME_HC_HI);
+            }
             // TODO: chance to have -1
         }
     }
     for (int i = 0; i < in.tasks_n; i++) {
         for (int j = 0; j < proc_n; j++) {
-            out.task_processor_cost[i][j] = random_range(TASK_TIME_LO, TASK_TIME_HI);
+            if (out.processors[j].type == ProcessorType::PP) {
+                out.task_processor_cost[i][j] = random_range(PROC_PP_PRICE_LO, PROC_PP_PRICE_HI);
+            } else if (out.processors[j].type == ProcessorType::HC) {
+                out.task_processor_cost[i][j] = random_range(PROC_HC_PRICE_LO, PROC_HC_PRICE_HI);
+            }
         }
     }
 
