@@ -1,7 +1,10 @@
+#include <cmath>
 #include <cstdint>
 #include <iostream>
+#include <numeric>
 #include <random>
 #include <string>
+#include <utility>
 #include <vector>
 
 using num_t = std::int32_t;
@@ -18,6 +21,9 @@ constexpr num_t BUS_CONN_COST_LO = 1;
 constexpr num_t BUS_CONN_COST_HI = 50;
 constexpr num_t BUS_BANDWIDTH_LO = 1;
 constexpr num_t BUS_BANDWIDTH_HI = 10;
+
+constexpr num_t WEIGHT_LO = 1;
+constexpr num_t WEIGHT_HI = 50;
 
 std::random_device rand_dev;
 std::mt19937 generator(rand_dev());
@@ -61,7 +67,7 @@ struct Output {
         }
     }
 
-    std::vector<std::vector<Edge>> adj_list; // lista sąsiedztwa i-tego wierzchołka
+    std::vector<std::unordered_map<num_t, Edge>> adj_list; // lista sąsiedztwa i-tego wierzchołka
     std::vector<Processor> processors;
     std::vector<std::vector<num_t>>
         task_processor_time; // czas wykonania i-tego zadania na j-tym procesorze
@@ -70,32 +76,32 @@ struct Output {
     std::vector<Bus> buses;
 };
 
-Output generateDag(const Input& input) {
-    Output out(input);
-    int proc_n = input.hcs_n + input.pps_n;
+Output generateDag(const Input& in) {
+    Output out(in);
+    int proc_n = in.hcs_n + in.pps_n;
 
-    for (int i = 0; i < input.hcs_n; i++) {
-        out.processors.emplace_back(Processor{
-            .cost = random_range(PROC_HC_PRICE_LO, PROC_HC_PRICE_HI), .type = ProcessorType::HC});
+    for (int i = 0; i < in.hcs_n; i++) {
+        out.processors.push_back(Processor{.cost = random_range(PROC_HC_PRICE_LO, PROC_HC_PRICE_HI),
+                                           .type = ProcessorType::HC});
     }
-    for (int i = 0; i < input.pps_n; i++) {
-        out.processors.emplace_back(Processor{
-            .cost = random_range(PROC_PP_PRICE_LO, PROC_PP_PRICE_HI), .type = ProcessorType::PP});
+    for (int i = 0; i < in.pps_n; i++) {
+        out.processors.push_back(Processor{.cost = random_range(PROC_PP_PRICE_LO, PROC_PP_PRICE_HI),
+                                           .type = ProcessorType::PP});
     }
 
-    for (int i = 0; i < input.tasks_n; i++) {
+    for (int i = 0; i < in.tasks_n; i++) {
         for (int j = 0; j < proc_n; j++) {
             out.task_processor_time[i][j] = random_range(TASK_TIME_LO, TASK_TIME_HI);
             // TODO: chance to have -1
         }
     }
-    for (int i = 0; i < input.tasks_n; i++) {
+    for (int i = 0; i < in.tasks_n; i++) {
         for (int j = 0; j < proc_n; j++) {
             out.task_processor_cost[i][j] = random_range(TASK_TIME_LO, TASK_TIME_HI);
         }
     }
 
-    for (int i = 0; i < input.buses_n; i++) {
+    for (int i = 0; i < in.buses_n; i++) {
         out.buses[i].cost = random_range(BUS_CONN_COST_LO, BUS_CONN_COST_HI);
         out.buses[i].bandwidth = random_range(BUS_BANDWIDTH_LO, BUS_BANDWIDTH_HI);
 
@@ -103,11 +109,19 @@ Output generateDag(const Input& input) {
         // Zawsze połącz do przynajmniej jednego
         out.buses[i].connected_to_processor[random_range(0, proc_n - 1)] = true;
         for (int j = 0; j < proc_n; j++) {
-            out.buses[i].connected_to_processor[j] = (random_range(1, input.buses_n) == 1);
+            out.buses[i].connected_to_processor[j] = (random_range(1, in.buses_n) == 1);
         }
     }
 
-    std::vector<num_t> prev{0};
+    // Always rooted at 0
+    for (int cur = 1; cur < in.tasks_n; cur++) {
+        num_t trials = random_range(1, 3);
+        for (int i = 0; i < trials; i++) {
+            num_t parent = random_range(0, cur - 1);
+            num_t weight = random_range(WEIGHT_LO, WEIGHT_HI);
+            out.adj_list[parent][cur] = std::make_pair(cur, weight);
+        }
+    }
 
     return out;
 }
