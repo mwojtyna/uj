@@ -38,6 +38,7 @@ num_t random_range(num_t range_from, num_t range_to) {
 
 struct Input {
     num_t tasks_n, hcs_n, pps_n, buses_n;
+    bool unweighted_edges;
     std::string outfile;
 };
 
@@ -80,7 +81,7 @@ struct Output {
     std::vector<Bus> buses;
 };
 
-Output generateDag(const Input& in) {
+Output generate_dag(const Input& in) {
     Output out(in);
     int proc_n = in.hcs_n + in.pps_n;
 
@@ -133,7 +134,7 @@ Output generateDag(const Input& in) {
         num_t trials = random_range(1, 3);
         for (int i = 0; i < trials; i++) {
             num_t parent = random_range(0, cur - 1);
-            num_t weight = random_range(WEIGHT_LO, WEIGHT_HI);
+            num_t weight = in.unweighted_edges ? 0 : random_range(WEIGHT_LO, WEIGHT_HI);
             out.adj_list[parent][cur] = std::make_pair(cur, weight);
         }
     }
@@ -141,7 +142,7 @@ Output generateDag(const Input& in) {
     return out;
 }
 
-void writeFile(std::string filename, Output& out) {
+void write_file(std::string filename, Output& out) {
     std::ofstream file;
     file.exceptions(std::ios::badbit | std::ios::failbit);
     file.open(filename);
@@ -200,10 +201,10 @@ void writeFile(std::string filename, Output& out) {
 }
 
 int main(int argc, char* argv[]) {
-    if (argc != 6) {
+    if (argc != 7) {
         std::cout << "Złe argumenty! Poprawne argumenty:\n";
-        std::cout
-            << "liczba_zadań liczba_procesorów_hc liczba_procesorów_pp liczba_szyn plik_wyjściowy";
+        std::cout << "liczba_zadań liczba_procesorów_hc liczba_procesorów_pp liczba_szyn "
+                     "etykiety_0 plik_wyjściowy";
         return 1;
     }
 
@@ -212,11 +213,12 @@ int main(int argc, char* argv[]) {
     input.hcs_n = std::stoi(argv[2]);
     input.pps_n = std::stoi(argv[3]);
     input.buses_n = std::stoi(argv[4]);
-    input.outfile = argv[5];
+    input.unweighted_edges = static_cast<bool>(std::stoi(argv[5]));
+    input.outfile = argv[6];
 
-    Output output = generateDag(input);
+    Output output = generate_dag(input);
     try {
-        writeFile(input.outfile, output);
+        write_file(input.outfile, output);
         std::cout << "Pomyślnie zapisano dane do pliku\n";
         return 0;
     } catch (std::ios_base::failure e) {
