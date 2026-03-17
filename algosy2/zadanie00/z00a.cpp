@@ -11,7 +11,7 @@ void printResult(const std::string& testName, bool condition) {
 
 void testInsertContains() {
     std::cout << "\n=== testInsertContains ===\n";
-    SimpleSet s(10);
+    SetSimple s(10);
 
     s.insert(3);
     s.insert(7);
@@ -23,7 +23,7 @@ void testInsertContains() {
 
 void testRemove() {
     std::cout << "\n=== testRemove ===\n";
-    SimpleSet s(10);
+    SetSimple s(10);
 
     s.insert(4);
     s.remove(4);
@@ -36,7 +36,7 @@ void testRemove() {
 
 void testEquality() {
     std::cout << "\n=== testEquality ===\n";
-    SimpleSet a(10), b(10);
+    SetSimple a(10), b(10);
 
     a.insert(2);
     a.insert(5);
@@ -52,7 +52,7 @@ void testEquality() {
 
 void testSum() {
     std::cout << "\n=== testSum (union) ===\n";
-    SimpleSet a(10), b(10);
+    SetSimple a(10), b(10);
 
     a.insert(1);
     a.insert(3);
@@ -60,7 +60,7 @@ void testSum() {
     b.insert(3);
     b.insert(4);
 
-    SimpleSet c = a.sum(b);
+    SetSimple c = a.sum(b);
 
     printResult("union contains 1", c.contains(1));
     printResult("union contains 3", c.contains(3));
@@ -70,7 +70,7 @@ void testSum() {
 
 void testIntersection() {
     std::cout << "\n=== testIntersection ===\n";
-    SimpleSet a(10), b(10);
+    SetSimple a(10), b(10);
 
     a.insert(1);
     a.insert(2);
@@ -80,7 +80,7 @@ void testIntersection() {
     b.insert(3);
     b.insert(4);
 
-    SimpleSet c = a.intersection(b);
+    SetSimple c = a.intersection(b);
 
     printResult("intersection contains 2", c.contains(2));
     printResult("intersection contains 3", c.contains(3));
@@ -90,7 +90,7 @@ void testIntersection() {
 
 void testDifference() {
     std::cout << "\n=== testDifference ===\n";
-    SimpleSet a(10), b(10);
+    SetSimple a(10), b(10);
 
     a.insert(1);
     a.insert(2);
@@ -98,7 +98,7 @@ void testDifference() {
 
     b.insert(2);
 
-    SimpleSet c = a.difference(b);
+    SetSimple c = a.difference(b);
 
     printResult("difference contains 1", c.contains(1));
     printResult("difference contains 3", c.contains(3));
@@ -107,7 +107,7 @@ void testDifference() {
 
 void testEdgeCases() {
     std::cout << "\n=== testEdgeCases ===\n";
-    SimpleSet s(5);
+    SetSimple s(5);
 
     // insert same element multiple times
     s.insert(2);
@@ -122,17 +122,17 @@ void testEdgeCases() {
     printResult("contains max index", s.contains(4));
 
     // full set
-    SimpleSet full(3);
+    SetSimple full(3);
     full.insert(0);
     full.insert(1);
     full.insert(2);
 
-    SimpleSet empty(3);
+    SetSimple empty(3);
 
-    SimpleSet diff = full.difference(full);
+    SetSimple diff = full.difference(full);
     printResult("full - full = empty", !diff.contains(0) && !diff.contains(1) && !diff.contains(2));
 
-    SimpleSet sum = full.sum(empty);
+    SetSimple sum = full.sum(empty);
     printResult("full U empty = full", sum == full);
 }
 
@@ -145,7 +145,7 @@ double timePerOperation(const std::chrono::high_resolution_clock::time_point& st
 std::vector<double> benchmark(num_t N) {
     std::vector<double> row = {static_cast<double>(N)};
 
-    SimpleSet a(N), b(N);
+    SetSimple a(N), b(N);
 
     // random generator
     std::mt19937 rng(42);
@@ -166,19 +166,19 @@ std::vector<double> benchmark(num_t N) {
 
     // union
     start = std::chrono::high_resolution_clock::now();
-    SimpleSet u = a.sum(b);
+    SetSimple u = a.sum(b);
     end = std::chrono::high_resolution_clock::now();
     row.push_back(timePerOperation(start, end));
 
     // intersection
     start = std::chrono::high_resolution_clock::now();
-    SimpleSet inter = a.intersection(b);
+    SetSimple inter = a.intersection(b);
     end = std::chrono::high_resolution_clock::now();
     row.push_back(timePerOperation(start, end));
 
     // difference
     start = std::chrono::high_resolution_clock::now();
-    SimpleSet diff = a.difference(b);
+    SetSimple diff = a.difference(b);
     end = std::chrono::high_resolution_clock::now();
     row.push_back(timePerOperation(start, end));
 

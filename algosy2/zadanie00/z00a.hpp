@@ -5,12 +5,12 @@
 
 using num_t = size_t;
 
-class SimpleSet {
+class SetSimple {
 public:
-    SimpleSet(num_t N) : m_Array(N), m_Size(N) {}
+    SetSimple(num_t N) : m_Array(N), m_Size(N) {}
 
-    SimpleSet sum(const SimpleSet& b) {
-        auto res = SimpleSet(this->m_Array.size());
+    SetSimple sum(const SetSimple& b) {
+        auto res = SetSimple(this->m_Array.size());
 
         for (auto i = 0; i < m_Size; i++) {
             res.m_Array[i] = this->m_Array[i] || b.m_Array[i];
@@ -19,8 +19,8 @@ public:
         return res;
     }
 
-    SimpleSet intersection(const SimpleSet& b) {
-        auto res = SimpleSet(this->m_Array.size());
+    SetSimple intersection(const SetSimple& b) {
+        auto res = SetSimple(this->m_Array.size());
 
         for (auto i = 0; i < m_Size; i++) {
             res.m_Array[i] = this->m_Array[i] && b.m_Array[i];
@@ -29,8 +29,8 @@ public:
         return res;
     }
 
-    SimpleSet difference(const SimpleSet& b) {
-        auto res = SimpleSet(this->m_Array.size());
+    SetSimple difference(const SetSimple& b) {
+        auto res = SetSimple(this->m_Array.size());
 
         for (auto i = 0; i < m_Size; i++) {
             res.m_Array[i] = this->m_Array[i] && !b.m_Array[i];
@@ -39,7 +39,7 @@ public:
         return res;
     }
 
-    bool operator==(const SimpleSet& b) const {
+    bool operator==(const SetSimple& b) const {
         if (m_Size != b.m_Size) {
             return false;
         }

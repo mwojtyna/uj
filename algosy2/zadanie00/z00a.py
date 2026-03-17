@@ -73,7 +73,7 @@ def main():
 
     plt.xlabel("N")
     plt.ylabel("Time (ms)")
-    plt.title("SimpleSet Benchmark Results")
+    plt.title("SetSimple Benchmark Results")
     plt.legend()
     plt.grid(True, alpha=0.3)
     plt.tight_layout()
