@@ -34,7 +34,7 @@ def main():
         plt.plot(n_values, measurements, marker="o", label=name)
 
     plt.xlabel("N")
-    plt.ylabel("Time (ms)")
+    plt.ylabel("Time per operation (ms)")
     plt.title("SetSimple Benchmark Results")
     plt.legend()
     plt.grid(True, alpha=0.3)
