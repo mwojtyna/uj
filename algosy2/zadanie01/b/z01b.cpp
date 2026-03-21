@@ -1,5 +1,6 @@
 #include "./z01b.hpp"
 #include <chrono>
+#include <cstdint>
 #include <iomanip>
 #include <iostream>
 #include <random>
@@ -149,7 +150,7 @@ std::vector<double> benchmark(num_t N) {
 
     // random generator
     std::mt19937 rng(42);
-    std::uniform_int_distribution<num_t> dist(0, N - 1);
+    std::uniform_int_distribution<num_t> dist(0, UINT64_MAX);
 
     // measure insert
     auto start = std::chrono::high_resolution_clock::now();

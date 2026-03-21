@@ -1,4 +1,4 @@
-#include "./z00a.hpp"
+#include "./z01b.hpp"
 #include <chrono>
 #include <iomanip>
 #include <iostream>
@@ -11,7 +11,7 @@ void printResult(const std::string& testName, bool condition) {
 
 void testInsertContains() {
     std::cout << "\n=== testInsertContains ===\n";
-    SetSimple s(10);
+    SetLinked s;
 
     s.insert(3);
     s.insert(7);
@@ -23,7 +23,7 @@ void testInsertContains() {
 
 void testRemove() {
     std::cout << "\n=== testRemove ===\n";
-    SetSimple s(10);
+    SetLinked s;
 
     s.insert(4);
     s.remove(4);
@@ -36,7 +36,7 @@ void testRemove() {
 
 void testEquality() {
     std::cout << "\n=== testEquality ===\n";
-    SetSimple a(10), b(10);
+    SetLinked a, b;
 
     a.insert(2);
     a.insert(5);
@@ -52,7 +52,7 @@ void testEquality() {
 
 void testSum() {
     std::cout << "\n=== testSum (union) ===\n";
-    SetSimple a(10), b(10);
+    SetLinked a, b;
 
     a.insert(1);
     a.insert(3);
@@ -60,7 +60,7 @@ void testSum() {
     b.insert(3);
     b.insert(4);
 
-    SetSimple c = a.sum(b);
+    SetLinked c = a.sum(b);
 
     printResult("union contains 1", c.contains(1));
     printResult("union contains 3", c.contains(3));
@@ -70,7 +70,7 @@ void testSum() {
 
 void testIntersection() {
     std::cout << "\n=== testIntersection ===\n";
-    SetSimple a(10), b(10);
+    SetLinked a, b;
 
     a.insert(1);
     a.insert(2);
@@ -80,7 +80,7 @@ void testIntersection() {
     b.insert(3);
     b.insert(4);
 
-    SetSimple c = a.intersection(b);
+    SetLinked c = a.intersection(b);
 
     printResult("intersection contains 2", c.contains(2));
     printResult("intersection contains 3", c.contains(3));
@@ -90,7 +90,7 @@ void testIntersection() {
 
 void testDifference() {
     std::cout << "\n=== testDifference ===\n";
-    SetSimple a(10), b(10);
+    SetLinked a, b;
 
     a.insert(1);
     a.insert(2);
@@ -98,7 +98,7 @@ void testDifference() {
 
     b.insert(2);
 
-    SetSimple c = a.difference(b);
+    SetLinked c = a.difference(b);
 
     printResult("difference contains 1", c.contains(1));
     printResult("difference contains 3", c.contains(3));
@@ -107,7 +107,7 @@ void testDifference() {
 
 void testEdgeCases() {
     std::cout << "\n=== testEdgeCases ===\n";
-    SetSimple s(5);
+    SetLinked s;
 
     // insert same element multiple times
     s.insert(2);
@@ -122,17 +122,17 @@ void testEdgeCases() {
     printResult("contains max index", s.contains(4));
 
     // full set
-    SetSimple full(3);
+    SetLinked full;
     full.insert(0);
     full.insert(1);
     full.insert(2);
 
-    SetSimple empty(3);
+    SetLinked empty;
 
-    SetSimple diff = full.difference(full);
+    SetLinked diff = full.difference(full);
     printResult("full - full = empty", !diff.contains(0) && !diff.contains(1) && !diff.contains(2));
 
-    SetSimple sum = full.sum(empty);
+    SetLinked sum = full.sum(empty);
     printResult("full U empty = full", sum == full);
 }
 
@@ -145,7 +145,7 @@ double timePerOperation(const std::chrono::high_resolution_clock::time_point& st
 std::vector<double> benchmark(num_t N) {
     std::vector<double> row = {static_cast<double>(N)};
 
-    SetSimple a(N), b(N);
+    SetLinked a, b;
 
     // random generator
     std::mt19937 rng(42);
@@ -166,19 +166,19 @@ std::vector<double> benchmark(num_t N) {
 
     // union
     start = std::chrono::high_resolution_clock::now();
-    SetSimple u = a.sum(b);
+    SetLinked u = a.sum(b);
     end = std::chrono::high_resolution_clock::now();
     row.push_back(timePerOperation(start, end));
 
     // intersection
     start = std::chrono::high_resolution_clock::now();
-    SetSimple inter = a.intersection(b);
+    SetLinked inter = a.intersection(b);
     end = std::chrono::high_resolution_clock::now();
     row.push_back(timePerOperation(start, end));
 
     // difference
     start = std::chrono::high_resolution_clock::now();
-    SetSimple diff = a.difference(b);
+    SetLinked diff = a.difference(b);
     end = std::chrono::high_resolution_clock::now();
     row.push_back(timePerOperation(start, end));
 
@@ -203,8 +203,9 @@ std::vector<double> benchmark(num_t N) {
     start = std::chrono::high_resolution_clock::now();
     num_t hits = 0;
     for (num_t i = 0; i < N; i++) {
-        if (a.contains(dist(rng)))
+        if (a.contains(dist(rng))) {
             hits++;
+        }
     }
     end = std::chrono::high_resolution_clock::now();
     row.push_back(timePerOperation(start, end, N));
@@ -241,8 +242,7 @@ int main() {
     testRemove();
     testEdgeCases();
 
-    std::vector<num_t> sizes = {1'000,   5'000,     10'000,    25'000,    50'000,    100'000,
-                                500'000, 1'000'000, 2'000'000, 3'000'000, 4'000'000, 5'000'000};
+    std::vector<num_t> sizes = {1, 10, 100, 500, 1'000, 5'000, 10'000, 20'000, 30'000};
     std::vector<std::vector<double>> results;
 
     std::cout << "\nBenchmarking...\n";
