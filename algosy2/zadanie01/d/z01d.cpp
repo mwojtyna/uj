@@ -1,139 +1,86 @@
-#include "./z01b.hpp"
+#include "./z01d.hpp"
+
 #include <chrono>
 #include <iomanip>
 #include <iostream>
-#include <random>
 #include <string>
+#include <vector>
+
+constexpr char kSamples[][51] = {
+    "00000000000000000000000000000000000000000000000000",
+    "00000000000000000000000000000000000000000000000001",
+    "00000000000000000000000000000000000000000000000002",
+    "00000000000000000000000000000000000000000000000003",
+    "00000000000000000000000000000000000000000000000004",
+    "00000000000000000000000000000000000000000000000005",
+    "00000000000000000000000000000000000000000000000006",
+    "00000000000000000000000000000000000000000000000007",
+    "00000000000000000000000000000000000000000000000008",
+    "00000000000000000000000000000000000000000000000009",
+    "00000000000000000000000000000000000000000000000010",
+    "00000000000000000000000000000000000000000000000011",
+    "00000000000000000000000000000000000000000000000012",
+    "00000000000000000000000000000000000000000000000013",
+    "00000000000000000000000000000000000000000000000014",
+    "00000000000000000000000000000000000000000000000015",
+};
+constexpr num_t kSampleCount = sizeof(kSamples) / sizeof(kSamples[0]);
+
+char50_t sampleAt(num_t index) {
+    return kSamples[index % kSampleCount];
+}
 
 void printResult(const std::string& testName, bool condition) {
-    std::cout << testName << ": " << (condition ? "PASS" : "FAIL") << std::endl;
+    std::cout << testName << ": " << (condition ? "PASS" : "FAIL") << '\n';
 }
 
 void testInsertContains() {
     std::cout << "\n=== testInsertContains ===\n";
-    SetLinked s;
 
-    s.insert(3);
-    s.insert(7);
+    SetChar50 s;
+    s.insert(sampleAt(0));
+    s.insert(sampleAt(1));
+    s.insert(sampleAt(3));
+    s.insert(sampleAt(8));
 
-    printResult("contains(3)", s.contains(3));
-    printResult("contains(7)", s.contains(7));
-    printResult("contains(5) == false", !s.contains(5));
+    printResult("contains sample 0", s.contains(sampleAt(0)));
+    printResult("contains sample 1", s.contains(sampleAt(1)));
+    printResult("contains sample 3", s.contains(sampleAt(3)));
+    printResult("contains sample 8", s.contains(sampleAt(8)));
+    printResult("does not contain sample 5", !s.contains(sampleAt(5)));
 }
 
 void testRemove() {
     std::cout << "\n=== testRemove ===\n";
-    SetLinked s;
 
-    s.insert(4);
-    s.remove(4);
+    SetChar50 s;
+    s.insert(sampleAt(0));
+    s.insert(sampleAt(2));
+    s.insert(sampleAt(4));
+    s.remove(sampleAt(0));
 
-    printResult("removed element not present", !s.contains(4));
+    printResult("removed element is gone", !s.contains(sampleAt(0)));
+    printResult("other element remains", s.contains(sampleAt(2)));
+    printResult("second remaining element stays", s.contains(sampleAt(4)));
 
-    s.remove(8);
-    printResult("removing non-existing doesn't break", !s.contains(8));
+    s.remove(sampleAt(7));
+    printResult("removing missing element does not break set", s.contains(sampleAt(2)));
 }
 
-void testEquality() {
-    std::cout << "\n=== testEquality ===\n";
-    SetLinked a, b;
+void testSizeAndDuplicates() {
+    std::cout << "\n=== testSizeAndDuplicates ===\n";
 
-    a.insert(2);
-    a.insert(5);
+    SetChar50 s;
+    s.insert(sampleAt(4));
+    s.insert(sampleAt(4));
+    s.insert(sampleAt(6));
+    s.insert(sampleAt(9));
+    s.insert(sampleAt(9));
 
-    b.insert(2);
-    b.insert(5);
-
-    printResult("equal sets", a == b);
-
-    b.insert(7);
-    printResult("not equal after change", !(a == b));
-}
-
-void testSum() {
-    std::cout << "\n=== testSum (union) ===\n";
-    SetLinked a, b;
-
-    a.insert(1);
-    a.insert(3);
-
-    b.insert(3);
-    b.insert(4);
-
-    SetLinked c = a.sum(b);
-
-    printResult("union contains 1", c.contains(1));
-    printResult("union contains 3", c.contains(3));
-    printResult("union contains 4", c.contains(4));
-    printResult("union doesn't contain 2", !c.contains(2));
-}
-
-void testIntersection() {
-    std::cout << "\n=== testIntersection ===\n";
-    SetLinked a, b;
-
-    a.insert(1);
-    a.insert(2);
-    a.insert(3);
-
-    b.insert(2);
-    b.insert(3);
-    b.insert(4);
-
-    SetLinked c = a.intersection(b);
-
-    printResult("intersection contains 2", c.contains(2));
-    printResult("intersection contains 3", c.contains(3));
-    printResult("intersection doesn't contain 1", !c.contains(1));
-    printResult("intersection doesn't contain 4", !c.contains(4));
-}
-
-void testDifference() {
-    std::cout << "\n=== testDifference ===\n";
-    SetLinked a, b;
-
-    a.insert(1);
-    a.insert(2);
-    a.insert(3);
-
-    b.insert(2);
-
-    SetLinked c = a.difference(b);
-
-    printResult("difference contains 1", c.contains(1));
-    printResult("difference contains 3", c.contains(3));
-    printResult("difference doesn't contain 2", !c.contains(2));
-}
-
-void testEdgeCases() {
-    std::cout << "\n=== testEdgeCases ===\n";
-    SetLinked s;
-
-    // insert same element multiple times
-    s.insert(2);
-    s.insert(2);
-    printResult("duplicate insert still present", s.contains(2));
-
-    // boundary values
-    s.insert(0);
-    s.insert(4);
-
-    printResult("contains 0", s.contains(0));
-    printResult("contains max index", s.contains(4));
-
-    // full set
-    SetLinked full;
-    full.insert(0);
-    full.insert(1);
-    full.insert(2);
-
-    SetLinked empty;
-
-    SetLinked diff = full.difference(full);
-    printResult("full - full = empty", !diff.contains(0) && !diff.contains(1) && !diff.contains(2));
-
-    SetLinked sum = full.sum(empty);
-    printResult("full U empty = full", sum == full);
+    printResult("duplicate insert does not grow size", s.size() == 3);
+    printResult("duplicate value still present", s.contains(sampleAt(4)));
+    printResult("second unique value present", s.contains(sampleAt(6)));
+    printResult("third unique value present", s.contains(sampleAt(9)));
 }
 
 double timePerOperation(const std::chrono::high_resolution_clock::time_point& start,
@@ -145,80 +92,40 @@ double timePerOperation(const std::chrono::high_resolution_clock::time_point& st
 std::vector<double> benchmark(num_t N) {
     std::vector<double> row = {static_cast<double>(N)};
 
-    SetLinked a, b;
+    SetChar50 s;
 
-    // random generator
-    std::mt19937 rng(42);
-    std::uniform_int_distribution<num_t> dist(0, N - 1);
-
-    // measure insert
     auto start = std::chrono::high_resolution_clock::now();
-    for (num_t i = 0; i < N; i++) {
-        a.insert(dist(rng));
+    for (num_t i = 0; i < N; ++i) {
+        s.insert(sampleAt(i));
     }
     auto end = std::chrono::high_resolution_clock::now();
-    auto insertMs = timePerOperation(start, end, N);
-
-    // fill b
-    for (num_t i = 0; i < N; i++) {
-        b.insert(dist(rng));
-    }
-
-    // union
-    start = std::chrono::high_resolution_clock::now();
-    SetLinked u = a.sum(b);
-    end = std::chrono::high_resolution_clock::now();
-    row.push_back(timePerOperation(start, end));
-
-    // intersection
-    start = std::chrono::high_resolution_clock::now();
-    SetLinked inter = a.intersection(b);
-    end = std::chrono::high_resolution_clock::now();
-    row.push_back(timePerOperation(start, end));
-
-    // difference
-    start = std::chrono::high_resolution_clock::now();
-    SetLinked diff = a.difference(b);
-    end = std::chrono::high_resolution_clock::now();
-    row.push_back(timePerOperation(start, end));
-
-    // equality
-    start = std::chrono::high_resolution_clock::now();
-    bool eq = (a == b);
-    end = std::chrono::high_resolution_clock::now();
-    row.push_back(timePerOperation(start, end));
-
-    // insert
-    row.push_back(insertMs);
-
-    // remove
-    start = std::chrono::high_resolution_clock::now();
-    for (num_t i = 0; i < N; i++) {
-        a.remove(dist(rng));
-    }
-    end = std::chrono::high_resolution_clock::now();
     row.push_back(timePerOperation(start, end, N));
 
-    // contains
     start = std::chrono::high_resolution_clock::now();
     num_t hits = 0;
-    for (num_t i = 0; i < N; i++) {
-        if (a.contains(dist(rng))) {
+    for (num_t i = 0; i < N; ++i) {
+        if (s.contains(sampleAt(i + 1))) {
             hits++;
         }
     }
     end = std::chrono::high_resolution_clock::now();
     row.push_back(timePerOperation(start, end, N));
 
+    start = std::chrono::high_resolution_clock::now();
+    for (num_t i = 0; i < N; ++i) {
+        s.remove(sampleAt(i));
+    }
+    end = std::chrono::high_resolution_clock::now();
+    row.push_back(timePerOperation(start, end, N));
     return row;
 }
 
-void printResults(std::vector<std::vector<double>> results, int precision = 8) {
-    std::cout << std::fixed << std::setprecision(8);
+void printResults(const std::vector<std::vector<double>>& results, int precision = 8) {
+    std::cout << std::fixed << std::setprecision(precision);
     std::cout << "[\n";
-    for (size_t i = 0; i < results.size(); i++) {
+    for (size_t i = 0; i < results.size(); ++i) {
         std::cout << "  [";
-        for (size_t j = 0; j < results[i].size(); j++) {
+        for (size_t j = 0; j < results[i].size(); ++j) {
             std::cout << results[i][j];
             if (j + 1 < results[i].size()) {
                 std::cout << ", ";
@@ -228,29 +135,26 @@ void printResults(std::vector<std::vector<double>> results, int precision = 8) {
         if (i + 1 < results.size()) {
             std::cout << ",";
         }
-        std::cout << "\n";
+        std::cout << '\n';
     }
     std::cout << "]\n";
 }
 
 int main() {
-    testSum();
-    testIntersection();
-    testDifference();
-    testEquality();
     testInsertContains();
     testRemove();
-    testEdgeCases();
+    testSizeAndDuplicates();
 
-    std::vector<num_t> sizes = {1, 10, 100, 500, 1'000, 5'000, 10'000, 20'000, 30'000};
+    std::vector<num_t> sizes = {1'000,     5'000,     10'000,    25'000,    50'000,
+                                100'000,   500'000,   1'000'000, 2'000'000, 3'000'000,
+                                4'000'000, 5'000'000, 7'500'000, 10'000'000};
     std::vector<std::vector<double>> results;
 
     std::cout << "\nBenchmarking...\n";
-    for (auto N : sizes) {
+    for (num_t N : sizes) {
         results.push_back(benchmark(N));
     }
 
     printResults(results);
-
     return 0;
 }
