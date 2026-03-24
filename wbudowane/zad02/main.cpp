@@ -58,6 +58,27 @@ struct Output {
     num_t total_cost;
 };
 
+num_t calculateCost(const Input& in, const std::map<num_t, num_t>& task_proc,
+                    const std::map<num_t, std::string>& proc_bus) {
+    num_t total_cost = 0;
+
+    for (const auto& [taskIdx, procIdx] : task_proc) {
+        total_cost += in.task_processor_cost[taskIdx][procIdx] + in.processors[procIdx].cost;
+    }
+
+    for (const auto& [_, busName] : proc_bus) {
+        // TODO: hashmap
+        for (const auto& bus : in.buses) {
+            if (bus.name == busName) {
+                total_cost += bus.cost;
+                break;
+            }
+        }
+    }
+
+    return total_cost;
+}
+
 Output process(Input& in) {
     Output out;
     const num_t task_count = in.task_processor_time.size();
@@ -152,6 +173,8 @@ Output process(Input& in) {
     for (const auto& [taskIdx, procIdx] : task_proc) {
         out.processor_tasks[procIdx][taskIdx].task_begin_time = task_start_time[taskIdx];
     }
+
+    out.total_cost = calculateCost(in, task_proc, proc_bus);
 
     return out;
 }
@@ -328,6 +351,8 @@ int main(int argc, char* argv[]) {
     Input input = readInput(infile);
     Output output = process(input);
     writeOutput(output, outfile);
+
+    std::cout << "Koszt: " << output.total_cost << "\n";
 
     return 0;
 }
