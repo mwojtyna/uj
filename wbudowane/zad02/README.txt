@@ -1,10 +1,8 @@
-Program należy uruchomić z 6 argumentami oddzielonymi spacją:
+Algorytm wykorzystany w programie ma następujące założenia:
+- najtańszy procesor będzie zawsze typu HC.
 
-- liczba zadań,
-- liczba procesorów Hardware Core,
-- liczba procesorów Programmable Processor,
-- liczba szyn transmisyjnych,
-- czy etykiety mają być zerowe (0 - nie, 1 - tak),
-- nazwa pliku wyjściowego.
+Program należy uruchomić z 2 argumentami oddzielonymi spacją:
+- nazwa pliku wejściowego,
+- nazwa pliku wyjściowego
 
 Po uruchomieniu program wygeneruje plik tekstowy w formacie omówionym na zajęciach.
