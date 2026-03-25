@@ -160,8 +160,9 @@ Output process(Input& in) {
         q.pop();
 
         for (const auto& [nbIdx, _] : in.adj_list[taskIdx]) {
-            task_start_time[nbIdx] +=
-                task_start_time[taskIdx] + in.task_processor_time[taskIdx][task_proc[taskIdx]];
+            task_start_time[nbIdx] = std::max(
+                task_start_time[nbIdx],
+                task_start_time[taskIdx] + in.task_processor_time[taskIdx][task_proc[taskIdx]]);
 
             indeg[nbIdx]--;
             if (indeg[nbIdx] == 0) {
