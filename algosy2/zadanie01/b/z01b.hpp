@@ -13,6 +13,31 @@ struct Node {
 
 class SetLinked {
 public:
+    class Iterator {
+    public:
+        explicit Iterator(Node* node) : m_Node(node) {}
+
+        num_t operator*() const {
+            return m_Node->val;
+        }
+
+        Iterator& operator++() {
+            m_Node = m_Node->next;
+            return *this;
+        }
+
+        bool operator==(const Iterator& other) const {
+            return m_Node == other.m_Node;
+        }
+
+        bool operator!=(const Iterator& other) const {
+            return !(*this == other);
+        }
+
+    private:
+        Node* m_Node;
+    };
+
     SetLinked() : m_Size(0), m_Head(new Node(0, nullptr)) {}
     ~SetLinked() {
         Node* cur = m_Head;
@@ -216,6 +241,14 @@ public:
 
     num_t getSize() const {
         return m_Size;
+    }
+
+    Iterator begin() const {
+        return Iterator(m_Head->next);
+    }
+
+    Iterator end() const {
+        return Iterator(nullptr);
     }
 
 private:
