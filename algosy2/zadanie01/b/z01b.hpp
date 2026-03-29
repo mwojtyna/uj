@@ -48,7 +48,7 @@ public:
         return *this;
     }
 
-    SetLinked sum(const SetLinked& b) {
+    SetLinked sum(const SetLinked& b) const {
         SetLinked newSet;
 
         auto cur1 = m_Head;
@@ -89,7 +89,7 @@ public:
         return newSet;
     }
 
-    SetLinked intersection(const SetLinked& b) {
+    SetLinked intersection(const SetLinked& b) const {
         SetLinked newSet;
         if (m_Size == 0 || b.m_Size == 0) {
             return newSet;
@@ -116,7 +116,7 @@ public:
         return newSet;
     }
 
-    SetLinked difference(const SetLinked& b) {
+    SetLinked difference(const SetLinked& b) const {
         SetLinked newSet;
 
         auto cur1 = m_Head;
@@ -166,6 +166,10 @@ public:
         return true;
     }
 
+    bool operator!=(const SetLinked& b) const {
+        return !(*this == b);
+    }
+
     void insert(num_t x) {
         auto cur = m_Head;
         while (cur->next && cur->next->val < x) {
@@ -198,7 +202,7 @@ public:
         }
     }
 
-    bool contains(num_t x) {
+    bool contains(num_t x) const {
         auto cur = m_Head;
         while (cur->next) {
             if (cur->next->val == x) {
