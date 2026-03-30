@@ -9,7 +9,7 @@ class SetSimple {
 public:
     SetSimple(num_t N) : m_Array(N), m_Size(N) {}
 
-    SetSimple sum(const SetSimple& b) {
+    SetSimple sum(const SetSimple& b) const {
         auto res = SetSimple(this->m_Array.size());
 
         for (auto i = 0; i < m_Size; i++) {
@@ -19,7 +19,7 @@ public:
         return res;
     }
 
-    SetSimple intersection(const SetSimple& b) {
+    SetSimple intersection(const SetSimple& b) const {
         auto res = SetSimple(this->m_Array.size());
 
         for (auto i = 0; i < m_Size; i++) {
@@ -29,7 +29,7 @@ public:
         return res;
     }
 
-    SetSimple difference(const SetSimple& b) {
+    SetSimple difference(const SetSimple& b) const {
         auto res = SetSimple(this->m_Array.size());
 
         for (auto i = 0; i < m_Size; i++) {
@@ -69,7 +69,7 @@ public:
         m_Array[x] = false;
     }
 
-    bool contains(num_t x) {
+    bool contains(num_t x) const {
         if (x < 0 || x >= m_Size) {
             throw std::out_of_range("Element out of range");
         }
