@@ -83,3 +83,31 @@ Przed zmierzeniem #wywe dla szerokiego zakresu częstotliwości, zmierzono go dl
   image("img/2.1.03_1V_1kHz_sinus.png"),
   caption: [$wywe = 0.904$, $phi = 335.9degree$ dla $U=1 "V", f=1 "kHz"$]
 )
+
+Następnie wyliczono wartość teoretyczną częstotliwości granicznej $f_g approx 450 "Hz"$, czyli takiej częstotliwości sygnału wejściowego, że $wywe=-3 "dB"$.
+Stosunek ampliud można wyrazić w $"dB"$ wzorem $20 * log_10(wywe)$. Teoretyczną częstotliwość graniczną porównamy później z wartością wyznaczoną z wykresów.
+
+#figure(
+  image("img/2.1.04_sinus_fg.png"),
+  caption: [Przebieg sygnałów z częstotliwością $f_g=450 "Hz"$ sygnału wejściowego]
+)
+
+Następnie zmierzono częstotliwość i przesunięcie fazowe dla częstotliwości:
+ - od 100 Hz do 1000 Hz z krokiem 100 Hz,
+ - od 1 kHz do 10 kHz z krokiem 1 kHz,
+ - od 10 kHz do 100 kHz z krokiem 10 kHz,
+ - od 100 kHz do 300 kHz z krokiem 100 kHz.
+
+Wszystkie zdjęcia ekranu oscyloskopu z powyższymi pomiarami znajdują się w notatkach.
+
+#figure(
+  image("./img/amp_graph.png"),
+  caption: [Wykres log-log stosunku amplitud w funkcji częstotliwości]
+)
+Jak oczekiwano, dla niskich częstotliwości napięcie jest tłumione.
+
+#figure(
+  image("./img/phase_graph.png"),
+  caption: [Wykres log-log przesunięcia fazowego w funkcji częstotliwości]
+)
+
