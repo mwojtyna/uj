@@ -1,4 +1,6 @@
 import matplotlib.pyplot as plt
+import numpy as np
+from pathlib import Path
 from matplotlib.ticker import FuncFormatter
 
 freq = [
@@ -100,9 +102,24 @@ phase = [
     294.3,
 ]
 
+f_d = 450
+output_dir = Path(__file__).resolve().parent / "img"
+
+
+def theoretical_amp(frequency):
+    scaled_frequency = frequency / f_d
+    return scaled_frequency / np.sqrt(1 + scaled_frequency**2)
+
 
 def amp_graph():
-    plt.loglog(freq, amp, marker="o")
+    plt.figure()
+    plot_freq = np.logspace(np.log10(min(freq)), np.log10(max(freq)), 500)
+    plt.loglog(freq, amp, marker="o", linestyle="", label="Pomiar")
+    plt.loglog(
+        plot_freq,
+        theoretical_amp(plot_freq),
+        label=rf"Teoria, $f_d={f_d}\,\mathrm{{Hz}}$",
+    )
     ax = plt.gca()
     decimal_formatter = FuncFormatter(lambda value, _: f"{value:g}")
     ax.yaxis.set_major_formatter(decimal_formatter)
@@ -110,10 +127,13 @@ def amp_graph():
     plt.xlabel("Częstotliwość [Hz]")
     plt.ylabel("Uwy/Uwe")
     plt.grid(True)
-    plt.show()
+    plt.legend()
+    plt.savefig(output_dir / "amp_graph.svg", bbox_inches="tight")
+    plt.close()
 
 
 def phase_graph():
+    plt.figure()
     plt.loglog(freq, phase, marker="o")
     ax = plt.gca()
     decimal_formatter = FuncFormatter(lambda value, _: f"{value:g}")
@@ -122,7 +142,8 @@ def phase_graph():
     plt.xlabel("Częstotliwość [Hz]")
     plt.ylabel("Faza [°]")
     plt.grid(True)
-    plt.show()
+    plt.savefig(output_dir / "phase_graph.svg", bbox_inches="tight")
+    plt.close()
 
 
 def main():

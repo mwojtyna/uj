@@ -1,7 +1,7 @@
 #import "@preview/rubber-article:0.5.2": *
 
 #let vv(body) = math.bold(math.upright(body))
-#let wywe = $U_"wy"/U_"we"$
+#let wywe = $U_"wy"\/U_"we"$
 #set math.mat(delim: "[", column-gap: 1em)
 #set math.vec(delim: "[")
 
@@ -11,6 +11,7 @@
 #set figure(supplement: [Obraz])
 #show figure.caption: set text(hyphenate: false)
 #show figure.where(kind: table): set figure(supplement: [Tabela])
+#show table: set table(stroke: 0.5pt)
 
 #show: article.with(
   cols: none,
@@ -81,33 +82,149 @@ Przed zmierzeniem #wywe dla szerokiego zakresu częstotliwości, zmierzono go dl
 
 #figure(
   image("img/2.1.03_1V_1kHz_sinus.png"),
-  caption: [$wywe = 0.904$, $phi = 335.9degree$ dla $U=1 "V", f=1 "kHz"$]
+  caption: [$wywe = 0.904$, $phi = 335.9degree$ dla $U=1 "V", f=1 "kHz"$],
 )
 
-Następnie wyliczono wartość teoretyczną częstotliwości granicznej $f_g approx 450 "Hz"$, czyli takiej częstotliwości sygnału wejściowego, że $wywe=-3 "dB"$.
-Stosunek ampliud można wyrazić w $"dB"$ wzorem $20 * log_10(wywe)$. Teoretyczną częstotliwość graniczną porównamy później z wartością wyznaczoną z wykresów.
+Następnie wyliczono wartość teoretyczną dolnej częstotliwości granicznej $f_g$, czyli takiej częstotliwości sygnału wejściowego, że $wywe=-3 "dB"$. Stosunek amplitud można wyrazić w $"dB"$ wzorem $20log_10(wywe)$.
+
+Skoro wiemy, że $U_"we"=1 "V"$, to $20log_10(U_"wy"\/1 "V") = -3 "dB"$, a więc $U_"wy" approx 0.707 "V"$.
+Żeby $U_"wy" = 0.707 "V"$, częstotliwość musi być $tilde 450 "Hz"$, czyli teoretyczna $f_g approx 450 "Hz"$.
+Teoretyczną częstotliwość graniczną porównamy później z wartością wyznaczoną z pomiarów.
 
 #figure(
   image("img/2.1.04_sinus_fg.png"),
-  caption: [Przebieg sygnałów z częstotliwością $f_g=450 "Hz"$ sygnału wejściowego]
+  caption: [Przebieg sygnałów z częstotliwością równą częstotliwości granicznej $f_g=450 "Hz"$],
 )
 
 Następnie zmierzono częstotliwość i przesunięcie fazowe dla częstotliwości:
- - od 100 Hz do 1000 Hz z krokiem 100 Hz,
- - od 1 kHz do 10 kHz z krokiem 1 kHz,
- - od 10 kHz do 100 kHz z krokiem 10 kHz,
- - od 100 kHz do 300 kHz z krokiem 100 kHz.
+- od 100 Hz do 1000 Hz z krokiem 100 Hz,
+- od 1 kHz do 10 kHz z krokiem 1 kHz,
+- od 10 kHz do 100 kHz z krokiem 10 kHz,
+- od 100 kHz do 300 kHz z krokiem 100 kHz.
 
-Wszystkie zdjęcia ekranu oscyloskopu z powyższymi pomiarami znajdują się w notatkach.
-
-#figure(
-  image("./img/amp_graph.png"),
-  caption: [Wykres log-log stosunku amplitud w funkcji częstotliwości]
-)
-Jak oczekiwano, dla niskich częstotliwości napięcie jest tłumione.
+// TODO: Link do notatek
+Zdjęcia ekranu oscyloskopu z pomiarami znajdują się w notatkach.
 
 #figure(
-  image("./img/phase_graph.png"),
-  caption: [Wykres log-log przesunięcia fazowego w funkcji częstotliwości]
+  image("./img/amp_graph.svg", width: 88.5%),
+  caption: [Wykres log-log stosunku amplitud #wywe w funkcji częstotliwości],
+) <cr_amp_graph>
+
+#figure(
+  image("./img/phase_graph.svg", width: 88.5%),
+  caption: [Wykres log-log przesunięcia fazowego w funkcji częstotliwości],
+) <cr_phase_graph>
+
+
+#grid(
+  columns: (1fr, 1fr),
+  [
+    #figure(
+      table(
+        columns: 2,
+        align: (left, center),
+        table.header([Częstotliwość $f$ [Hz]], [$U_"wy" \/ U_"we"$]),
+        [100], [0.2078],
+        [200], [0.4000],
+        [300], [0.5437],
+        [400], [0.6637],
+        [500], [0.7357],
+        [600], [0.7997],
+        [700], [0.8329],
+        [800], [0.8640],
+        [900], [0.8874],
+        [1000], [0.9038],
+        [2000], [0.9682],
+        [3000], [0.9757],
+        [4000], [0.9838],
+        [5000], [0.9838],
+        [6000], [0.9838],
+        [7000], [0.9838],
+        [8000], [0.9838],
+        [9000], [0.9838],
+        [10 000], [0.9838],
+        [20 000], [0.9919],
+        [30 000], [0.9919],
+        [40 000], [0.9919],
+        [50 000], [0.9916],
+        [60 000], [0.9997],
+        [70 000], [0.9997],
+        [80 000], [0.9997],
+        [90 000], [0.9997],
+        [100 000], [0.9997],
+        [200 000], [0.9997],
+        [300 000], [0.9994],
+      ),
+      caption: [Dane do wykresu stosunku amplitud (@cr_amp_graph)],
+    )
+  ],
+  [
+    #figure(
+      table(
+        columns: 2,
+        align: (left, center),
+        table.header([Częstotliwość $f$ [Hz]], [Faza $phi$ [°]]),
+        [100], [282.8],
+        [200], [294.5],
+        [300], [303.9],
+        [400], [311.9],
+        [500], [318.2],
+        [600], [323.4],
+        [700], [327.7],
+        [800], [331.0],
+        [900], [333.6],
+        [1000], [335.9],
+        [2000], [347.3],
+        [3000], [351.5],
+        [4000], [353.6],
+        [5000], [354.8],
+        [6000], [355.7],
+        [7000], [356.3],
+        [8000], [356.7],
+        [9000], [357.1],
+        [10 000], [357.4],
+        [20 000], [358.8],
+        [30 000], [239.1],
+        [40 000], [358.8],
+        [50 000], [359.5],
+        [60 000], [359.5],
+        [70 000], [359.5],
+        [80 000], [359.5],
+        [90 000], [359.5],
+        [100 000], [359.7],
+        [200 000], [359.6],
+        [300 000], [294.3],
+      ),
+      caption: [Dane do wykresu przesunięcia fazy (@cr_phase_graph)],
+    )
+  ],
 )
 
+\
+Punkty pasują idealnie do krzywej teoretycznej. Jak oczekiwano, dla niskich częstotliwości napięcie jest tłumione oraz następuje przesunięcie fazy o $tilde 90 degree$. Dodatkowo można zauważyć 2 punkty na @cr_phase_graph, które nie pasują do wykresu. Prawdopodobnie wynika to z błędu algorytmu mierzącego przesunięcie fazy.
+
+#pagebreak()
+
+Dolną częstotliwość graniczną wyznaczono z charakterystyki amplitudowej jako częstotliwość, dla której $20 log_10(wywe) = -3 "dB"$, co odpowiada $wywe approx 0.707$. Z tabeli oraz wykresu @cr_amp_graph widać, że wartość ta leży pomiędzy punktami $f=400 "Hz"$, dla którego $wywe = 0.6637$, oraz $f=500 "Hz"$, dla którego $wywe = 0.7357$. Stosując interpolację liniową:
+$
+  f_g approx 400 "Hz" + (500 "Hz" - 400 "Hz") dot frac(0.707 - 0.6637, 0.7357 - 0.6637) approx 460 "Hz"
+$
+Na podstawie pomiarów otrzymano więc dolną częstotliwość graniczną równą około $460 "Hz"$. Jest to wartość bardzo zbliżona do wartości teoretycznej $450 "Hz"$, a względna różnica wynosi około $2.2%$.
+
+Kąt przesunięcia fazy dla zmierzonej częstotliwości granicznej można wyznaczyć z charakterystyki fazowej. Ponieważ $f_g approx 460 "Hz"$ leży pomiędzy punktami $400 "Hz"$ i $500 "Hz"$, zastosowano interpolację liniową na podstawie wartości $phi = 311.9 degree$ dla $400 "Hz"$ oraz $phi = 318.2 degree$ dla $500 "Hz"$:
+$
+  theta(f_g) approx 311.9 degree + (318.2 degree - 311.9 degree) dot frac(460 "Hz" - 400 "Hz", 500 "Hz" - 400 "Hz") approx 315.7 degree
+$
+
+== Wnioski
+Przeprowadzone pomiary potwierdziły, że badany układ CR działa jak filtr górnoprzepustowy. Dla małych częstotliwości stosunek amplitud #wywe był wyraźnie mniejszy od 1, natomiast wraz ze wzrostem częstotliwości dążył do 1, co zgadza się z przewidywaniami teoretycznymi.
+
+Charakterystyka fazowa również była zgodna z teorią: dla niskich częstotliwości obserwowano przesunięcie fazowe bliskie $90 degree$, a dla wysokich częstotliwości różnica faz malała. Na wykresie fazowym pojawiły się pojedyncze punkty odstające, co najprawdopodobniej wynika z niedokładności pomiaru lub błędu algorytmu wyznaczającego fazę.
+
+Wyznaczona z pomiarów dolna częstotliwość graniczna wyniosła około $460 "Hz"$ i była bardzo bliska wartości teoretycznej $450 "Hz"$, a kąt przesunięcia fazy dla częstotliwości granicznej wyniósł około $315.7 degree$. Otrzymana zgodność świadczy o poprawnym montażu układu oraz prawidłowym przebiegu pomiarów.
+
+#pagebreak()
+
+= Zadanie 2
+== Treść
+Sprawdzić odpowiedź układu różniczkującego na podawaną na wejście falę prostokątną o okresie $"T"$ mniejszym, porównywalnym i większym od stałej czasowej $tau$. Zaobserwować odpowiedź układu na impuls trójkątny.
