@@ -5,8 +5,8 @@
 #set math.mat(delim: "[", column-gap: 1em)
 #set math.vec(delim: "[")
 
-// #set image(width: 80%)
-// #show grid: set image(width: 100%)
+#set image(width: 80%)
+#show grid: set image(width: 100%)
 
 #set figure(supplement: [Obraz])
 #show figure.caption: set text(hyphenate: false)
@@ -22,12 +22,16 @@
   text-size: 12pt,
 )
 
-
 #maketitle(
   title: "Elektronika cyfrowa - sprawozdanie 2",
   authors: ("Mateusz Wojtyna",),
   date: "08 kwietnia 2026",
 )
+
+#heading([Dane], numbering: none, level: 3, outlined: false)
+- stanowisko nr 02
+- płytka RLC nr 12
+- miernik uniwersalny nr 15
 
 #outline()
 #pagebreak()
@@ -44,18 +48,20 @@ i porównać ją z wartością teoretyczną.
 
 == Wstęp teoretyczny
 #figure(
-  image("./img/cr_schemat.png", width: 60%),
+  image("./img/cr_schemat.png", width: 59%),
   caption: [Schemat układ CR],
 ) <cr>
 
-Układ różniczkujący (CR) to czwórnik bierny o układzie zilustrowanym w @cr. Kondensator jest podłączony do wejścia, rezystora oraz wyjścia, natomiast rezystor jest podłączony do masy. Układ CR można m.in. stosować do filtrowania sygnałów o małej częstotliwości (@cr_T). Funkcja przejścia dla układu CR wynosi
+Układ różniczkujący (CR) to czwórnik bierny o układzie zilustrowanym w @cr. Kondensator jest podłączony do wejścia, rezystora oraz wyjścia, natomiast rezystor jest podłączony do uziemienia. Układ CR można stosować m.in. do filtrowania sygnałów o małej częstotliwości (@cr_T), oraz do różniczkowania sygnałów.
+
+Funkcja przejścia dla układu CR wynosi
 $
                T(omega) & = frac(j omega/omega_0, 1 + j omega/omega_0) \
   "gdzie" space omega_0 & = 1/(R C) = 1/tau \
 $
 
 #figure(
-  image("./img/cr_T.png", width: 60%),
+  image("./img/cr_T.png", width: 59%),
   caption: [Wykres transmitancji układu względem częstotliwości],
 ) <cr_T>
 
@@ -68,10 +74,10 @@ Zmontowano układ różniczkujący na płytce RLC zgodnie ze schematem w @cr. Po
       columns: (1fr, 1fr),
       gutter: 0.5em,
       [
-        #image("img/2.1.02_rlc_topdown.jpeg")
+        #image("./img/2.1.02_rlc_topdown.jpeg")
       ],
       [
-        #image("img/2.1.01_rlc_wideview.jpeg")
+        #image("./img/2.1.01_rlc_wideview.jpeg")
       ],
     )
   ],
@@ -81,7 +87,7 @@ Zmontowano układ różniczkujący na płytce RLC zgodnie ze schematem w @cr. Po
 Przed zmierzeniem #wywe dla szerokiego zakresu częstotliwości, zmierzono go dla $U=1 "V"$ oraz $f=1 "kHz"$. We wszystkich wykresach poniżej, oryginalny sygnał jest w kolorze żółtym, zmodyfikowany w kolorze niebieskim.
 
 #figure(
-  image("img/2.1.03_1V_1kHz_sinus.png"),
+  image("./img/2.1.03_1V_1kHz_sinus.png"),
   caption: [$wywe = 0.904$, $phi = 335.9degree$ dla $U=1 "V", f=1 "kHz"$],
 )
 
@@ -92,7 +98,7 @@ Skoro wiemy, że $U_"we"=1 "V"$, to $20log_10(U_"wy"\/1 "V") = -3 "dB"$, a więc
 Teoretyczną częstotliwość graniczną porównamy później z wartością wyznaczoną z pomiarów.
 
 #figure(
-  image("img/2.1.04_sinus_fg.png"),
+  image("./img/2.1.04_sinus_fg.png"),
   caption: [Przebieg sygnałów z częstotliwością równą częstotliwości granicznej $f_g=450 "Hz"$],
 )
 
@@ -201,7 +207,7 @@ Zdjęcia ekranu oscyloskopu z pomiarami znajdują się w notatkach.
 )
 
 \
-Punkty pasują idealnie do krzywej teoretycznej. Jak oczekiwano, dla niskich częstotliwości napięcie jest tłumione oraz następuje przesunięcie fazy o $tilde 90 degree$. Dodatkowo można zauważyć 2 punkty na @cr_phase_graph, które nie pasują do wykresu. Prawdopodobnie wynika to z błędu algorytmu mierzącego przesunięcie fazy.
+Punkty na @cr_amp_graph pasują idealnie do krzywej teoretycznej. Jak oczekiwano, dla niskich częstotliwości napięcie jest tłumione oraz następuje przesunięcie fazy o $tilde 90 degree$. Dodatkowo można zauważyć 2 punkty na @cr_phase_graph, które nie pasują do wykresu. Prawdopodobnie wynika to z błędu algorytmu mierzącego przesunięcie fazy.
 
 #pagebreak()
 
@@ -209,11 +215,11 @@ Dolną częstotliwość graniczną wyznaczono z charakterystyki amplitudowej jak
 $
   f_g approx 400 "Hz" + (500 "Hz" - 400 "Hz") dot frac(0.707 - 0.6637, 0.7357 - 0.6637) approx 460 "Hz"
 $
-Na podstawie pomiarów otrzymano więc dolną częstotliwość graniczną równą około $460 "Hz"$. Jest to wartość bardzo zbliżona do wartości teoretycznej $450 "Hz"$, a względna różnica wynosi około $2.2%$.
+Na podstawie pomiarów otrzymano dolną częstotliwość graniczną równą około $460 "Hz"$. Jest to wartość bardzo zbliżona do wartości teoretycznej $450 "Hz"$, a względna różnica wynosi około $2.2%$.
 
 Kąt przesunięcia fazy dla zmierzonej częstotliwości granicznej można wyznaczyć z charakterystyki fazowej. Ponieważ $f_g approx 460 "Hz"$ leży pomiędzy punktami $400 "Hz"$ i $500 "Hz"$, zastosowano interpolację liniową na podstawie wartości $phi = 311.9 degree$ dla $400 "Hz"$ oraz $phi = 318.2 degree$ dla $500 "Hz"$:
 $
-  theta(f_g) approx 311.9 degree + (318.2 degree - 311.9 degree) dot frac(460 "Hz" - 400 "Hz", 500 "Hz" - 400 "Hz") approx 315.7 degree
+  theta(f_g) approx 311.9 degree + (318.2 degree - 311.9 degree) dot frac(460 "Hz" - 400 "Hz", 500 "Hz" - 400 "Hz") = 315.68 degree
 $
 
 == Wnioski
@@ -221,10 +227,93 @@ Przeprowadzone pomiary potwierdziły, że badany układ CR działa jak filtr gó
 
 Charakterystyka fazowa również była zgodna z teorią: dla niskich częstotliwości obserwowano przesunięcie fazowe bliskie $90 degree$, a dla wysokich częstotliwości różnica faz malała. Na wykresie fazowym pojawiły się pojedyncze punkty odstające, co najprawdopodobniej wynika z niedokładności pomiaru lub błędu algorytmu wyznaczającego fazę.
 
-Wyznaczona z pomiarów dolna częstotliwość graniczna wyniosła około $460 "Hz"$ i była bardzo bliska wartości teoretycznej $450 "Hz"$, a kąt przesunięcia fazy dla częstotliwości granicznej wyniósł około $315.7 degree$. Otrzymana zgodność świadczy o poprawnym montażu układu oraz prawidłowym przebiegu pomiarów.
+Wyznaczona z pomiarów dolna częstotliwość graniczna wyniosła około $460 "Hz"$ i była bardzo bliska wartości teoretycznej $450 "Hz"$, a kąt przesunięcia fazy dla częstotliwości granicznej wyniósł $315.68 degree$.
 
 #pagebreak()
 
 = Zadanie 2
 == Treść
-Sprawdzić odpowiedź układu różniczkującego na podawaną na wejście falę prostokątną o okresie $"T"$ mniejszym, porównywalnym i większym od stałej czasowej $tau$. Zaobserwować odpowiedź układu na impuls trójkątny.
+Sprawdzić odpowiedź układu różniczkującego na podawaną na wejście falę prostokątną o okresie $"T"$ mniejszym, porównywalnym i większym od stałej czasowej $tau$. Zaobserwować odpowiedź układu na impuls trójkątny. Sprawdź czy układ różniczkuje sygnał i zanotuj dla jakiego okresu wykonuje to poprawnie.
+
+== Wstęp teoretyczny
+Przypominając, $tau=0.3503 "ms"$ w naszym układzie CR. Ustalmy:
+$
+      T_"mniejszy" & = 0.1tau = 0.03503 "ms" = 35.03 space mu"s" \
+  T_"porównywalny" & = tau = 0.3503 "ms" \
+       T_"większy" & = 10tau = 3.503 "ms"
+$
+
+== Praktyka
+=== Impuls prostokątny
+Podano następujące impulsy prostokątne:
+
+#align(center)[
+  #grid(
+    columns: (auto, auto),
+    gutter: 0.5em,
+    [
+      #figure(
+        image("./img/2.2.01_1V_Tmnieszy_square.png"),
+        caption: [Fala prostokątna $U_"we"=1 "V"$, $T=T_"mniejszy"$],
+      )
+    ],
+    [
+      #figure(
+        image("./img/2.2.02_1V_Tporownywanly_square.png"),
+        caption: [Fala prostokątna $U_"we"=1 "V"$, $T=T_"porównywalny"$],
+      )
+    ],
+  )
+]
+#align(center)[
+  #figure(
+    image("./img/2.2.03_1V_Twiekszy_square.png", width: 58%),
+    caption: [Fala prostokątna $U_"we"=1 "V"$, $T=T_"większy"$],
+  )
+]
+
+=== Impuls trójkątny
+Podano następujące impulsy trójkątne:
+
+#align(center)[
+  #grid(
+    columns: (auto, auto),
+    gutter: 0.5em,
+    [
+      #figure(
+        image("./img/2.2.04_1V_Tmnieszy_trojkat.png"),
+        caption: [Fala trójkątna $U_"we"=1 "V"$, $T=T_"mniejszy"$],
+      )
+    ],
+    [
+      #figure(
+        image("./img/2.2.05_1V_Tporownywanly_triangle.png"),
+        caption: [Fala trójkątna $U_"we"=1 "V"$, $T=T_"porównywalny"$],
+      )
+    ],
+  )
+]
+#align(center)[
+  #figure(
+    image("./img/2.2.06_1V_Twiekszy_trojkat.png", width: 60%),
+    caption: [Fala trójkątna $U_"we"=1 "V"$, $T=T_"większy"$],
+  )
+]
+
+=== Różniczkowanie sygnału
+Możliwość różniczkowania sygnału najlepiej testować sygnałem prostokątnym, gdyż wtedy pochodna sygnału jest równa zeru poza chwilami gwałtownych zmian i przyjmuje duże wartości jedynie na zboczach. W idealnym układzie różniczkującym odpowiedź powinna więc mieć postać krótkich impulsów pojawiających się w momentach narastania i opadania sygnału wejściowego.
+
+#figure(
+  image("./img/2.2.07_test_rozniczkowania_100ms.png"),
+  caption: [Test różniczkowania dla $U_"we"=1 "V", T=100 "ms"$],
+)
+#figure(
+  image("./img/2.2.08_test_rozniczkowania_10ms.png"),
+  caption: [Test różniczkowania dla $U_"we"=1 "V", T=10 "ms"$],
+)
+
+Jak widać, układ jest bliski idealnego układu różniczkującego dla $T >> tau$, co dobrze widać już dla $T=10 "ms"$, a jeszcze wyraźniej dla $T=100 "ms"$.
+
+== Podsumowanie
+Przeprowadzone obserwacje potwierdziły, że odpowiedź układu CR zależy od relacji pomiędzy okresem sygnału wejściowego a stałą czasową $tau$. Dla sygnału o $T << tau$ układ nie różniczkuje przebiegu w sposób wyraźny. Dla $T approx tau$ efekt różniczkowania jest zauważalny, lecz nadal daleki od idealnego.
+Najlepsze różniczkowanie zaobserwowano dla $T >> tau$, gdy odpowiedź układu przyjmuje postać krótkich impulsów w chwilach zmian sygnału wejściowego.
