@@ -70,55 +70,60 @@ amp = [
 ]
 
 phase = [
-    282.8,
-    294.5,
-    303.9,
-    311.9,
-    318.2,
-    323.4,
-    327.7,
-    331.0,
-    333.6,
-    335.9,
-    347.3,
-    351.5,
-    353.6,
-    354.8,
-    355.7,
-    356.3,
-    356.7,
-    357.1,
-    357.4,
-    358.8,
-    239.1,
-    358.8,
-    359.5,
-    359.5,
-    359.5,
-    359.5,
-    359.5,
-    359.7,
-    359.6,
-    294.3,
+    360 - 282.8,
+    360 - 294.5,
+    360 - 303.9,
+    360 - 311.9,
+    360 - 318.2,
+    360 - 323.4,
+    360 - 327.7,
+    360 - 331.0,
+    360 - 333.6,
+    360 - 335.9,
+    360 - 347.3,
+    360 - 351.5,
+    360 - 353.6,
+    360 - 354.8,
+    360 - 355.7,
+    360 - 356.3,
+    360 - 356.7,
+    360 - 357.1,
+    360 - 357.4,
+    360 - 358.8,
+    360 - 239.1,
+    360 - 358.8,
+    360 - 359.5,
+    360 - 359.5,
+    360 - 359.5,
+    360 - 359.5,
+    360 - 359.5,
+    360 - 359.7,
+    360 - 359.6,
+    360 - 294.3,
 ]
 
 f_d = 450
+tau = 0.0003503
+plot_freq = np.logspace(np.log10(min(freq)), np.log10(max(freq)), 500)
 output_dir = Path(__file__).resolve().parent / "img"
 
 
-def theoretical_amp(frequency):
-    scaled_frequency = frequency / f_d
+def theoretical_amp(f):
+    scaled_frequency = f / f_d
     return scaled_frequency / np.sqrt(1 + scaled_frequency**2)
+
+
+def theoretical_phase(f):
+    return np.rad2deg(np.pi / 2 - np.arctan(2 * np.pi * f * tau))
 
 
 def amp_graph():
     plt.figure()
-    plot_freq = np.logspace(np.log10(min(freq)), np.log10(max(freq)), 500)
-    plt.loglog(freq, amp, marker="o", linestyle="", label="Pomiar")
-    plt.loglog(
+    plt.semilogx(freq, amp, marker="o", linestyle="", label="Pomiar")
+    plt.semilogx(
         plot_freq,
         theoretical_amp(plot_freq),
-        label=rf"Teoria, $f_d={f_d}\,\mathrm{{Hz}}$",
+        label=rf"Krzywa teoretyczna, $f_d={f_d}\,\mathrm{{Hz}}$",
     )
     ax = plt.gca()
     decimal_formatter = FuncFormatter(lambda value, _: f"{value:g}")
@@ -128,21 +133,19 @@ def amp_graph():
     plt.ylabel("Uwy/Uwe")
     plt.grid(True)
     plt.legend()
-    plt.savefig(output_dir / "amp_graph.svg", bbox_inches="tight")
+    plt.savefig(output_dir / "cr_amp_graph.svg", bbox_inches="tight")
     plt.close()
 
 
 def phase_graph():
     plt.figure()
-    plt.loglog(freq, phase, marker="o")
-    ax = plt.gca()
-    decimal_formatter = FuncFormatter(lambda value, _: f"{value:g}")
-    ax.yaxis.set_major_formatter(decimal_formatter)
-    ax.yaxis.set_minor_formatter(decimal_formatter)
+    plt.semilogx(freq, phase, marker="o", linestyle="", label="Pomiar")
+    plt.semilogx(plot_freq, theoretical_phase(plot_freq), label="Krzywa teoretyczna")
     plt.xlabel("Częstotliwość [Hz]")
     plt.ylabel("Faza [°]")
     plt.grid(True)
-    plt.savefig(output_dir / "phase_graph.svg", bbox_inches="tight")
+    plt.legend()
+    plt.savefig(output_dir / "cr_phase_graph.svg", bbox_inches="tight")
     plt.close()
 
 
