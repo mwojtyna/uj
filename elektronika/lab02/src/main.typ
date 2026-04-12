@@ -66,13 +66,13 @@ $
   [
     #figure(
       image("./img/cr_T.png", width: 88.5%),
-      caption: [Wykres transmitancji układu względem częstotliwości],
+      caption: [Wykres transmitancji układu względem częstości],
     ) <cr_T>
   ],
   [
     #figure(
       image("./img/cr_phi.png"),
-      caption: [Wykres przesunięcia fazy układu względem częstotliwości],
+      caption: [Wykres przesunięcia fazy układu względem częstości],
     ) <cr_phi>
   ],
 )
@@ -123,13 +123,14 @@ Następnie zmierzono częstotliwość i przesunięcie fazowe dla częstotliwośc
 // TODO: Link do notatek
 Zdjęcia ekranu oscyloskopu z pomiarami znajdują się w notatkach.
 
+=== Charakterystyka amplitudowa i fazowa
 #figure(
-  image("./img/cr_amp_graph.svg", width: 88.5%),
+  image("./img/cr_amp_graph.svg", width: 86.5%),
   caption: [Wykres stosunku amplitud #wywe w funkcji częstotliwości],
 ) <cr_amp_graph>
 
 #figure(
-  image("./img/cr_phase_graph.svg", width: 88.5%),
+  image("./img/cr_phase_graph.svg", width: 86.5%),
   caption: [Wykres przesunięcia fazowego w funkcji częstotliwości],
 ) <cr_phase_graph>
 
@@ -218,7 +219,7 @@ Zdjęcia ekranu oscyloskopu z pomiarami znajdują się w notatkach.
 )
 
 \
-Punkty na @cr_amp_graph pasują idealnie do krzywej teoretycznej. Jak oczekiwano, dla niskich częstotliwości napięcie jest tłumione oraz następuje przesunięcie fazy o $tilde 90 degree$. Dodatkowo można zauważyć 2 punkty na @cr_phase_graph, które nie pasują do wykresu. Prawdopodobnie wynika to z błędu algorytmu mierzącego przesunięcie fazy.
+Jak oczekiwano, dla niskich częstotliwości napięcie jest tłumione oraz następuje przesunięcie fazy o około $90 degree$. Dodatkowo można zauważyć 2 punkty na @cr_phase_graph, które nie pasują do wykresu. Prawdopodobnie wynika to z błędu algorytmu mierzącego przesunięcie fazy.
 
 #pagebreak()
 
@@ -356,13 +357,13 @@ $
   [
     #figure(
       image("./img/rc_T.png"),
-      caption: [\ Wykres transmitancji układu względem częstotliwości],
+      caption: [\ Wykres transmitancji układu względem częstości],
     ) <rc_T>
   ],
   [
     #figure(
       image("./img/rc_phi.png"),
-      caption: [\ Wykres przesunięcia fazy układu względem częstotliwości],
+      caption: [\ Wykres przesunięcia fazy układu względem częstości],
     ) <rc_phi>
   ],
 )
@@ -400,13 +401,14 @@ Następnie zmierzono częstotliwość i przesunięcie fazowe dla częstotliwośc
 Dla większych częstotliwości zmiany sygnału były zaniedbywalne. Zdjęcia ekranu oscyloskopu z pomiarami znajdują się w notatkach.
 // TODO: Link do notatek
 
+=== Charakterystka amplitudowa i fazowa
 #figure(
-  image("./img/rc_amp_graph.svg", width: 88.5%),
+  image("./img/rc_amp_graph.svg", width: 86.5%),
   caption: [Wykres stosunku amplitud #wywe w funkcji częstotliwości],
 ) <rc_amp_graph>
 
 #figure(
-  image("./img/rc_phase_graph.svg", width: 88.5%),
+  image("./img/rc_phase_graph.svg", width: 86.5%),
   caption: [Wykres przesunięcia fazowego w funkcji częstotliwości],
 ) <rc_phase_graph>
 
@@ -476,3 +478,58 @@ Dla większych częstotliwości zmiany sygnału były zaniedbywalne. Zdjęcia ek
     )
   ],
 )
+
+\
+Jak oczekiwano, dla wysokich częstotliwości napięcie jest tłumione oraz następuje przesunięcie fazy o około $-90 degree$.
+
+Niestety podczas pomiarów nie zauważyłem, że skala amplitudy sygnału wyjściowego była zbyt niska, przez co algorytm obliczania fazy zawiódł. Stąd wynikają wpisy "N/A" dla fazy częstotliwości $>=3000 "Hz"$.
+
+Górną częstotliwość graniczną  wyznaczono z charakterystyki amplitudowej jako częstotliwość, dla której $20 log_10(wywe) = -3 "dB"$, co odpowiada $wywe approx 0.707$. Z tabeli oraz wykresu @rc_amp_graph widać, że wartość ta leży pomiędzy punktami $f=400 "Hz"$, dla którego $wywe = 0.7357$, oraz $f=500 "Hz"$, dla którego $wywe = 0.6555$. Stosując interpolację liniową:
+$
+  f_g approx 400 "Hz" + (500 "Hz" - 400 "Hz") dot frac(0.707 - 0.7357, 0.6555 - 0.7357) approx 436 "Hz"
+$
+Na podstawie pomiarów otrzymano górną częstotliwość graniczną równą około $436 "Hz"$. Jest to wartość bardzo zbliżona do wartości teoretycznej $440 "Hz"$, a względna różnica wynosi około $0.9%$.
+
+Kąt przesunięcia fazy dla zmierzonej częstotliwości granicznej można wyznaczyć z charakterystyki fazowej. Ponieważ $f_g approx 436 "Hz"$ leży pomiędzy punktami $400 "Hz"$ i $500 "Hz"$, zastosowano interpolację liniową na podstawie wartości $phi = -40.61 degree$ dla $400 "Hz"$ oraz $phi = -47.93 degree$ dla $500 "Hz"$:
+$
+  phi(f_g) approx -40.61 degree + (-47.93 degree - (-40.61 degree)) dot frac(436 "Hz" - 400 "Hz", 500 "Hz" - 400 "Hz") approx -43.25 degree
+$
+
+=== Fala prostokątna w układzie całkującym
+Podano na wejście falę prostokątną o okresach z zakresu $0.5tau "-" 10tau$ z krokiem $1tau$:
+
+#grid(
+  columns: 2,
+  column-gutter: .5em,
+  row-gutter: 1em,
+  [ #figure(image("./img/2.3.23_0.5t.png"), caption: [$T=0.5tau$]) ],
+  [ #figure(image("./img/2.3.24_1.5t.png"), caption: [$T=1.5tau$]) ],
+
+  [ #figure(image("./img/2.3.25_2.5t.png"), caption: [$T=2.5tau$]) ],
+  [ #figure(image("./img/2.3.26_3.5t.png"), caption: [$T=3.5tau$]) ],
+
+  [ #figure(image("./img/2.3.27_4.5t.png"), caption: [$T=4.5tau$]) ],
+  [ #figure(image("./img/2.3.28_5.5t.png"), caption: [$T=5.5tau$]) ],
+
+  [ #figure(image("./img/2.3.29_6.5t.png"), caption: [$T=6.5tau$]) ],
+  [ #figure(image("./img/2.3.30_7.5t.png"), caption: [$T=7.5tau$]) ],
+
+  [ #figure(image("./img/2.3.31_8.5t.png"), caption: [$T=8.5tau$]) ],
+  [ #figure(image("./img/2.3.32_9.5t.png"), caption: [$T=9.5tau$]) ],
+)
+#figure(
+  image("./img/2.3.33_5t_czas_narastania.png"),
+  caption: [$T=5tau$]
+)
+Z powyższych obrazków można zaobserwować, że układ całkujący zmienia impuls wejściowy z prostokątnego na trójkątny dla $T <= tau$, a dla $T > tau$ krawędź trójkąta zmienia się w parabolę o różnej wypukłości.
+
+Dla $T=5tau$ czas narastania impulsu był równy $1/2T=2.5tau$, ponieważ sygnał wyjściowy narastał cały czas gdy sygnał wejściowy był wysoki.
+
+== Podsumowanie
+Przeprowadzone pomiary potwierdziły, że badany układ RC działa jak filtr dolnoprzepustowy. Dla małych częstotliwości stosunek amplitud #wywe był bliski 1, natomiast wraz ze wzrostem częstotliwości malał, co zgadza się z przewidywaniami teoretycznymi.
+
+Charakterystyka fazowa również była zgodna z teorią: dla niskich częstotliwości przesunięcie fazowe było bliskie $0 degree$, natomiast dla wysokich częstotliwości dążyło do $-90 degree$. W wyższych zakresach częstotliwości nie udało się wyznaczyć fazy, co wynikało z zawodności algorytmu pomiaru fazy przy bardzo małych amplitudach sygnału wyjściowego.
+
+Wyznaczona z pomiarów górna częstotliwość graniczna wyniosła około $436 "Hz"$ i była bardzo bliska wartości teoretycznej $440 "Hz"$, a kąt przesunięcia fazy dla częstotliwości granicznej wyniósł około $-43.25 degree$.
+
+Zaobserwowano również jak zachowuje się układ całkujący gdy podano falę prostokątną.

@@ -92,7 +92,7 @@ def theoretical_phase(f):
 
 def amp_graph():
     plt.figure()
-    plt.semilogx(freq, amp, marker="o", label="Pomiar")
+    plt.semilogx(freq, amp, marker="o", linestyle="", label="Pomiar")
     plt.semilogx(
         plot_freq,
         theoretical_amp(plot_freq),

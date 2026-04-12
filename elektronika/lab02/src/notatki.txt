@@ -1,8 +1,8 @@
-R1: 2 kOhm (t=0.126 ms)
-R2: 5.56 kOhm (t=0.3503 ms)
-t_rezystor: 47.4 Ohm
+R1: 2 kOhm (tau=0.126 ms)
+R2: 5.56 kOhm (tau=0.3503 ms)
+tau_rezystor: 47.4 Ohm
 C: 63 nF
-t = 0.3503 ms
+tau = 0.3503 ms
 
 Zad1
 f) Uwy/Uwe = 904 mv / 1000 mV
@@ -19,17 +19,17 @@ d) układ różniczkuje sygnał dobrze dla dużych okresów (>= 100 ms) im więk
 Zad3
 b) f_g = 440 Hz
 d) 
-0.5t = 0.17515 ms
-1.5t = 0.52545 ms
-2.5t = 0.87575 ms
-3.5t = 1.22605 ms
-4.5t = 1.57635 ms
-5.5t = 1.92665 ms
-6.5t = 2.27695 ms
-7.5t = 2.62725 ms
-8.5t = 2.97755 ms
-9.5t = 3.32785 ms
-5t = 1.7515 ms, czas narastania = 880 us
+0.5tau = 0.17515 ms
+1.5tau = 0.52545 ms
+2.5tau = 0.87575 ms
+3.5tau = 1.22605 ms
+4.5tau = 1.57635 ms
+5.5tau = 1.92665 ms
+6.5tau = 2.27695 ms
+7.5tau = 2.62725 ms
+8.5tau = 2.97755 ms
+9.5tau = 3.32785 ms
+5tau = 1.7515 ms, czas narastania = 880 us = 2.5tau
 
 Zad4
 b) 
