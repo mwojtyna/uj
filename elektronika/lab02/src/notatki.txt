@@ -35,6 +35,3 @@ Zad4
 b) 
 L = 15.3 mH
 omega0 = 1/sqrt(LC) = 1/(2pi * sqrt(15.3 mH * 63 nF)) = 1/(2pi * 0.03105ms) = 5.126 kHz
-
-sprawozdanie:
-screeny na końcu sprawozdania jako notatki, w treści sprawozdania wystarczy tabelkę

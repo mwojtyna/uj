@@ -519,7 +519,7 @@ Podano na wejście falę prostokątną o okresach z zakresu $0.5tau "-" 10tau$ z
 )
 #figure(
   image("./img/2.3.33_5t_czas_narastania.png"),
-  caption: [$T=5tau$]
+  caption: [$T=5tau$],
 )
 Z powyższych obrazków można zaobserwować, że układ całkujący zmienia impuls wejściowy z prostokątnego na trójkątny dla $T <= tau$, a dla $T > tau$ krawędź trójkąta zmienia się w parabolę o różnej wypukłości.
 
@@ -533,3 +533,265 @@ Charakterystyka fazowa również była zgodna z teorią: dla niskich częstotliw
 Wyznaczona z pomiarów górna częstotliwość graniczna wyniosła około $436 "Hz"$ i była bardzo bliska wartości teoretycznej $440 "Hz"$, a kąt przesunięcia fazy dla częstotliwości granicznej wyniósł około $-43.25 degree$.
 
 Zaobserwowano również jak zachowuje się układ całkujący gdy podano falę prostokątną.
+
+#pagebreak()
+
+= Notatki
+#raw(read("./notatki.txt"))
+
+== Zadanie 1
+#grid(
+  columns: 2,
+  gutter: 1em,
+
+  figure(
+    image("./img/2.1.05_1V_100Hz_sinus.png"),
+    caption: [1 V, 100 Hz],
+  ),
+
+  figure(
+    image("./img/2.1.06_1V_200Hz_sinus.png"),
+    caption: [1 V, 200 Hz],
+  ),
+  figure(
+    image("./img/2.1.07_1V_300Hz_sinus.png"),
+    caption: [1 V, 300 Hz],
+  ),
+
+  figure(
+    image("./img/2.1.08_1V_400Hz_sinus.png"),
+    caption: [1 V, 400 Hz],
+  ),
+  figure(
+    image("./img/2.1.09_1V_500Hz_sinus.png"),
+    caption: [1 V, 500 Hz],
+  ),
+
+  figure(
+    image("./img/2.1.10_1V_600Hz_sinus.png"),
+    caption: [1 V, 600 Hz],
+  ),
+  figure(
+    image("./img/2.1.11_1V_700Hz_sinus.png"),
+    caption: [1 V, 700 Hz],
+  ),
+
+  figure(
+    image("./img/2.1.12_1V_800Hz_sinus.png"),
+    caption: [1 V, 800 Hz],
+  ),
+  figure(
+    image("./img/2.1.13_1V_900Hz_sinus.png"),
+    caption: [1 V, 900 Hz],
+  ),
+
+  figure(
+    image("./img/2.1.03_1V_1kHz_sinus.png"),
+    caption: [1 V, 1 kHz],
+  ),
+
+  figure(
+    image("./img/2.1.14_1V_2kHz_sinus.png"),
+    caption: [1 V, 2 kHz],
+  ),
+  figure(
+    image("./img/2.1.15_1V_3kHz_sinus.png"),
+    caption: [1 V, 3 kHz],
+  ),
+
+  figure(
+    image("./img/2.1.16_1V_4kHz_sinus.png"),
+    caption: [1 V, 4 kHz],
+  ),
+  figure(
+    image("./img/2.1.17_1V_5kHz_sinus.png"),
+    caption: [1 V, 5 kHz],
+  ),
+
+  figure(
+    image("./img/2.1.18_1V_6kHz_sinus.png"),
+    caption: [1 V, 6 kHz],
+  ),
+  figure(
+    image("./img/2.1.19_1V_7kHz_sinus.png"),
+    caption: [1 V, 7 kHz],
+  ),
+
+  figure(
+    image("./img/2.1.20_1V_8kHz_sinus.png"),
+    caption: [1 V, 8 kHz],
+  ),
+  figure(
+    image("./img/2.1.21_1V_9kHz_sinus.png"),
+    caption: [1 V, 9 kHz],
+  ),
+
+  figure(
+    image("./img/2.1.22_1V_10kHz_sinus.png"),
+    caption: [1 V, 10 kHz],
+  ),
+  figure(
+    image("./img/2.1.23_1V_20kHz_sinus.png"),
+    caption: [1 V, 20 kHz],
+  ),
+
+  figure(
+    image("./img/2.1.24_1V_30kHz_sinus.png"),
+    caption: [1 V, 30 kHz],
+  ),
+  figure(
+    image("./img/2.1.25_1V_40kHz_sinus.png"),
+    caption: [1 V, 40 kHz],
+  ),
+
+  figure(
+    image("./img/2.1.26_1V_50kHz_sinus.png"),
+    caption: [1 V, 50 kHz],
+  ),
+  figure(
+    image("./img/2.1.27_1V_60kHz_sinus.png"),
+    caption: [1 V, 60 kHz],
+  ),
+
+  figure(
+    image("./img/2.1.28_1V_70kHz_sinus.png"),
+    caption: [1 V, 70 kHz],
+  ),
+  figure(
+    image("./img/2.1.29_1V_80kHz_sinus.png"),
+    caption: [1 V, 80 kHz],
+  ),
+
+  figure(
+    image("./img/2.1.30_1V_90kHz_sinus.png"),
+    caption: [1 V, 90 kHz],
+  ),
+  figure(
+    image("./img/2.1.31_1V_100kHz_sinus.png"),
+    caption: [1 V, 100 kHz],
+  ),
+
+  figure(
+    image("./img/2.1.32_1V_200kHz_sinus.png"),
+    caption: [1 V, 200 kHz],
+  ),
+  figure(
+    image("./img/2.1.33_1V_300kHz_sinus.png"),
+    caption: [1 V, 300 kHz],
+  ),
+)
+
+#pagebreak()
+
+== Zadanie 2
+#grid(
+  columns: 2,
+  gutter: 1em,
+
+  figure(
+    image("./img/2.3.04_1V_100Hz_sinus.png"),
+    caption: [1 V, 100 Hz],
+  ),
+
+  figure(
+    image("./img/2.3.05_1V_200Hz_sinus.png"),
+    caption: [1 V, 200 Hz],
+  ),
+  figure(
+    image("./img/2.3.06_1V_300Hz_sinus.png"),
+    caption: [1 V, 300 Hz],
+  ),
+
+  figure(
+    image("./img/2.3.07_1V_400Hz_sinus.png"),
+    caption: [1 V, 400 Hz],
+  ),
+  figure(
+    image("./img/2.3.08_1V_500Hz_sinus.png"),
+    caption: [1 V, 500 Hz],
+  ),
+
+  figure(
+    image("./img/2.3.09_1V_600Hz_sinus.png"),
+    caption: [1 V, 600 Hz],
+  ),
+  figure(
+    image("./img/2.3.09_1V_700Hz_sinus.png"),
+    caption: [1 V, 700 Hz],
+  ),
+
+  figure(
+    image("./img/2.3.10_1V_800Hz_sinus.png"),
+    caption: [1 V, 800 Hz],
+  ),
+  figure(
+    image("./img/2.3.11_1V_900Hz_sinus.png"),
+    caption: [1 V, 900 Hz],
+  ),
+  figure(
+    image("./img/2.3.02_1V_1kHz_sinus.png"),
+    caption: [1 V, 1 kHz],
+  ),
+
+  figure(
+    image("./img/2.3.12_1V_2kHz_sinus.png"),
+    caption: [1 V, 2 kHz],
+  ),
+  figure(
+    image("./img/2.3.13_1V_3kHz_sinus.png"),
+    caption: [1 V, 3 kHz],
+  ),
+
+  figure(
+    image("./img/2.3.14_1V_4kHz_sinus.png"),
+    caption: [1 V, 4 kHz],
+  ),
+  figure(
+    image("./img/2.3.15_1V_5kHz_sinus.png"),
+    caption: [1 V, 5 kHz],
+  ),
+
+  figure(
+    image("./img/2.3.16_1V_6kHz_sinus.png"),
+    caption: [1 V, 6 kHz],
+  ),
+  figure(
+    image("./img/2.3.17_1V_7kHz_sinus.png"),
+    caption: [1 V, 7 kHz],
+  ),
+
+  figure(
+    image("./img/2.3.18_1V_8kHz_sinus.png"),
+    caption: [1 V, 8 kHz],
+  ),
+  figure(
+    image("./img/2.3.19_1V_9kHz_sinus.png"),
+    caption: [1 V, 9 kHz],
+  ),
+
+  figure(
+    image("./img/2.3.20_1V_10kHz_sinus.png"),
+    caption: [1 V, 10 kHz],
+  ),
+  figure(
+    image("./img/2.3.21_1V_20kHz_sinus.png"),
+    caption: [1 V, 20 kHz],
+  ),
+
+  figure(
+    image("./img/2.3.22_1V_30kHz_sinus.png"),
+    caption: [1 V, 30 kHz],
+  ),
+)
+
+#pagebreak()
+#outline(
+  title: [Spis obrazów],
+  target: figure.where(kind: image),
+)
+
+#pagebreak()
+#outline(
+  title: [Spis tabeli],
+  target: figure.where(kind: table),
+)
