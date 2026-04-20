@@ -6,8 +6,6 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
-#include <unordered_map>
-#include <utility>
 #include <vector>
 
 using num_t = std::int32_t;
@@ -19,30 +17,41 @@ num_t random_range(num_t range_from, num_t range_to) {
     return dist(generator);
 }
 
-using Edge = std::pair<num_t, num_t>; // (node_idx, weight)
+struct Dependency {
+    num_t to;
+    num_t communication_cost;
+};
 
-enum ProcessorType { HC, PP };
+enum class ProcessorType { HC, PP };
 struct Processor {
     num_t cost;
     ProcessorType type;
 };
 
+struct TaskProfile {
+    std::vector<Dependency> dependencies;
+    std::vector<num_t> time_by_proc;
+    std::vector<num_t> cost_by_proc;
+};
+
 struct Bus {
     std::string name;
-    num_t cost; // koszt podpięcia dowolnego procesora do kanału
+    num_t hookup_cost; // koszt podpięcia dowolnego procesora do kanału
     num_t bandwidth;
-    std::vector<bool> connected_to_processor; // czy obecna szyna jest podpięta do i-tego procesora
+    std::vector<bool> connected_processors; // czy obecna szyna jest podpięta do i-tego procesora
 };
 
 struct Input {
-    std::unordered_map<num_t, std::unordered_map<num_t, Edge>>
-        adj_list; // lista sąsiedztwa i-tego wierzchołka
+    std::vector<TaskProfile> tasks;
     std::vector<Processor> processors;
-    std::vector<std::vector<num_t>>
-        task_processor_time; // czas wykonania i-tego zadania na j-tym procesorze
-    std::vector<std::vector<num_t>>
-        task_processor_cost; // koszt wykonania i-tego zadania na j-tym procesorze
     std::vector<Bus> buses;
+
+    num_t taskCount() const {
+        return static_cast<num_t>(tasks.size());
+    }
+    num_t processorCount() const {
+        return static_cast<num_t>(processors.size());
+    }
 };
 
 struct TaskResult {
@@ -57,16 +66,16 @@ struct Output {
     std::vector<TaskResult> task_results; // PE -> lista zadań (idx, czas rozpoczęcia)
 };
 
-num_t timeToLeaf(num_t taskIdx, num_t procIdx, Input& in, std::vector<num_t>& memo) {
+num_t timeToLeaf(num_t taskIdx, num_t procIdx, const Input& in, std::vector<num_t>& memo) {
     if (memo[taskIdx] != -1) {
         return memo[taskIdx];
     }
 
-    num_t time = in.task_processor_time[taskIdx][procIdx];
+    num_t time = in.tasks[taskIdx].time_by_proc[procIdx];
 
     num_t maxChildTime = 0;
-    for (const auto& [_, edge] : in.adj_list[taskIdx]) {
-        const auto& [nbIdx, weight] = edge;
+    for (const Dependency& dependency : in.tasks[taskIdx].dependencies) {
+        const num_t nbIdx = dependency.to;
         maxChildTime = std::max(maxChildTime, timeToLeaf(nbIdx, procIdx, in, memo));
     }
 
@@ -74,13 +83,13 @@ num_t timeToLeaf(num_t taskIdx, num_t procIdx, Input& in, std::vector<num_t>& me
     return memo[taskIdx];
 }
 
-Output process(Input& in) {
-    const num_t task_count = in.adj_list.size();
+Output process(const Input& in) {
+    const num_t task_count = in.taskCount();
     Output out{};
 
     // Find first PP processor
     num_t firstPPIdx = 0;
-    for (int i = 0; i < in.processors.size(); i++) {
+    for (num_t i = 0; i < in.processorCount(); i++) {
         if (in.processors[i].type == ProcessorType::PP) {
             firstPPIdx = i;
             break;
@@ -90,17 +99,17 @@ Output process(Input& in) {
     // Compute total time and cost
     out.total_cost += in.processors[firstPPIdx].cost;
     for (int i = 0; i < task_count; i++) {
-        out.total_time += in.task_processor_time[i][firstPPIdx];
-        out.total_cost += in.task_processor_cost[i][firstPPIdx];
+        out.total_time += in.tasks[i].time_by_proc[firstPPIdx];
+        out.total_cost += in.tasks[i].cost_by_proc[firstPPIdx];
     }
 
-    std::vector<num_t> memo(in.adj_list.size(), -1);
+    std::vector<num_t> memo(in.taskCount(), -1);
     timeToLeaf(0, firstPPIdx, in, memo);
 
     std::vector<num_t> indeg(task_count, 0);
     for (num_t from = 0; from < task_count; from++) {
-        for (const auto& [to, _] : in.adj_list[from]) {
-            indeg[to] += 1;
+        for (const Dependency& dependency : in.tasks[from].dependencies) {
+            indeg[dependency.to] += 1;
         }
     }
 
@@ -115,9 +124,9 @@ Output process(Input& in) {
     };
     std::priority_queue<TaskPQ, std::vector<TaskPQ>, decltype(comp)> maxHeap;
 
-    for (int i = 0; i < indeg.size(); i++) {
+    for (num_t i = 0; i < task_count; i++) {
         if (indeg[i] == 0) {
-            maxHeap.push(std::move(TaskPQ(i, memo[i])));
+            maxHeap.push(TaskPQ(i, memo[i]));
         }
     }
 
@@ -127,20 +136,21 @@ Output process(Input& in) {
         maxHeap.pop();
         out.task_results.emplace_back(taskIdx, curTime);
 
-        for (const auto& [nbIdx, _] : in.adj_list[taskIdx]) {
+        for (const Dependency& dependency : in.tasks[taskIdx].dependencies) {
+            const num_t nbIdx = dependency.to;
             indeg[nbIdx] -= 1;
             if (indeg[nbIdx] == 0) {
                 maxHeap.push(TaskPQ(nbIdx, memo[nbIdx]));
             }
         }
 
-        curTime += in.task_processor_time[taskIdx][firstPPIdx];
+        curTime += in.tasks[taskIdx].time_by_proc[firstPPIdx];
     }
 
     return out;
 }
 
-Input readInput(std::string& filename) {
+Input readInput(const std::string& filename) {
     std::ifstream file;
     file.open(filename);
     if (!file.is_open()) {
@@ -174,10 +184,7 @@ Input readInput(std::string& filename) {
 
         if (section == "@tasks") {
             header >> tasks_n;
-            input.adj_list.clear();
-            for (num_t i = 0; i < tasks_n; i++) {
-                input.adj_list[i] = {};
-            }
+            input.tasks.assign(tasks_n, TaskProfile{});
 
             for (num_t i = 0; i < tasks_n; i++) {
                 std::getline(file, line);
@@ -198,7 +205,8 @@ Input readInput(std::string& filename) {
                     num_t weight = static_cast<num_t>(
                         std::stoi(edge_token.substr(open_pos + 1, close_pos - open_pos - 1)));
 
-                    input.adj_list[task_id][node] = std::make_pair(node, weight);
+                    input.tasks[task_id].dependencies.push_back(
+                        Dependency{.to = node, .communication_cost = weight});
                 }
             }
         } else if (section == "@proc") {
@@ -219,23 +227,21 @@ Input readInput(std::string& filename) {
                     .cost = cost, .type = (type == 0) ? ProcessorType::HC : ProcessorType::PP});
             }
         } else if (section == "@times") {
-            input.task_processor_time.assign(tasks_n, std::vector<num_t>(proc_n));
-
             for (num_t i = 0; i < tasks_n; i++) {
                 std::getline(file, line);
                 std::istringstream row(line);
+                input.tasks[i].time_by_proc.assign(proc_n, 0);
                 for (num_t j = 0; j < proc_n; j++) {
-                    row >> input.task_processor_time[i][j];
+                    row >> input.tasks[i].time_by_proc[j];
                 }
             }
         } else if (section == "@cost") {
-            input.task_processor_cost.assign(tasks_n, std::vector<num_t>(proc_n));
-
             for (num_t i = 0; i < tasks_n; i++) {
                 std::getline(file, line);
                 std::istringstream row(line);
+                input.tasks[i].cost_by_proc.assign(proc_n, 0);
                 for (num_t j = 0; j < proc_n; j++) {
-                    row >> input.task_processor_cost[i][j];
+                    row >> input.tasks[i].cost_by_proc[j];
                 }
             }
         } else if (section == "@comm") {
@@ -245,13 +251,13 @@ Input readInput(std::string& filename) {
                 std::istringstream row(line);
                 Bus bus;
 
-                row >> bus.name >> bus.cost >> bus.bandwidth;
-                bus.connected_to_processor.assign(proc_n, false);
+                row >> bus.name >> bus.hookup_cost >> bus.bandwidth;
+                bus.connected_processors.assign(proc_n, false);
 
                 for (num_t i = 0; i < proc_n; i++) {
                     int connected = 0;
                     row >> connected;
-                    bus.connected_to_processor[i] = static_cast<bool>(connected);
+                    bus.connected_processors[i] = static_cast<bool>(connected);
                 }
 
                 input.buses.push_back(bus);
@@ -273,13 +279,13 @@ int main(int argc, char* argv[]) {
 
     std::string infile = argv[1];
 
-    Input input = readInput(infile);
-    if (input.buses.size() != 1) {
+    Input in = readInput(infile);
+    if (in.buses.size() != 1) {
         std::cout << "Obsługiwany jest jednie przypadek gdy liczba szyn == 1";
         return 1;
     }
 
-    Output out = process(input);
+    Output out = process(in);
     std::cout << "Całkowity czas: " << out.total_time << "\n";
     std::cout << "Całkowity koszt: " << out.total_cost << "\n";
 
