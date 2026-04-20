@@ -1,13 +1,13 @@
 #include <cstdint>
 #include <fstream>
 #include <iostream>
-#include <map>
 #include <queue>
 #include <random>
 #include <sstream>
 #include <stdexcept>
 #include <string>
 #include <unordered_map>
+#include <utility>
 #include <vector>
 
 using num_t = std::int32_t;
@@ -48,76 +48,55 @@ struct Input {
 struct TaskResult {
     num_t idx;
     num_t task_begin_time;
+    TaskResult(num_t idx, num_t task_begin_time) : idx(idx), task_begin_time(task_begin_time) {}
 };
 
 struct Output {
-    std::map<num_t, std::map<num_t, TaskResult>>
-        task_results; // nazwa PE -> lista zadań (nazwa, czas rozpoczęcia)
-    std::map<std::string, std::vector<num_t>>
-        bus_processors; // nazwa szyny -> lista indeksów procesorów połączonych z szyną
     num_t total_time;
+    num_t total_cost;
+    std::vector<TaskResult> task_results; // PE -> lista zadań (idx, czas rozpoczęcia)
 };
 
-Output calcTime(Input& in) {
-    Output out;
-    const num_t task_count = in.task_processor_time.size();
-
-    std::map<num_t, num_t> task_proc; // taskIdx -> procIdx
-    std::map<num_t, num_t> proc_bus;  // procIdx -> busIdx
-
-    // Znajdź najszybszy procesor HC dla każdego zadania
-    for (num_t taskIdx = 0; taskIdx < task_count; taskIdx++) {
-        num_t minTimeProcIdx = 0;
-        num_t minTime = in.task_processor_time[taskIdx][minTimeProcIdx];
-        for (num_t procIdx = 0; procIdx < in.task_processor_time[taskIdx].size(); procIdx++) {
-            auto curTime = in.task_processor_time[taskIdx][procIdx];
-            auto curCost = in.task_processor_cost[taskIdx][procIdx];
-
-            if (curTime < minTime ||
-                (curTime == minTime && curCost < in.task_processor_cost[taskIdx][minTimeProcIdx])) {
-                minTime = curTime;
-                minTimeProcIdx = procIdx;
-            }
-        }
-
-        task_proc[taskIdx] = minTimeProcIdx;
+num_t timeToLeaf(num_t taskIdx, num_t procIdx, Input& in, std::vector<num_t>& memo) {
+    if (memo[taskIdx] != -1) {
+        return memo[taskIdx];
     }
 
-    // Wpisz do Output
-    for (const auto& [taskIdx, procIdx] : task_proc) {
-        out.task_results[procIdx][taskIdx] = TaskResult{.idx = taskIdx, .task_begin_time = -1};
+    num_t time = in.task_processor_time[taskIdx][procIdx];
+
+    num_t maxChildTime = 0;
+    for (const auto& [_, edge] : in.adj_list[taskIdx]) {
+        const auto& [nbIdx, weight] = edge;
+        maxChildTime = std::max(maxChildTime, timeToLeaf(nbIdx, procIdx, in, memo));
     }
 
-    // Znajdź najtańszą szynę dla każdego procesora
-    for (num_t procIdx = 0; procIdx < in.processors.size(); procIdx++) {
-        if (out.task_results[procIdx].empty()) {
-            continue;
-        }
+    memo[taskIdx] = time + maxChildTime;
+    return memo[taskIdx];
+}
 
-        // Znajdź szyny do których można dołączyć procesor
-        std::vector<num_t> validBusIdxs;
-        validBusIdxs.reserve(in.buses.size());
-        for (num_t busIdx = 0; busIdx < in.buses.size(); busIdx++) {
-            if (in.buses[busIdx].connected_to_processor[procIdx]) {
-                validBusIdxs.push_back(busIdx);
-            }
-        }
+Output process(Input& in) {
+    const num_t task_count = in.adj_list.size();
+    Output out{};
 
-        if (validBusIdxs.empty()) {
-            continue;
+    // Find first PP processor
+    num_t firstPPIdx = 0;
+    for (int i = 0; i < in.processors.size(); i++) {
+        if (in.processors[i].type == ProcessorType::PP) {
+            firstPPIdx = i;
+            break;
         }
-
-        num_t busChoiceIdx = random_range(0, validBusIdxs.size() - 1);
-        num_t busIdx = validBusIdxs[busChoiceIdx];
-        proc_bus[procIdx] = busIdx;
     }
 
-    // Wpisz do Output
-    for (const auto& [procIdx, busIdx] : proc_bus) {
-        out.bus_processors[in.buses[busIdx].name].push_back(procIdx);
+    // Compute total time and cost
+    out.total_cost += in.processors[firstPPIdx].cost;
+    for (int i = 0; i < task_count; i++) {
+        out.total_time += in.task_processor_time[i][firstPPIdx];
+        out.total_cost += in.task_processor_cost[i][firstPPIdx];
     }
 
-    // Topo sort
+    std::vector<num_t> memo(in.adj_list.size(), -1);
+    timeToLeaf(0, firstPPIdx, in, memo);
+
     std::vector<num_t> indeg(task_count, 0);
     for (num_t from = 0; from < task_count; from++) {
         for (const auto& [to, _] : in.adj_list[from]) {
@@ -125,44 +104,37 @@ Output calcTime(Input& in) {
         }
     }
 
-    std::vector<double> task_start_time(task_count, 0);
+    // Toposort + choose biggest time to leaf
+    struct TaskPQ {
+        num_t taskIdx;
+        num_t timeToLeaf;
+        TaskPQ(num_t taskIdx, num_t timeToLeaf) : taskIdx(taskIdx), timeToLeaf(timeToLeaf) {}
+    };
+    auto comp = [](const TaskPQ& a, const TaskPQ& b) -> bool {
+        return a.timeToLeaf <= b.timeToLeaf;
+    };
+    std::priority_queue<TaskPQ, std::vector<TaskPQ>, decltype(comp)> maxHeap;
 
-    std::queue<num_t> q;
-    for (num_t taskIdx = 0; taskIdx < task_count; taskIdx++) {
-        if (indeg[taskIdx] == 0) {
-            q.push(taskIdx);
+    for (int i = 0; i < indeg.size(); i++) {
+        if (indeg[i] == 0) {
+            maxHeap.push(std::move(TaskPQ(i, memo[i])));
         }
     }
 
-    double maxTime = 0;
-    while (!q.empty()) {
-        num_t taskIdx = q.front();
-        q.pop();
+    num_t curTime = 0;
+    while (!maxHeap.empty()) {
+        const auto [taskIdx, timeToLeaf] = maxHeap.top();
+        maxHeap.pop();
+        out.task_results.emplace_back(taskIdx, curTime);
 
-        maxTime = std::max(maxTime, task_start_time[taskIdx] +
-                                        in.task_processor_time[taskIdx][task_proc[taskIdx]]);
-
-        // Musi być taka sama jak szyna jego sąsiadów
-        const Bus& taskBus = in.buses[proc_bus[task_proc[taskIdx]]];
-
-        for (const auto& [nbIdx, edge] : in.adj_list[taskIdx]) {
-            double transmitTime = ((double)(edge.second)) / taskBus.bandwidth;
-
-            task_start_time[nbIdx] =
-                std::max(task_start_time[nbIdx],
-                         task_start_time[taskIdx] +
-                             in.task_processor_time[taskIdx][task_proc[taskIdx]] + transmitTime);
-
-            indeg[nbIdx]--;
+        for (const auto& [nbIdx, _] : in.adj_list[taskIdx]) {
+            indeg[nbIdx] -= 1;
             if (indeg[nbIdx] == 0) {
-                q.push(nbIdx);
+                maxHeap.push(TaskPQ(nbIdx, memo[nbIdx]));
             }
         }
-    }
-    out.total_time = maxTime;
 
-    for (const auto& [taskIdx, procIdx] : task_proc) {
-        out.task_results[procIdx][taskIdx].task_begin_time = task_start_time[taskIdx];
+        curTime += in.task_processor_time[taskIdx][firstPPIdx];
     }
 
     return out;
@@ -244,7 +216,7 @@ Input readInput(std::string& filename) {
                 row >> cost >> ignored >> type;
 
                 input.processors.push_back(Processor{
-                    .cost = cost, .type = type == 0 ? ProcessorType::HC : ProcessorType::PP});
+                    .cost = cost, .type = (type == 0) ? ProcessorType::HC : ProcessorType::PP});
             }
         } else if (section == "@times") {
             input.task_processor_time.assign(tasks_n, std::vector<num_t>(proc_n));
@@ -292,56 +264,29 @@ Input readInput(std::string& filename) {
     return input;
 }
 
-void writeOutput(Output& out, std::string& filename) {
-    std::ofstream file;
-    file.open(filename);
-    if (!file.is_open()) {
-        throw std::runtime_error("Nie można stworzyć pliku wyjściowego: " + filename);
-    }
-
-    for (const auto& [procIdx, tasks] : out.task_results) {
-        if (tasks.empty()) {
-            continue;
-        }
-
-        file << "P" << procIdx << ":";
-        for (const auto& [_, task] : tasks) {
-            file << " T" << task.idx << "(" << task.task_begin_time << ")";
-        }
-        file << "\n";
-    }
-
-    for (const auto& [bus_name, procs] : out.bus_processors) {
-        if (procs.empty()) {
-            continue;
-        }
-
-        file << bus_name << ":";
-        for (int proc_id : procs) {
-            file << " P" << proc_id;
-        }
-        file << "\n";
-    }
-
-    file.close();
-    std::cout << "Napisano do pliku " << filename << std::endl;
-}
-
 int main(int argc, char* argv[]) {
-    if (argc != 3) {
+    if (argc != 2) {
         std::cout << "Złe argumenty! Poprawne argumenty:\n";
-        std::cout << "plik_wejsciowy plik_wyjsciowy\n";
+        std::cout << "plik_wejsciowy\n";
         return 1;
     }
 
     std::string infile = argv[1];
-    std::string outfile = argv[2];
 
     Input input = readInput(infile);
-    Output output = calcTime(input);
-    writeOutput(output, outfile);
+    if (input.buses.size() != 1) {
+        std::cout << "Obsługiwany jest jednie przypadek gdy liczba szyn == 1";
+        return 1;
+    }
 
-    std::cout << "Czas: " << output.total_time << "\n";
+    Output out = process(input);
+    std::cout << "Całkowity czas: " << out.total_time << "\n";
+    std::cout << "Całkowity koszt: " << out.total_cost << "\n";
+
+    for (const TaskResult& task : out.task_results) {
+        std::cout << "T" << task.idx << "(" << task.task_begin_time << "), ";
+    }
+    std::cout << "\n";
 
     return 0;
 }
