@@ -1,4 +1,4 @@
-#include "./z03a.hpp"
+#include "./z03b.hpp"
 
 #include <chrono>
 #include <iomanip>
@@ -14,7 +14,7 @@ void printResult(const std::string& testName, bool condition) {
 void testPopReturnsAscendingOrder() {
     std::cout << "\n=== testPopReturnsAscendingOrder ===\n";
 
-    PriorityQueue q(10);
+    PriorityQueue q;
     q.insert(7);
     q.insert(2);
     q.insert(9);
@@ -28,25 +28,10 @@ void testPopReturnsAscendingOrder() {
     printResult("fifth pop returns maximum", q.pop() == 9);
 }
 
-void testDuplicateInsertIsIgnored() {
-    std::cout << "\n=== testDuplicateInsertIsIgnored ===\n";
-
-    PriorityQueue q(10);
-    q.insert(4);
-    q.insert(4);
-    q.insert(2);
-    q.insert(2);
-    q.insert(9);
-
-    printResult("first unique element", q.pop() == 2);
-    printResult("duplicate 2 was ignored", q.pop() == 4);
-    printResult("duplicate 4 was ignored", q.pop() == 9);
-}
-
 void testInterleavedOperations() {
     std::cout << "\n=== testInterleavedOperations ===\n";
 
-    PriorityQueue q(10);
+    PriorityQueue q;
     q.insert(8);
     q.insert(3);
     printResult("pop after two inserts", q.pop() == 3);
@@ -67,10 +52,10 @@ double timePerOperation(const std::chrono::high_resolution_clock::time_point& st
 std::vector<double> benchmark(num_t N) {
     std::vector<double> row = {static_cast<double>(N)};
 
-    PriorityQueue q(N);
+    PriorityQueue q;
     // Descending inserts keep time linear instead of quadratic
-    for (num_t value = N; value > 0; --value) {
-        q.insert(value - 1);
+    for (num_t value = 0; value < N; value++) {
+        q.insert(value);
     }
 
     auto start = std::chrono::high_resolution_clock::now();
@@ -105,12 +90,12 @@ void printResults(const std::vector<std::vector<double>>& results, int precision
 
 int main() {
     testPopReturnsAscendingOrder();
-    testDuplicateInsertIsIgnored();
     testInterleavedOperations();
 
-    std::vector<num_t> sizes = {1'000,     5'000,     10'000,    25'000,    50'000,
-                                100'000,   250'000,   500'000,   1'000'000, 2'000'000,
-                                3'000'000, 5'000'000, 10'000'000};
+    std::vector<num_t> sizes = {1'000,      5'000,     10'000,     25'000,     50'000,
+                                100'000,    250'000,   500'000,    1'000'000,  2'000'000,
+                                3'000'000,  5'000'000, 10'000'000, 20'000'000, 30'000'000,
+                                40'000'000, 50'000'000};
     std::vector<std::vector<double>> results;
 
     std::cout << "\nBenchmarking...\n";
@@ -119,5 +104,6 @@ int main() {
     }
 
     printResults(results);
+
     return 0;
 }
