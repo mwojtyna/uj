@@ -1,0 +1,37 @@
+stanowisko 2
+miernik 9
+
+zad1
+b) 
+E_+ = 11.98 V
+E_- = -11.96 V
+
+zad2
+K_teoretyczne = Rf/R1 = 9.95
+R_f = 99.1 kOhm
+R_1 = 9.96 kOhm
+K_zmierzone = 9.997
+phi = 181 deg
+f_g = 900 kHz
+
+dla f > 600 kHz nie dało się zmierzyć fazy bo było za duże przesunięcie w osi Y
+
+zad3
+R_2 = 9.97 kOhm
+reszta oporników taka sama jak w zad2
+f_obwiedni = 100.57 Hz
+f_sumy = 1.06 kHz
+
+zad4
+U_histerezy = 2*U_p
+U_p = -R_2/(R_1+R_2)*U_wy
+R_2_teoretyczne = 100 Ohm
+R_2_praktyczne = 99.6 Ohm
+R_1_teoretyczne = 1000 Ohm
+R_1_praktyczne = 992 Ohm
+
+zad5
+R = 10 kOhm
+C = 10 nF
+reszta oporników taka sama jak w zad4
+T = 34.46 us
