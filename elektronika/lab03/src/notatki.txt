@@ -10,7 +10,7 @@ zad2
 K_teoretyczne = Rf/R1 = 9.95
 R_f = 99.1 kOhm
 R_1 = 9.96 kOhm
-K_zmierzone = 9.997
+K_zmierzone = 9.8
 phi = 181 deg
 f_g = 900 kHz
 
