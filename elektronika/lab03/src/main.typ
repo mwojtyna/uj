@@ -10,7 +10,6 @@
 )
 
 #let vv(body) = math.bold(math.upright(body))
-#let wywe = $U_"wy"\/U_"we"$
 #set math.mat(delim: "[", column-gap: 1em)
 #set math.vec(delim: "[")
 #set math.equation(numbering: "(1)")
@@ -58,7 +57,7 @@ do wejścia układu i zsumowana z sygnałem wejściowym.
   [
     #figure(
       image("./img/wzmacniacz_sprzezenie.jpg", width: 95%),
-      caption: [Schemat wzmacniacza z sprzężeniem zwrotnym],
+      caption: [Schemat wzmacniacza ze sprzężeniem zwrotnym],
     )
   ],
 ) \
@@ -79,7 +78,9 @@ $
 + zrób zdjęcie płytki ze wzmacniaczem #figure(
     image("./img/3.1.01_invamp_topview.jpeg", width: 100%),
     caption: [Płytka ze wzmacniaczem operacyjnym],
-  ) \
+  )
+
+#v(1em)
 
 + zanotuj wartości napięć na pinach $plus.minus 12 "V"$
 Wartość napięcia na pinie $+12 "V"$ wyniosła $11.98 "V"$, a na pinie $-12 "V"$ wyniosła $-11.96 "V"$.
@@ -94,7 +95,7 @@ Zapoznano się ze schematem wzmacniacza operacyjnego oraz zmierzono napięcie na
 Zmontować wzmacniacz odwracający fazę o wzmocnieniu 10. Zdjąć charakterystykę częstotliwościową i fazową.
 
 == Wstęp teoretyczny
-Wzmacniacz odwracający fazę to wzmacniacz operacyjny, gdzie sygnał wejściowy podajemy na wejście odwracające (−) przez rezystor $R_1$, a sprzężenie zwrotne realizujemy rezystorem $R_2$. Wejście nieodwracające (+) podłączamy do masy ($0 "V"$). Napięcie wyjściowe dane jest wzorem
+Wzmacniacz odwracający fazę to wzmacniacz operacyjny, gdzie sygnał wejściowy podajemy na wejście odwracające (−) przez rezystor $R_1$, a sprzężenie zwrotne realizujemy rezystorem $R_2$. Wejście nieodwracające (+) podłączamy do masy ($0 "V"$). Napięcie wyjściowe dane jest wzorem:
 $
   U_"wy" = - R_2/R_1 U_"we"
 $
@@ -111,8 +112,8 @@ Aby uzyskać wzmocnienie $K=10$, wybrano oporniki o teoretycznych wartościach
   block: true,
   numbering: none,
   $
-    R_1 & = 100 "k"Omega \
-    R_2 & = 10 "k"Omega"."
+    R_1 & = 10 "k"Omega \
+    R_2 & = 100 "k"Omega"."
   $,
 )
 
@@ -121,8 +122,8 @@ Prawdziwe wartości wyniosły
   block: true,
   numbering: none,
   $
-    R_1 & = 99.1 "k"Omega \
-    R_2 & = 9.96 "k"Omega
+    R_1 & = 9.96 "k"Omega \
+    R_2 & = 99.1 "k"Omega
   $,
 )
 ze wzmocnieniem $K approx 9.95$.
@@ -134,27 +135,26 @@ Następnie zmontowano wzmacniacz na płytce.
   grid(
     columns: (auto, auto),
     column-gutter: 0.5em,
-    [ #image("./img/3.2.02_invamp_connected_topview.jpeg") ],
-    [ #image("./img/3.2.03_invamp_connected_wideview.jpeg") ],
+    [ #image("./img/3.2.02_invamp_connected_topview.jpeg") ], [ #image("./img/3.2.03_invamp_connected_wideview.jpeg") ],
   ),
-  caption: [Zmontowany wzmacniacz odwracający fazę]
+  caption: [Zmontowany wzmacniacz odwracający fazę],
 )
 
-Podano falę sinusoidalną $f=1 "kHz"$, $U=1 "V"$. Kolor żółty to oryginalny przebieg, kolor niebieski oznacza wyjście ze wzmacniacza.
+Podano falę sinusoidalną $f=1 "kHz"$, $U=1 "V"$. Kolor #text("żółty", fill: yellow) to oryginalny przebieg, kolor #text("niebieski", fill: blue) oznacza wyjście ze wzmacniacza.
 #figure(
   image("./img/3.2.03_1V_1kHz_sinus.png", width: 100%),
-  caption: [Wzmocnienie fali $1 "kHz"$, $1 "V"$]
+  caption: [Wzmocnienie fali $1 "kHz"$, $1 "V"$],
 )
 Jak widać, amplituda fali została wzmocniona $9.997/1.020 approx 9.8$ razy, co zgadza się z oczekiwaniami. Zaobserwowano też przesunięcie fazy o $181 degree$.
 
 === Charakterystyka amplitudowa i fazowa
 #figure(
   image("./img/opamp_rev_amp_graph.svg", width: 87%),
-  caption: [Wykres $U_"wy"$ w funkcji częstotliwości]
+  caption: [Wykres $U_"wy"$ w funkcji częstotliwości],
 ) <opamp_rev_amp>
 #figure(
   image("./img/opamp_rev_phase_graph.svg", width: 87%),
-  caption: [Wykres różnicy faz w funkcji częstotliwości]
+  caption: [Wykres różnicy faz w funkcji częstotliwości],
 ) <opamp_rev_phase>
 
 #grid(
@@ -211,33 +211,33 @@ Jak widać, amplituda fali została wzmocniona $9.997/1.020 approx 9.8$ razy, co
         columns: 2,
         align: (left, center),
         table.header([Częstotliwość $f$ [Hz]], [Faza $phi$ [°]]),
-        [100],     [179.9],
-        [200],     [179.9],
-        [300],     [179.7],
-        [400],     [179.6],
-        [500],     [179.5],
-        [600],     [179.4],
-        [700],     [179.3],
-        [800],     [179.2],
-        [900],     [179.1],
-        [1000],    [179.0],
-        [2000],    [178.0],
-        [3000],    [177.0],
-        [4000],    [175.6],
-        [5000],    [174.2],
-        [6000],    [172.1],
-        [7000],    [169.2],
-        [8000],    [165.2],
-        [9000],    [160.1],
-        [10 000],  [154.6],
-        [20 000],  [122.3],
-        [30 000],  [112.0],
-        [40 000],  [106.9],
-        [50 000],  [102.8],
-        [60 000],  [100.2],
-        [70 000],  [97.9],
-        [80 000],  [95.9],
-        [90 000],  [93.9],
+        [100], [179.9],
+        [200], [179.9],
+        [300], [179.7],
+        [400], [179.6],
+        [500], [179.5],
+        [600], [179.4],
+        [700], [179.3],
+        [800], [179.2],
+        [900], [179.1],
+        [1000], [179.0],
+        [2000], [178.0],
+        [3000], [177.0],
+        [4000], [175.6],
+        [5000], [174.2],
+        [6000], [172.1],
+        [7000], [169.2],
+        [8000], [165.2],
+        [9000], [160.1],
+        [10 000], [154.6],
+        [20 000], [122.3],
+        [30 000], [112.0],
+        [40 000], [106.9],
+        [50 000], [102.8],
+        [60 000], [100.2],
+        [70 000], [97.9],
+        [80 000], [95.9],
+        [90 000], [93.9],
         [100 000], [92.5],
         [200 000], [83.0],
         [300 000], [75.9],
@@ -256,3 +256,87 @@ Jak widać, amplituda fali została wzmocniona $9.997/1.020 approx 9.8$ razy, co
 == Podsumowanie
 Znaleziono górną wartość częstotliwości ($f_g = 900 "kHz"$), dla której $U_"wy" <= 1/10 U_"we"$. \
 Jak oczekiwano, układ wzmacnia sygnał o małych częstotliwościach $K$ razy. Im większa częstotliwość, tym słabiej wzmacnia, a po około $100 "kHz"$ układ osłabia sygnał. Można również zaobserwować zmniejszenie przesunięcia fazy. Dla częstotliwości $f>=700 space 000$ nie udało się zmierzyć przesunięcia fazy z powodu ograniczeń oscyloskopu.
+
+#pagebreak()
+
+= Zadanie 3
+== Treść
+Zmontować sumator o dwóch wejściach. Zsumować drgania sinusoidalne z dwóch generatorów, obserwować zdudnienia przebiegów.
+
+== Wstęp teoretyczny
+=== Sumator
+Sumator to wzmacniacz operacyjny odwracający fazę z dodatkowymi rezystorami podłączonymi równolegle do wejścia odwracającego. Można go wykorzystać do sumowania napięć. Napięcie wyjściowe dane jest wzorem:
+$
+  U_"wy" = -R sum_(i=1)^n U_i/R_i
+$
+#figure(
+  image("./img/wzmacniacz_sumator.png"),
+  caption: [Schemat wzmacniacza sumującego],
+)
+
+=== Dudnienia
+Dudnienie charakteryzuje się dwiema częstotliwościami ($f_1$, $f_2$ to częstotliwości sygnałów wejściowych):
+- częstotliwością sygnału zsumowanego: $1/2(f_1+f_2)$,
+- częstotliwością obwiedni: $|f_1-f_2|$.
+Dudnienia można zaobserwować, jeśli $|f_1-f_2|$ jest wystarczająco małe.
+
+#pagebreak()
+
+== Praktyka
+=== Sumowanie
+
+Wybrano oporniki o wartościach:
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+      R & = 99.1 "k"Omega \
+    R_1 & = 9.96 "k"Omega \
+    R_2 & = 9.97 "k"Omega"."
+  $,
+)
+Wybrano napięcia $U_1=U_2=1 "V"$ z częstotliwościami $1 "kHz"$.
+
+Teoretyczna wartość napięcia wyjściowego to (minus oznacza odwrócenie fazy):
+$
+  U_"wy" & = -99.1 "k"Omega ((1 "V")/(9.96 "k"Omega) + (1 "V")/(9.97 "k"Omega)) approx -19.89 "V".
+$
+
+#figure(
+  grid(
+    columns: (auto, auto),
+    column-gutter: 0.5em,
+    [ #image("./img/3.3.01_sumamp_topdown.jpeg") ], [ #image("./img/3.3.02_sumamp_wideview.jpeg") ],
+  ),
+  caption: [Zmontowany wzmacniacz sumujący],
+)
+
+#figure(
+  image("./img/3.3.04_1V_1kHz_sum.png"),
+  caption: [Zsumowane przebiegi $U_1=U_2=1 "V"$],
+)
+
+Faktyczne napięcie wyjściowe wyniosło $19.99 "V"$ oraz faza została odwrócona, zgodnie z oczekiwaniami.
+
+=== Dudnienia
+Po zmianie częstotliwości drugiego przebiegu na $1.1 "kHz"$ zaobserwowano dudnienia.
+
+#figure(
+  image("./img/3.3.05_1V_1kHz_1.1kHz_dudnienie.png"),
+  caption: [Dudnienie na wyjściu wzmacniacza sumującego],
+)
+#figure(
+  image("./img/3.3.06_1V_1kHz_1.1kHz_dudnienie_f_sumy.png", width: 100%),
+  caption: [Pomiar częstotliwości sygnału zsumowanego],
+)
+#figure(
+  image("./img/3.3.07_1V_1kHz_1.1kHz_dudnienie_f_obwiedni.png", width: 100%),
+  caption: [Pomiar częstotliwości obwiedni],
+)
+
+Częstotliwość sygnału zsumowanego wyniosła $1.06 "kHz"$, a częstotliwość dudnień $100.57 "Hz"$.
+
+== Podsumowanie
+Zmontowany wzmacniacz sumujący działał zgodnie z teorią. Dla dwóch sygnałów sinusoidalnych o amplitudach $1 "V"$ i częstotliwości $1 "kHz"$ otrzymano na wyjściu napięcie o amplitudzie $19.99 "V"$, bardzo bliskie wartości teoretycznej $19.89 "V"$. Zaobserwowano również odwrócenie fazy sygnału wyjściowego, co jest zgodne z własnościami sumatora odwracającego.
+
+Po zmianie częstotliwości drugiego generatora na $1.1 "kHz"$ pojawiło się zjawisko dudnień. Zmierzona częstotliwość sygnału zsumowanego wyniosła $1.06 "kHz"$, czyli wartość bliska średniej arytmetycznej częstotliwości sygnałów wejściowych. Natomiast częstotliwość obwiedni wyniosła $100.57 "Hz"$, czyli wartość bardzo zbliżoną do różnicy częstotliwości sygnałów wejściowych. Potwierdza to poprawne działanie układu oraz zgodność obserwacji z przewidywaniami teoretycznymi.
