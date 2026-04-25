@@ -24,9 +24,9 @@ f_sumy = 1.06 kHz
 
 zad4
 U_histerezy = 2*U_p
-U_p = -R_2/(R_1+R_2)*U_wy
-R_2_teoretyczne = 100 Ohm
-R_2_praktyczne = 99.6 Ohm
+U_p = R_2/(R_1+R_2)*U_wy
+R_2_teoretyczne = 50 Ohm
+R_2_praktyczne = 49.7 Ohm
 R_1_teoretyczne = 1000 Ohm
 R_1_praktyczne = 992 Ohm
 

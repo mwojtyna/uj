@@ -107,30 +107,21 @@ Znak minus przy ilorazie rezystancji oznacza odwrócenie fazy (przesunięcie o $
 )
 
 == Praktyka
-Aby uzyskać wzmocnienie $K=10$, wybrano oporniki o teoretycznych wartościach
+Aby uzyskać wzmocnienie $K=10$, wybrano oporniki o wartościach
 #math.equation(
   block: true,
   numbering: none,
   $
-    R_1 & = 10 "k"Omega \
-    R_2 & = 100 "k"Omega"."
+    R_1 & = 9.96 "k"Omega approx 10 "k"Omega \
+    R_2 & = 99.1 "k"Omega approx 100 "k"Omega"."
   $,
 )
-
-Prawdziwe wartości wyniosły
-#math.equation(
-  block: true,
-  numbering: none,
-  $
-    R_1 & = 9.96 "k"Omega \
-    R_2 & = 99.1 "k"Omega
-  $,
-)
-ze wzmocnieniem $K approx 9.95$.
+z rzeczywistym wzmocnieniem $K approx 9.95$.
 
 #pagebreak()
 
 Następnie zmontowano wzmacniacz na płytce.
+#v(-1em)
 #figure(
   grid(
     columns: (auto, auto),
@@ -265,7 +256,7 @@ Zmontować sumator o dwóch wejściach. Zsumować drgania sinusoidalne z
 
 == Wstęp teoretyczny
 === Sumator
-Sumator to wzmacniacz operacyjny odwracający fazę z dodatkowymi rezystorami podłączonymi równolegle do wejścia odwracającego. Można go wykorzystać do sumowania napięć. Napięcie wyjściowe dane jest wzorem:
+Sumator to wzmacniacz operacyjny odwracający fazę z dodatkowymi napięciami i rezystorami podłączonymi równolegle do wejścia odwracającego. Można go wykorzystać do sumowania napięć. Napięcie wyjściowe dane jest wzorem:
 $
   U_"wy" = -R sum_(i=1)^n U_i/R_i
 $
@@ -290,9 +281,9 @@ Wybrano oporniki o wartościach:
   block: true,
   numbering: none,
   $
-      R & = 99.1 "k"Omega \
-    R_1 & = 9.96 "k"Omega \
-    R_2 & = 9.97 "k"Omega"."
+      R & = 99.1 "k"Omega approx 100 "k"Omega \
+    R_1 & = 9.96 "k"Omega approx 10 "k"Omega \
+    R_2 & = 9.97 "k"Omega approx 10 "k"Omega"."
   $,
 )
 Wybrano napięcia $U_1=U_2=1 "V"$ z częstotliwościami $1 "kHz"$.
@@ -340,3 +331,91 @@ Częstotliwość sygnału zsumowanego wyniosła $1.06 "kHz"$, a częstotliwość
 Zmontowany wzmacniacz sumujący działał zgodnie z teorią. Dla dwóch sygnałów sinusoidalnych o amplitudach $1 "V"$ i częstotliwości $1 "kHz"$ otrzymano na wyjściu napięcie o amplitudzie $19.99 "V"$, bardzo bliskie wartości teoretycznej $19.89 "V"$. Zaobserwowano również odwrócenie fazy sygnału wyjściowego, co jest zgodne z własnościami sumatora odwracającego.
 
 Po zmianie częstotliwości drugiego generatora na $1.1 "kHz"$ pojawiło się zjawisko dudnień. Zmierzona częstotliwość sygnału zsumowanego wyniosła $1.06 "kHz"$, czyli wartość bliska średniej arytmetycznej częstotliwości sygnałów wejściowych. Natomiast częstotliwość obwiedni wyniosła $100.57 "Hz"$, czyli wartość bardzo zbliżoną do różnicy częstotliwości sygnałów wejściowych. Potwierdza to poprawne działanie układu oraz zgodność obserwacji z przewidywaniami teoretycznymi.
+
+#pagebreak()
+
+= Zadanie 4
+== Treść
+Dla zadanego napięcia histerezy równego $1 "V"$ zbudować przerzutnik Schmidta. Zaobserwować i odrysować przebiegi napięcia wyjściowego przy sinusoidalnym i trójkątnym napięciu wejściowym. Zmierzyć histerezę i wykreślić statyczną charakterystykę układu.
+
+== Wstęp teoretyczny
+=== Przerzutnik
+*Przerzutniki* to układy elektroniczne wytwarzające prostokątne przebiegi napięciowe w wyniku szybkich procesów przełączania pomiędzy różnymi stanami. W przerzutnikach dwustanowych można wyróżnić dwie fazy odpowiadające niskiemu i wysokiemu poziomowi napięcia wyjściowego.
+*Przerzutnik bistabilny (Schmitta)* posiada dwa stany stabilne. Do zmiany stanu wymagany jest sygnał zewnętrzny.
+
+#v(1em)
+#grid(
+  columns: (1.506fr, 1fr),
+  column-gutter: 1em,
+  [
+    #figure(
+      image("./img/schmitt.png"),
+      caption: [Schemat przerzutnika Schmitta],
+    )
+  ],
+  [
+    #figure(
+      image("./img/histereza.png"),
+      caption: [Histereza],
+    ) <histereza>
+  ],
+)
+
+=== Histereza
+Kluczową cechą przerzutnika Schmitta jest histereza (@histereza) - różne progi przełączania "w górę" i "w dół".
+Histereza jest ważna, ponieważ bez niej przy zaszumionym sygnale, który oscyluje wokół progu, wyjście chaotycznie skacze między $+"E"$ i $−"E"$. Dzięki histerezie żeby przełączyć się na przeciwny stan, sygnał musi zmienić się o $2U_p$, co eliminuje fałszywe przełączenia.
+Próg przerzutu dany jest wzorem:
+$
+U_p = R_2/(R_1+R_2) dot (plus.minus E)
+$
+
+#pagebreak()
+
+== Praktyka
+Chcemy, aby szerokość histerezy było równe $1 "V"$, czyli żeby $2U_p= plus.minus 1 "V"$. Więc:
+$
+2U_p = 1 "V" \
+2 R_2/(R_1+R_2) dot plus.minus E = plus.minus 1 "V" \
+R_2/(R_1+R_2) dot plus.minus 20 "V" = plus.minus 1 "V" \
+R_2/(R_1+R_2) = 1/20 = 50/1000 \
+$
+
+Wybrano oporniki:
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+    R_1 & = 992 space Omega approx 1000 space Omega \
+    R_2 & = 49.7 space Omega approx 50 space Omega"."
+  $,
+)
+
+Napięcie przerzutu wynosi:
+$
+U_p = (49.7 space Omega)/(992 space Omega + 49.7 space Omega) dot (plus.minus 10 "V") approx plus.minus 0.48 "V"
+$
+Czyli szerokość histerezy dla takich rezystorów wynosi $0.96 "V" approx 1 "V"$.
+
+\
+Następnie zbudowano przerzutnik Schmitta na płytce:
+#v(-1em)
+#figure(
+  grid(
+    columns: (auto, auto),
+    column-gutter: 0.5em,
+    [ #image("./img/3.4.01_topdown.jpeg") ], [ #image("./img/3.4.02_wideview.jpeg") ],
+  ),
+  caption: [Zmontowany przerzutnik Schmitta],
+)
+
+#figure(
+  image("./img/3.4.03_histeresis_2V_1kHz.png", width: 100%),
+  caption: [Działanie przerzutnika dla fali sinusoidalnej (dół), oraz wykres histerezy (góra)]
+)
+
+Z wykresu XY widać metodą "na oko", że szerokość histerezy wynosi około $0.8 "V"$.
+
+== Podsumowanie
+Zbudowany przerzutnik Schmitta działał zgodnie z przewidywaniami teoretycznymi. Dobór rezystorów $R_1 approx 1000 space Omega$ oraz $R_2 approx 50 space Omega$ pozwolił uzyskać napięcie przerzutu około $plus.minus 0.48 "V"$, co odpowiada szerokości histerezy równej około $0.96 "V"$, czyli praktycznie zgodnej z założoną wartością $1 "V"$.
+
+Na podstawie obserwacji przebiegów oraz wykresu XY stwierdzono, że układ przełącza się skokowo pomiędzy dwoma stanami i wykazuje wyraźną histerezę o szerokości około $0.8 "V"$. Otrzymane wyniki potwierdzają poprawne działanie przerzutnika Schmitta oraz zgodność pomiarów z obliczeniami.
