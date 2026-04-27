@@ -342,6 +342,7 @@ Dla zadanego napięcia histerezy równego $1 "V"$ zbudować przerzutnik 
 === Przerzutnik
 *Przerzutniki* to układy elektroniczne wytwarzające prostokątne przebiegi napięciowe w wyniku szybkich procesów przełączania pomiędzy różnymi stanami. W przerzutnikach dwustanowych można wyróżnić dwie fazy odpowiadające niskiemu i wysokiemu poziomowi napięcia wyjściowego.
 *Przerzutnik bistabilny (Schmitta)* posiada dwa stany stabilne. Do zmiany stanu wymagany jest sygnał zewnętrzny.
+Napięcie wyjściowe jest ograniczone do $plus.minus E$, co generuje fale prostokątne.
 
 #v(1em)
 #grid(
@@ -366,18 +367,18 @@ Kluczową cechą przerzutnika Schmitta jest histereza (@histereza) - różne pro
 Histereza jest ważna, ponieważ bez niej przy zaszumionym sygnale, który oscyluje wokół progu, wyjście chaotycznie skacze między $+"E"$ i $−"E"$. Dzięki histerezie żeby przełączyć się na przeciwny stan, sygnał musi zmienić się o $2U_p$, co eliminuje fałszywe przełączenia.
 Próg przerzutu dany jest wzorem:
 $
-U_p = R_2/(R_1+R_2) dot (plus.minus E)
+  U_p = R_2/(R_1+R_2) dot (plus.minus E)
 $
 
 #pagebreak()
 
 == Praktyka
-Chcemy, aby szerokość histerezy było równe $1 "V"$, czyli żeby $2U_p= plus.minus 1 "V"$. Więc:
+Chcemy, aby szerokość histerezy była równe $1 "V"$, czyli żeby $2U_p= plus.minus 1 "V"$. Więc:
 $
-2U_p = 1 "V" \
-2 R_2/(R_1+R_2) dot plus.minus E = plus.minus 1 "V" \
-R_2/(R_1+R_2) dot plus.minus 20 "V" = plus.minus 1 "V" \
-R_2/(R_1+R_2) = 1/20 = 50/1000 \
+  2U_p = plus.minus 1 "V" \
+  2 R_2/(R_1+R_2) dot plus.minus E = plus.minus 1 "V" \
+  R_2/(R_1+R_2) dot plus.minus 20 "V" = plus.minus 1 "V" \
+  R_2/(R_1+R_2) = 1/20 = 50/1000 \
 $
 
 Wybrano oporniki:
@@ -392,7 +393,7 @@ Wybrano oporniki:
 
 Napięcie przerzutu wynosi:
 $
-U_p = (49.7 space Omega)/(992 space Omega + 49.7 space Omega) dot (plus.minus 10 "V") approx plus.minus 0.48 "V"
+  U_p = (49.7 space Omega)/(992 space Omega + 49.7 space Omega) dot (plus.minus 10 "V") approx plus.minus 0.48 "V"
 $
 Czyli szerokość histerezy dla takich rezystorów wynosi $0.96 "V" approx 1 "V"$.
 
@@ -410,7 +411,7 @@ Następnie zbudowano przerzutnik Schmitta na płytce:
 
 #figure(
   image("./img/3.4.03_histeresis_2V_1kHz.png", width: 100%),
-  caption: [Działanie przerzutnika dla fali sinusoidalnej (dół), oraz wykres histerezy (góra)]
+  caption: [Działanie przerzutnika Schmitta dla fali sinusoidalnej (dół), oraz wykres histerezy (góra)],
 )
 
 Z wykresu XY widać metodą "na oko", że szerokość histerezy wynosi około $0.8 "V"$.
@@ -419,3 +420,71 @@ Z wykresu XY widać metodą "na oko", że szerokość histerezy wynosi około $0
 Zbudowany przerzutnik Schmitta działał zgodnie z przewidywaniami teoretycznymi. Dobór rezystorów $R_1 approx 1000 space Omega$ oraz $R_2 approx 50 space Omega$ pozwolił uzyskać napięcie przerzutu około $plus.minus 0.48 "V"$, co odpowiada szerokości histerezy równej około $0.96 "V"$, czyli praktycznie zgodnej z założoną wartością $1 "V"$.
 
 Na podstawie obserwacji przebiegów oraz wykresu XY stwierdzono, że układ przełącza się skokowo pomiędzy dwoma stanami i wykazuje wyraźną histerezę o szerokości około $0.8 "V"$. Otrzymane wyniki potwierdzają poprawne działanie przerzutnika Schmitta oraz zgodność pomiarów z obliczeniami.
+
+#pagebreak()
+
+= Zadanie 5
+== Treść
+Zbudować multiwibrator astabilny. Zaobserwować i odrysować przebiegi impulsów na wejściu układu oraz w punkcie "l". Porównać zmierzoną wartości okresu drgań multiwibratora z wartością teoretyczną.
+
+== Wstęp teoretyczny
+*Multiwibrator* to inna nazwa na przerzutnik. *Multiwibrator astabilny* ma dodatkowy obwód RC (rezystor i kondensator) na wejściu odwracającym. Ten obwód powoduje automatyczne ładowanie i rozładowywanie kondensatora, co wymusza cykliczne przerzuty.
+
+#figure(
+  image("./img/astabilny.png", width: 60%),
+  caption: [Schemat multiwibratora astabilnego],
+)
+
+Napięcie przerzutu wynosi:
+$
+  U_p = R_2/(R_1+R_2)
+$
+
+Zaś okres drgań układu wynosi:
+$
+  T = 2R C ln((1+gamma)/(1-gamma)) \
+  "gdzie" gamma = R_2/(R_1+R_2)"."
+$
+
+== Praktyka
+Wybrano oporniki
+#math.equation(
+  block: true,
+  numbering: none,
+  $
+      R & = 10 "k"Omega \
+    R_1 & = 992 space Omega approx 1000 "k"Omega \
+    R_2 & = 49.7 space Omega approx 50 space Omega"."
+  $,
+)
+oraz kondensator o pojemności $10 "nF"$.
+
+Więc teoretyczny okres drgań to:
+$
+  // gamma & = 49.7/(992+49.7) approx 0.0477 \
+      T & = 2 dot 10 "k"Omega dot 10 "nF" dot ln((1+0.0477) / (1-0.0477)) \
+        & = 19.0945 space mu"s"
+$
+
+Następnie złożono układ na płytce:
+#v(-1em)
+#figure(
+  grid(
+    columns: (auto, auto),
+    column-gutter: 0.5em,
+    [ #image("./img/3.5.01_topdown.jpeg") ], [ #image("./img/3.5.02_wideview.jpeg") ],
+  ),
+  caption: [Zmontowany multiwibrator astabilny],
+)
+
+#figure(
+  image("./img/3.5.03_multivibrator.png", width: 100%),
+  caption: [Działanie przerzutnika astabilnego dla fali sinusoidalnej]
+)
+
+Zmierzono okres $41.99 mu"s"$, ponad 2x większy od oczekiwanego.
+
+== Podsumowanie
+Zbudowany multiwibrator astabilny działał poprawnie i samoczynnie generował przebieg prostokątny na wyjściu oraz odpowiadający mu przebieg na wejściu układu RC. Oznacza to, że układ okresowo przełączał się pomiędzy dwoma stanami zgodnie z przewidywaniami teoretycznymi.
+
+Zmierzony okres drgań wyniósł jednak $41.99 mu"s"$, podczas gdy wartość teoretyczna była równa $19.09 mu"s"$. Otrzymany wynik jest więc ponad dwukrotnie większy od obliczonego. Mimo tej różnicy pomiar potwierdza zasadę działania multiwibratora astabilnego.

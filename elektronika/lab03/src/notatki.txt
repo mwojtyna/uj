@@ -34,4 +34,4 @@ zad5
 R = 10 kOhm
 C = 10 nF
 reszta oporników taka sama jak w zad4
-T = 34.46 us
+T = 19.0945 us
