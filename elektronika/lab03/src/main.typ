@@ -491,10 +491,17 @@ Zmierzony okres drgań wyniósł jednak $41.99 mu"s"$, podczas gdy wartość teo
 
 #pagebreak()
 
-= Notatki
-#raw(read("./notatki.txt"))
+= Podsumowanie końcowe
+W ramach ćwiczenia zbadano kilka podstawowych zastosowań wzmacniacza operacyjnego: wzmacniacz odwracający, sumator, przerzutnik Schmitta oraz multiwibrator astabilny. W większości przypadków otrzymane wyniki były zgodne z przewidywaniami teoretycznymi i potwierdziły poprawne działanie analizowanych układów.
+
+Szczególnie dobrą zgodność uzyskano dla wzmacniacza odwracającego, gdzie zmierzone wzmocnienie wyniosło około $9.8$ przy wartości oczekiwanej bliskiej $10$, oraz dla sumatora, w którym poprawnie zaobserwowano zarówno sumowanie sygnałów, jak i zjawisko dudnień. Również przerzutnik Schmitta działał zgodnie z założeniami, a zmierzona szerokość histerezy była zbliżona do wartości projektowej.
+
+Największa rozbieżność pomiędzy teorią a pomiarem wystąpiła dla multiwibratora astabilnego, którego zmierzony okres drgań był ponad dwukrotnie większy od wartości obliczonej. Całość ćwiczenia potwierdziła jednak praktyczną przydatność wzmacniaczy operacyjnych do realizacji układów liniowych i przełączających.
 
 #pagebreak()
+
+= Notatki
+#raw(read("./notatki.txt"))
 
 == Zadanie 2
 #grid(
