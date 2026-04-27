@@ -488,3 +488,178 @@ Zmierzono okres $41.99 mu"s"$, ponad 2x większy od oczekiwanego.
 Zbudowany multiwibrator astabilny działał poprawnie i samoczynnie generował przebieg prostokątny na wyjściu oraz odpowiadający mu przebieg na wejściu układu RC. Oznacza to, że układ okresowo przełączał się pomiędzy dwoma stanami zgodnie z przewidywaniami teoretycznymi.
 
 Zmierzony okres drgań wyniósł jednak $41.99 mu"s"$, podczas gdy wartość teoretyczna była równa $19.09 mu"s"$. Otrzymany wynik jest więc ponad dwukrotnie większy od obliczonego. Mimo tej różnicy pomiar potwierdza zasadę działania multiwibratora astabilnego.
+
+#pagebreak()
+
+= Notatki
+#raw(read("./notatki.txt"))
+
+#pagebreak()
+
+== Zadanie 2
+#grid(
+  columns: 2,
+  gutter: 1em,
+
+  figure(
+    image("./img/3.2.04_1V_100Hz_sinus.png"),
+    caption: [1 V, 100 Hz],
+  ),
+  figure(
+    image("./img/3.2.05_1V_200Hz_sinus.png"),
+    caption: [1 V, 200 Hz],
+  ),
+
+  figure(
+    image("./img/3.2.06_1V_300Hz_sinus.png"),
+    caption: [1 V, 300 Hz],
+  ),
+  figure(
+    image("./img/3.2.07_1V_400Hz_sinus.png"),
+    caption: [1 V, 400 Hz],
+  ),
+
+  figure(
+    image("./img/3.2.08_1V_500Hz_sinus.png"),
+    caption: [1 V, 500 Hz],
+  ),
+  figure(
+    image("./img/3.2.09_1V_600Hz_sinus.png"),
+    caption: [1 V, 600 Hz],
+  ),
+
+  figure(
+    image("./img/3.2.10_1V_700Hz_sinus.png"),
+    caption: [1 V, 700 Hz],
+  ),
+  figure(
+    image("./img/3.2.11_1V_800Hz_sinus.png"),
+    caption: [1 V, 800 Hz],
+  ),
+
+  figure(
+    image("./img/3.2.12_1V_900Hz_sinus.png"),
+    caption: [1 V, 900 Hz],
+  ),
+  figure(
+    image("./img/3.2.13_1V_1kHz_sinus.png"),
+    caption: [1 V, 1 kHz],
+  ),
+
+  figure(
+    image("./img/3.2.14_1V_2kHz_sinus.png"),
+    caption: [1 V, 2 kHz],
+  ),
+  figure(
+    image("./img/3.2.15_1V_3kHz_sinus.png"),
+    caption: [1 V, 3 kHz],
+  ),
+
+  figure(
+    image("./img/3.2.16_1V_4kHz_sinus.png"),
+    caption: [1 V, 4 kHz],
+  ),
+  figure(
+    image("./img/3.2.17_1V_5kHz_sinus.png"),
+    caption: [1 V, 5 kHz],
+  ),
+
+  figure(
+    image("./img/3.2.18_1V_6kHz_sinus.png"),
+    caption: [1 V, 6 kHz],
+  ),
+  figure(
+    image("./img/3.2.19_1V_7kHz_sinus.png"),
+    caption: [1 V, 7 kHz],
+  ),
+
+  figure(
+    image("./img/3.2.20_1V_8kHz_sinus.png"),
+    caption: [1 V, 8 kHz],
+  ),
+  figure(
+    image("./img/3.2.21_1V_9kHz_sinus.png"),
+    caption: [1 V, 9 kHz],
+  ),
+
+  figure(
+    image("./img/3.2.22_1V_10kHz_sinus.png"),
+    caption: [1 V, 10 kHz],
+  ),
+  figure(
+    image("./img/3.2.23_1V_20kHz_sinus.png"),
+    caption: [1 V, 20 kHz],
+  ),
+
+  figure(
+    image("./img/3.2.24_1V_30kHz_sinus.png"),
+    caption: [1 V, 30 kHz],
+  ),
+  figure(
+    image("./img/3.2.25_1V_40kHz_sinus.png"),
+    caption: [1 V, 40 kHz],
+  ),
+
+  figure(
+    image("./img/3.2.26_1V_50kHz_sinus.png"),
+    caption: [1 V, 50 kHz],
+  ),
+  figure(
+    image("./img/3.2.27_1V_60kHz_sinus.png"),
+    caption: [1 V, 60 kHz],
+  ),
+
+  figure(
+    image("./img/3.2.28_1V_70kHz_sinus.png"),
+    caption: [1 V, 70 kHz],
+  ),
+  figure(
+    image("./img/3.2.29_1V_80kHz_sinus.png"),
+    caption: [1 V, 80 kHz],
+  ),
+
+  figure(
+    image("./img/3.2.30_1V_90kHz_sinus.png"),
+    caption: [1 V, 90 kHz],
+  ),
+  figure(
+    image("./img/3.2.31_1V_100kHz_sinus.png"),
+    caption: [1 V, 100 kHz],
+  ),
+
+  figure(
+    image("./img/3.2.32_1V_200kHz_sinus.png"),
+    caption: [1 V, 200 kHz],
+  ),
+  figure(
+    image("./img/3.2.33_1V_300kHz_sinus.png"),
+    caption: [1 V, 300 kHz],
+  ),
+
+  figure(
+    image("./img/3.2.34_1V_400kHz_sinus.png"),
+    caption: [1 V, 400 kHz],
+  ),
+  figure(
+    image("./img/3.2.35_1V_500kHz_sinus.png"),
+    caption: [1 V, 500 kHz],
+  ),
+
+  figure(
+    image("./img/3.2.36_1V_600kHz_sinus.png"),
+    caption: [1 V, 600 kHz],
+  ),
+  figure(
+    image("./img/3.2.37_1V_700kHz_sinus.png"),
+    caption: [1 V, 700 kHz],
+  ),
+
+  figure(
+    image("./img/3.2.38_1V_800kHz_sinus.png"),
+    caption: [1 V, 800 kHz],
+  ),
+  figure(
+    image("./img/3.2.39_1V_900kHz_sinus.png"),
+    caption: [1 V, 900 kHz],
+  ),
+)
