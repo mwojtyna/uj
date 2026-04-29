@@ -373,7 +373,7 @@ $
 #pagebreak()
 
 == Praktyka
-Chcemy, aby szerokość histerezy była równe $1 "V"$, czyli żeby $2U_p= plus.minus 1 "V"$. Więc:
+Chcemy, aby szerokość histerezy była równa $1 "V"$, czyli żeby $2U_p= plus.minus 1 "V"$. Więc:
 $
   2U_p = plus.minus 1 "V" \
   2 R_2/(R_1+R_2) dot plus.minus E = plus.minus 1 "V" \
@@ -415,6 +415,7 @@ Następnie zbudowano przerzutnik Schmitta na płytce:
 )
 
 Z wykresu XY widać metodą "na oko", że szerokość histerezy wynosi około $0.8 "V"$.
+Niestety przez pomyłkę nie dokonałem pomiarów dla fali trójkątnej.
 
 == Podsumowanie
 Zbudowany przerzutnik Schmitta działał zgodnie z przewidywaniami teoretycznymi. Dobór rezystorów $R_1 approx 1000 space Omega$ oraz $R_2 approx 50 space Omega$ pozwolił uzyskać napięcie przerzutu około $plus.minus 0.48 "V"$, co odpowiada szerokości histerezy równej około $0.96 "V"$, czyli praktycznie zgodnej z założoną wartością $1 "V"$.
@@ -482,7 +483,7 @@ Następnie złożono układ na płytce:
   caption: [Działanie przerzutnika astabilnego dla fali sinusoidalnej]
 )
 
-Zmierzono okres $41.99 mu"s"$, ponad 2x większy od oczekiwanego.
+Zmierzono okres $41.99 mu"s"$, ponad 2x większy od oczekiwanego. Niestety z powodu pośpiechu nie zmierzyłem okresu kursorami oraz nie zrobiłem pomiaru przebiegów w punkcie połączenia ujemnego sprzężenia zwrotnego.
 
 == Podsumowanie
 Zbudowany multiwibrator astabilny działał poprawnie i samoczynnie generował przebieg prostokątny na wyjściu oraz odpowiadający mu przebieg na wejściu układu RC. Oznacza to, że układ okresowo przełączał się pomiędzy dwoma stanami zgodnie z przewidywaniami teoretycznymi.
