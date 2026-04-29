@@ -24,7 +24,7 @@
 
 #maketitle(
   title: "Elektronika cyfrowa - sprawozdanie 2",
-  authors: ("Mateusz Wojtyna",),
+  authors: ("Mateusz Wojtyna, gr 9",),
   date: "08 kwietnia 2026",
 )
 
@@ -96,7 +96,7 @@ Zmontowano układ różniczkujący na płytce RLC zgodnie ze schematem w @cr. Po
   caption: [Układ RC zmontowany na płytce RLC],
 )
 
-Przed zmierzeniem #wywe dla szerokiego zakresu częstotliwości, zmierzono go dla $U=1 "V"$ oraz $f=1 "kHz"$. We wszystkich wykresach poniżej, oryginalny sygnał jest w kolorze żółtym, zmodyfikowany w kolorze niebieskim.
+Przed zmierzeniem #wywe dla szerokiego zakresu częstotliwości, zmierzono go dla $U=1 "V"$ oraz $f=1 "kHz"$. We wszystkich wykresach poniżej, oryginalny sygnał jest w kolorze #text("żółtym", fill: yellow), zmodyfikowany w kolorze #text("niebieskim", fill: blue).
 
 #figure(
   image("./img/2.1.03_1V_1kHz_sinus.png"),
