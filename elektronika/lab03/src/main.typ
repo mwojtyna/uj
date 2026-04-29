@@ -25,7 +25,7 @@
 
 #maketitle(
   title: "Elektronika cyfrowa - sprawozdanie 3",
-  authors: ("Mateusz Wojtyna",),
+  authors: ("Mateusz Wojtyna, gr 9",),
 )
 
 #heading([Dane], numbering: none, level: 3, outlined: false)
