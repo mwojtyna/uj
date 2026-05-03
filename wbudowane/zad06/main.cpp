@@ -51,10 +51,16 @@ struct Input {
 
 struct RefinementResult {
     std::vector<num_t> task_processor;
+    std::vector<num_t> task_start_time;
     num_t total_time = 0;
     num_t total_cost = 0;
     num_t iterations = 0;
     std::string stop_reason;
+};
+
+struct Schedule {
+    std::vector<num_t> task_start_time;
+    num_t total_time = 0;
 };
 
 num_t parseTaskId(const std::string& token) {
@@ -181,7 +187,22 @@ Input readInput(const std::string& filename) {
     return input;
 }
 
-num_t calculateTime(const Input& in, const std::vector<num_t>& assignment) {
+bool processorAvailableForTask(const Input& in, const std::vector<num_t>& assignment,
+                               num_t task_to_assign, num_t proc_to_check) {
+    if (in.processors[proc_to_check].type == ProcessorType::PP) {
+        return true;
+    }
+
+    // Ten sam procesor HC nie może być przypisany do dwóch zadań
+    for (num_t task = 0; task < static_cast<num_t>(assignment.size()); task++) {
+        if (task != task_to_assign && assignment[task] == proc_to_check) {
+            return false;
+        }
+    }
+    return true;
+}
+
+Schedule calculateSchedule(const Input& in, const std::vector<num_t>& assignment) {
     const num_t task_count = in.taskCount();
     std::vector<num_t> indeg(task_count, 0);
 
@@ -191,9 +212,11 @@ num_t calculateTime(const Input& in, const std::vector<num_t>& assignment) {
         }
     }
 
-    // toposort
+    // Toposort z prostym szeregowaniem zasobów
     std::queue<num_t> q;
-    std::vector<num_t> start_time(task_count, 0);
+    std::vector<num_t> ready_times(task_count, 0);
+    std::vector<num_t> start_times(task_count, 0);
+    std::vector<num_t> processor_available_times(in.processorCount(), 0);
     for (num_t task = 0; task < task_count; task++) {
         if (indeg[task] == 0) {
             q.push(task);
@@ -206,11 +229,26 @@ num_t calculateTime(const Input& in, const std::vector<num_t>& assignment) {
         q.pop();
 
         const num_t proc = assignment[task];
-        const num_t finish = start_time[task] + in.tasks[task].time_by_proc[proc];
+        if (proc < 0 || proc >= in.processorCount() || in.tasks[task].time_by_proc[proc] < 0) {
+            throw std::runtime_error("Niepoprawny przydział procesora do zadania");
+        }
+
+        if (!processorAvailableForTask(in, assignment, task, proc)) {
+            throw std::runtime_error("Ten sam procesor HC został przypisany do kilku zadań");
+        }
+
+        if (in.processors[proc].type == ProcessorType::PP) {
+            start_times[task] = std::max(ready_times[task], processor_available_times[proc]);
+            processor_available_times[proc] = start_times[task] + in.tasks[task].time_by_proc[proc];
+        } else {
+            start_times[task] = ready_times[task];
+        }
+
+        const num_t finish = start_times[task] + in.tasks[task].time_by_proc[proc];
         max_time = std::max(max_time, finish);
 
         for (const Dependency& dependency : in.tasks[task].dependencies) {
-            start_time[dependency.to] = std::max(start_time[dependency.to], finish);
+            ready_times[dependency.to] = std::max(ready_times[dependency.to], finish);
             indeg[dependency.to] -= 1;
             if (indeg[dependency.to] == 0) {
                 q.push(dependency.to);
@@ -218,27 +256,41 @@ num_t calculateTime(const Input& in, const std::vector<num_t>& assignment) {
         }
     }
 
-    return max_time;
+    return Schedule{.task_start_time = start_times, .total_time = max_time};
 }
 
 num_t calculateCost(const Input& in, const std::vector<num_t>& assignment) {
     num_t cost = 0;
+    std::vector<bool> processor_used(in.processorCount(), false);
+
     for (num_t task = 0; task < in.taskCount(); task++) {
-        cost += in.tasks[task].cost_by_proc[assignment[task]];
+        const num_t proc = assignment[task];
+        cost += in.tasks[task].cost_by_proc[proc];
+        processor_used[proc] = true;
     }
+
+    // Procesor kupujemy tylko raz, nawet jeśli jest to PP przypisany do wielu zadań
+    for (num_t proc = 0; proc < in.processorCount(); proc++) {
+        if (processor_used[proc]) {
+            cost += in.processors[proc].cost;
+        }
+    }
+
     return cost;
 }
 
-num_t fastestProcessorForTask(const TaskProfile& task) {
+num_t fastestProcessorForTask(const Input& in, const std::vector<num_t>& assignment, num_t task) {
     num_t best = -1;
-    for (num_t proc = 0; proc < static_cast<num_t>(task.time_by_proc.size()); proc++) {
-        if (task.time_by_proc[proc] == -1) {
+    const TaskProfile& profile = in.tasks[task];
+    for (num_t proc = 0; proc < static_cast<num_t>(profile.time_by_proc.size()); proc++) {
+        if (profile.time_by_proc[proc] == -1 ||
+            !processorAvailableForTask(in, assignment, task, proc)) {
             continue;
         }
 
-        if (best == -1 || task.time_by_proc[proc] < task.time_by_proc[best] ||
-            (task.time_by_proc[proc] == task.time_by_proc[best] &&
-             task.cost_by_proc[proc] < task.cost_by_proc[best])) {
+        if (best == -1 || profile.time_by_proc[proc] < profile.time_by_proc[best] ||
+            (profile.time_by_proc[proc] == profile.time_by_proc[best] &&
+             profile.cost_by_proc[proc] < profile.cost_by_proc[best])) {
 
             best = proc;
         }
@@ -250,20 +302,23 @@ num_t fastestProcessorForTask(const TaskProfile& task) {
     return best;
 }
 
-num_t nextSlowerProcessorForTask(const TaskProfile& task, num_t current_proc) {
-    const num_t current_time = task.time_by_proc[current_proc];
+num_t nextSlowerProcessorForTask(const Input& in, const std::vector<num_t>& assignment, num_t task,
+                                 num_t current_proc) {
+    const TaskProfile& profile = in.tasks[task];
+    const num_t current_time = profile.time_by_proc[current_proc];
     num_t best = -1;
 
-    for (num_t proc = 0; proc < static_cast<num_t>(task.time_by_proc.size()); proc++) {
-        const num_t candidate_time = task.time_by_proc[proc];
-        if (candidate_time < 0 || candidate_time <= current_time) {
+    for (num_t proc = 0; proc < static_cast<num_t>(profile.time_by_proc.size()); proc++) {
+        const num_t candidate_time = profile.time_by_proc[proc];
+        if (candidate_time < 0 || candidate_time <= current_time ||
+            !processorAvailableForTask(in, assignment, task, proc)) {
             continue;
         }
 
-        // Szukamy najbliższej wolniejszej implementacji, czyli najszybszej z wolniejszych.
-        if (best == -1 || candidate_time < task.time_by_proc[best] ||
-            (candidate_time == task.time_by_proc[best] &&
-             task.cost_by_proc[proc] < task.cost_by_proc[best])) {
+        // Szukamy najbliższej wolniejszej implementacji, czyli najszybszej z wolniejszych
+        if (best == -1 || candidate_time < profile.time_by_proc[best] ||
+            (candidate_time == profile.time_by_proc[best] &&
+             profile.cost_by_proc[proc] < profile.cost_by_proc[best])) {
 
             best = proc;
         }
@@ -274,14 +329,16 @@ num_t nextSlowerProcessorForTask(const TaskProfile& task, num_t current_proc) {
 
 RefinementResult refine(const Input& in, num_t time_limit) {
     RefinementResult result;
-    result.task_processor.assign(in.taskCount(), 0);
+    result.task_processor.assign(in.taskCount(), -1);
 
-    // Startujemy od najszybszego wariantu dla każdego zadania.
+    // Startujemy od najszybszego wariantu dla każdego zadania, pamiętając o dedykowanych HC
     for (num_t task = 0; task < in.taskCount(); task++) {
-        result.task_processor[task] = fastestProcessorForTask(in.tasks[task]);
+        result.task_processor[task] = fastestProcessorForTask(in, result.task_processor, task);
     }
 
-    result.total_time = calculateTime(in, result.task_processor);
+    Schedule schedule = calculateSchedule(in, result.task_processor);
+    result.task_start_time = schedule.task_start_time;
+    result.total_time = schedule.total_time;
     result.total_cost = calculateCost(in, result.task_processor);
     if (result.total_time > time_limit) {
         result.stop_reason = "Najszybszy przydział przekracza ograniczenie czasowe";
@@ -293,10 +350,11 @@ RefinementResult refine(const Input& in, num_t time_limit) {
         num_t chosen_next_proc = -1;
         num_t max_current_cost = std::numeric_limits<num_t>::min();
 
-        // Wybieramy najdroższy aktualny wariant, ale tylko taki, który ma wolniejszą alternatywę.
+        // Wybieramy najdroższy aktualny wariant, ale tylko taki, który ma wolniejszą alternatywę
         for (num_t task = 0; task < in.taskCount(); task++) {
             const num_t current_proc = result.task_processor[task];
-            const num_t next_proc = nextSlowerProcessorForTask(in.tasks[task], current_proc);
+            const num_t next_proc =
+                nextSlowerProcessorForTask(in, result.task_processor, task, current_proc);
             if (next_proc == -1) {
                 continue;
             }
@@ -320,15 +378,16 @@ RefinementResult refine(const Input& in, num_t time_limit) {
 
         std::vector<num_t> candidate_assignment = result.task_processor;
         candidate_assignment[chosen_task] = chosen_next_proc;
-        const num_t candidate_time = calculateTime(in, candidate_assignment);
+        const Schedule candidate_schedule = calculateSchedule(in, candidate_assignment);
 
-        if (candidate_time > time_limit) {
+        if (candidate_schedule.total_time > time_limit) {
             result.stop_reason = "Następna decyzja przekroczyłaby ograniczenie czasowe";
             break;
         }
 
         result.task_processor = candidate_assignment;
-        result.total_time = candidate_time;
+        result.task_start_time = candidate_schedule.task_start_time;
+        result.total_time = candidate_schedule.total_time;
         result.total_cost = calculateCost(in, result.task_processor);
         result.iterations += 1;
     }
@@ -345,8 +404,10 @@ void printResult(const Input& in, const RefinementResult& result) {
     std::cout << "Przydział zadań:\n";
     for (num_t task = 0; task < in.taskCount(); task++) {
         const num_t proc = result.task_processor[task];
-        std::cout << "T" << task << " -> P" << proc << " (czas "
-                  << in.tasks[task].time_by_proc[proc] << ", koszt "
+        const num_t start = result.task_start_time[task];
+        const num_t finish = start + in.tasks[task].time_by_proc[proc];
+        std::cout << "T" << task << " -> P" << proc << " (start " << start << ", koniec " << finish
+                  << ", czas " << in.tasks[task].time_by_proc[proc] << ", koszt wykonania zadania "
                   << in.tasks[task].cost_by_proc[proc] << ")\n";
     }
 }

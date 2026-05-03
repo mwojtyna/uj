@@ -4,7 +4,7 @@ CXXFLAGS := -std=c++20 -Wall -Wextra -Wpedantic -O2
 TARGET := a.out
 SRC := main.cpp
 IN ?= in.txt
-LIMIT ?= 500
+LIMIT ?= 25
 ARGS ?= $(IN) $(LIMIT)
 
 .PHONY: all run clean
