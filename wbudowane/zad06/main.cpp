@@ -224,9 +224,11 @@ Schedule calculateSchedule(const Input& in, const std::vector<num_t>& assignment
     }
 
     num_t max_time = 0;
+    num_t processed = 0;
     while (!q.empty()) {
         const num_t task = q.front();
         q.pop();
+        processed++;
 
         const num_t proc = assignment[task];
         if (proc < 0 || proc >= in.processorCount() || in.tasks[task].time_by_proc[proc] < 0) {
@@ -254,6 +256,10 @@ Schedule calculateSchedule(const Input& in, const std::vector<num_t>& assignment
                 q.push(dependency.to);
             }
         }
+    }
+
+    if (processed < in.taskCount()) {
+        throw std::runtime_error("Graf posiada cykl!");
     }
 
     return Schedule{.task_start_time = start_times, .total_time = max_time};
