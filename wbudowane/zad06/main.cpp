@@ -187,23 +187,35 @@ Input readInput(const std::string& filename) {
     return input;
 }
 
-bool processorAvailableForTask(const Input& in, const std::vector<num_t>& assignment,
+std::vector<num_t> buildHcOwner(const Input& in, const std::vector<num_t>& assignment) {
+    std::vector<num_t> hc_owner(in.processorCount(), -1);
+
+    for (num_t task = 0; task < static_cast<num_t>(assignment.size()); task++) {
+        const num_t proc = assignment[task];
+        if (in.processors[proc].type == ProcessorType::HC) {
+            if (hc_owner[proc] != -1) {
+                throw std::runtime_error("Ten sam procesor HC został przypisany do kilku zadań");
+            }
+            hc_owner[proc] = task;
+        }
+    }
+
+    return hc_owner;
+}
+
+bool processorAvailableForTask(const Input& in, const std::vector<num_t>& hc_owner,
                                num_t task_to_assign, num_t proc_to_check) {
     if (in.processors[proc_to_check].type == ProcessorType::PP) {
         return true;
     }
 
     // Ten sam procesor HC nie może być przypisany do dwóch zadań
-    for (num_t task = 0; task < static_cast<num_t>(assignment.size()); task++) {
-        if (task != task_to_assign && assignment[task] == proc_to_check) {
-            return false;
-        }
-    }
-    return true;
+    return hc_owner[proc_to_check] == -1 || hc_owner[proc_to_check] == task_to_assign;
 }
 
 Schedule calculateSchedule(const Input& in, const std::vector<num_t>& assignment) {
     const num_t task_count = in.taskCount();
+    const std::vector<num_t> hc_owner = buildHcOwner(in, assignment);
     std::vector<num_t> indeg(task_count, 0);
 
     for (num_t task = 0; task < task_count; task++) {
@@ -235,7 +247,7 @@ Schedule calculateSchedule(const Input& in, const std::vector<num_t>& assignment
             throw std::runtime_error("Niepoprawny przydział procesora do zadania");
         }
 
-        if (!processorAvailableForTask(in, assignment, task, proc)) {
+        if (!processorAvailableForTask(in, hc_owner, task, proc)) {
             throw std::runtime_error("Ten sam procesor HC został przypisany do kilku zadań");
         }
 
@@ -285,12 +297,12 @@ num_t calculateCost(const Input& in, const std::vector<num_t>& assignment) {
     return cost;
 }
 
-num_t fastestProcessorForTask(const Input& in, const std::vector<num_t>& assignment, num_t task) {
+num_t fastestProcessorForTask(const Input& in, const std::vector<num_t>& hc_owner, num_t task) {
     num_t best = -1;
     const TaskProfile& profile = in.tasks[task];
     for (num_t proc = 0; proc < static_cast<num_t>(profile.time_by_proc.size()); proc++) {
         if (profile.time_by_proc[proc] == -1 ||
-            !processorAvailableForTask(in, assignment, task, proc)) {
+            !processorAvailableForTask(in, hc_owner, task, proc)) {
             continue;
         }
 
@@ -308,7 +320,7 @@ num_t fastestProcessorForTask(const Input& in, const std::vector<num_t>& assignm
     return best;
 }
 
-num_t nextSlowerProcessorForTask(const Input& in, const std::vector<num_t>& assignment, num_t task,
+num_t nextSlowerProcessorForTask(const Input& in, const std::vector<num_t>& hc_owner, num_t task,
                                  num_t current_proc) {
     const TaskProfile& profile = in.tasks[task];
     const num_t current_time = profile.time_by_proc[current_proc];
@@ -317,7 +329,7 @@ num_t nextSlowerProcessorForTask(const Input& in, const std::vector<num_t>& assi
     for (num_t proc = 0; proc < static_cast<num_t>(profile.time_by_proc.size()); proc++) {
         const num_t candidate_time = profile.time_by_proc[proc];
         if (candidate_time < 0 || candidate_time <= current_time ||
-            !processorAvailableForTask(in, assignment, task, proc)) {
+            !processorAvailableForTask(in, hc_owner, task, proc)) {
             continue;
         }
 
@@ -336,10 +348,15 @@ num_t nextSlowerProcessorForTask(const Input& in, const std::vector<num_t>& assi
 RefinementResult refine(const Input& in, num_t time_limit) {
     RefinementResult result;
     result.task_processor.assign(in.taskCount(), -1);
+    std::vector<num_t> hc_owner(in.processorCount(), -1);
 
     // Startujemy od najszybszego wariantu dla każdego zadania, pamiętając o dedykowanych HC
     for (num_t task = 0; task < in.taskCount(); task++) {
-        result.task_processor[task] = fastestProcessorForTask(in, result.task_processor, task);
+        result.task_processor[task] = fastestProcessorForTask(in, hc_owner, task);
+        const num_t proc = result.task_processor[task];
+        if (in.processors[proc].type == ProcessorType::HC) {
+            hc_owner[proc] = task;
+        }
     }
 
     Schedule schedule = calculateSchedule(in, result.task_processor);
@@ -359,8 +376,7 @@ RefinementResult refine(const Input& in, num_t time_limit) {
         // Wybieramy najdroższy aktualny wariant, ale tylko taki, który ma wolniejszą alternatywę
         for (num_t task = 0; task < in.taskCount(); task++) {
             const num_t current_proc = result.task_processor[task];
-            const num_t next_proc =
-                nextSlowerProcessorForTask(in, result.task_processor, task, current_proc);
+            const num_t next_proc = nextSlowerProcessorForTask(in, hc_owner, task, current_proc);
             if (next_proc == -1) {
                 continue;
             }
@@ -389,6 +405,14 @@ RefinementResult refine(const Input& in, num_t time_limit) {
         if (candidate_schedule.total_time > time_limit) {
             result.stop_reason = "Następna decyzja przekroczyłaby ograniczenie czasowe";
             break;
+        }
+
+        const num_t old_proc = result.task_processor[chosen_task];
+        if (in.processors[old_proc].type == ProcessorType::HC) {
+            hc_owner[old_proc] = -1;
+        }
+        if (in.processors[chosen_next_proc].type == ProcessorType::HC) {
+            hc_owner[chosen_next_proc] = chosen_task;
         }
 
         result.task_processor = candidate_assignment;
