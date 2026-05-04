@@ -27,7 +27,7 @@ def main():
     n_values = [row[0] for row in results]
     for index, name in enumerate(MEASUREMENT_NAMES, start=1):
         measurements = [row[index] for row in results]
-        plt.semilogx(n_values, measurements, marker="o", label=name)
+        plt.plot(n_values, measurements, marker="o", label=name)
 
     plt.xlabel("N")
     plt.ylabel("Time per operation (ns)")

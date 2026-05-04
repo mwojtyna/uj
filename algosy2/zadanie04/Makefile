@@ -12,5 +12,5 @@ run: $(EXE)
 	@./$(EXE)
 
 $(EXE): $(SRC)
-	$(CC) $(CFLAGS) $(SRC) -o $(EXE)
+	$(CC) $(CFLAGS) z04.cpp -o $(EXE)
 
