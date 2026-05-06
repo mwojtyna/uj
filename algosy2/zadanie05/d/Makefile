@@ -1,5 +1,5 @@
 CC=g++
-CFLAGS=-std=c++20 -Wall -Wpedantic -O2 -g
+CFLAGS=-std=c++20 -Wall -Wpedantic -O2
 
 SRC=z05d.cpp
 HDRS=../c/z05c.hpp

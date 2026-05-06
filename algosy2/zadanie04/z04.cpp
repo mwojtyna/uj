@@ -89,7 +89,7 @@ double timePerOperation(const std::chrono::high_resolution_clock::time_point& st
     return std::chrono::duration<double, std::nano>(end - start).count() / operations;
 }
 
-std::vector<double> benchmark(num_t N) {
+std::vector<double> benchmarkAddOperation(num_t N) {
     std::vector<double> row = {static_cast<double>(N)};
 
     Graph lastGraph;
@@ -149,7 +149,7 @@ int main() {
 
     std::cout << "\nBenchmarking...\n";
     for (num_t N : sizes) {
-        results.push_back(benchmark(N));
+        results.push_back(benchmarkAddOperation(N));
     }
 
     printResults(results);

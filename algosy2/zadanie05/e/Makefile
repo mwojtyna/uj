@@ -1,8 +1,8 @@
 CC=g++
-CFLAGS=-std=c++20 -Wall -Wpedantic -O2
+CFLAGS=-std=c++20 -Wall -Wpedantic -g
 
-SRC=z05c.cpp
-HDRS=z05c.hpp
+SRC=z05e.cpp
+HDRS=../c/z05c.hpp
 EXE=a.out
 
 .PHONY: all run
