@@ -1,6 +1,8 @@
 #pragma once
 
 #include <cstdint>
+#include <filesystem>
+#include <fstream>
 #include <stdexcept>
 #include <unordered_map>
 #include <unordered_set>
@@ -81,6 +83,21 @@ public:
 
     void setEdgeValue(num_t x, num_t y, num_t v) {
         m_EdgeLabel[{x, y}] = v;
+    }
+
+    void draw(const std::filesystem::path filename) const {
+        std::ofstream file(filename);
+        if (!file) {
+            throw std::runtime_error("Nie można zapisać pliku '" + filename.string() + "'");
+        }
+
+        file << "digraph G {\n";
+        for (const auto& [parent, nbs] : m_Adj) {
+            for (const num_t nb : nbs) {
+                file << "\tV" << parent << " -> " << "V" << nb << "\n";
+            }
+        }
+        file << "}\n";
     }
 
 private:
