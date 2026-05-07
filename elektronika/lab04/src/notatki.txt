@@ -1,0 +1,44 @@
+stanowisko 2
+miernik 15
+
+zad 1
+b)
+wszystkie piny 5V lewego = 5.02 V
+wszystkie piny 5V prawego = 5.01 V
+
+d)
+wszystkie wyjścia impulsatorów = 5 V
+
+e) dla wszystkich pinów tabela taka sama
+Q: odciśnięte = 0
+   wciśnięte = 1
+
+~Q: odciśnięte = 1
+    wciśnięte = 0
+
+f) wszystkie diody wskaźnika działają
+
+zad 2
+NAND:
+V_high = 3.61 V
+V_low = 65.4 mV
+
+NOR:
+V_high = 3.62 V
+V_low = 48.8 mV
+
+XOR:
+V_high = 4.96 V
+V_low = 37.4 mV
+
+zad 4
+kanał oscyloskopu 1
+oporność kanału = 1 MOhm
+
+zad 5
+górny impulsator = R
+dolny impulsator = S
+
+bardziej naturalnie dla człowieka podłączenie do ~Q
+
+schematy podłączeń w goodnotes
