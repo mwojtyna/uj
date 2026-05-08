@@ -102,7 +102,7 @@ Bramka NAND to bramka logiczna przedstawiona za pomocą następującej tabeli pr
 #figure(
   table(
     columns: 3,
-    table.header([*$A$*], [*$B$*], [*$A overline(and) B$*]),
+    table.header([*$A$*], [*$B$*], [*$A dot B$*]),
     [0], [0], [1],
     [0], [1], [1],
     [1], [0], [1],
@@ -125,7 +125,7 @@ Bramka NOR to bramka logiczna przedstawiona za pomocą następującej tabeli pra
 #figure(
   table(
     columns: 3,
-    table.header([*$A$*], [*$B$*], [*$A overline(or) B$*]),
+    table.header([*$A$*], [*$B$*], [*$A + B$*]),
     [0], [0], [1],
     [0], [1], [0],
     [1], [0], [0],
@@ -168,7 +168,8 @@ Podłączono bramkę NAND do płytki UC-1. Na wejścia do bramki podano wyjścia
 
 #v(1em)
 #grid(
-  columns: (auto, auto),
+  columns: 2,
+  column-gutter: -1em,
   [
     #figure(
       image("./img/2.01_nand.jpeg"),
@@ -179,7 +180,7 @@ Podłączono bramkę NAND do płytki UC-1. Na wejścia do bramki podano wyjścia
     #figure(
       table(
         columns: 2,
-        table.header([*UC-1*], [*NAND*]),
+        table.header([*Od*], [*Do*]),
         [$Q_1$], [`1A`],
         [$Q_2$], [`1B`],
         [Próbnik], [`1Y`],
@@ -200,7 +201,8 @@ Podłączono bramkę NOR do płytki UC-1. Na wejścia do bramki podano wyjścia 
 
 #v(1em)
 #grid(
-  columns: (auto, auto),
+  columns: 2,
+  column-gutter: -1em,
   [
     #figure(
       image("./img/2.02_nor.jpeg"),
@@ -211,7 +213,7 @@ Podłączono bramkę NOR do płytki UC-1. Na wejścia do bramki podano wyjścia 
     #figure(
       table(
         columns: 2,
-        table.header([*UC-1*], [*NOR*]),
+        table.header([*Od*], [*Do*]),
         [$Q_1$], [`1A`],
         [$Q_2$], [`1B`],
         [Próbnik], [`1Y`],
@@ -232,7 +234,8 @@ Podłączono bramkę XOR do płytki UC-1. Na wejścia do bramki podano wyjścia 
 
 #v(1em)
 #grid(
-  columns: (auto, auto),
+  columns: 2,
+  column-gutter: -1em,
   [
     #figure(
       image("./img/2.03_xor.jpeg"),
@@ -243,7 +246,7 @@ Podłączono bramkę XOR do płytki UC-1. Na wejścia do bramki podano wyjścia 
     #figure(
       table(
         columns: 2,
-        table.header([*UC-1*], [*XOR*]),
+        table.header([*Od*], [*Do*]),
         [$Q_1$], [`1A`],
         [$Q_2$], [`1B`],
         [Próbnik], [`1Y`],
@@ -264,5 +267,273 @@ Zbadano działanie bramek logicznych NAND, NOR oraz XOR z użyciem płytki UC-1.
 
 #pagebreak()
 
+= Zadanie 3
+== Treść
+Używając funktorów NAND (7400), NOR (7402) zbudować układ realizujący iloczyn logiczny, sumę logiczną, funkcję negacji. Sprawdzić tablicę logiczną funktorów używając próbnika stanów logicznych.
+
+== Wstęp teoretyczny
+Za pomocą funktora NAND albo NOR można stworzyć dowolny układ logiczny. Poniżej przedstawiam jak zrealizować układy NOT, AND, NOR za pomocą tych funktorów.
+
+=== Bramka NOT
+Za pomocą NAND:
+$ "NOT"(A) = overline(A) = overline(A) + overline(A) = overline(A dot A) = "NAND"(A,A) $
+#figure(
+  image("./img/not_with_nand.png", width: 40%),
+  caption: [NOT za pomocą NAND],
+)
+
+Za pomocą NOR:
+$ "NOT"(A) = overline(A) = overline(A) dot overline(A) = overline(A + A) = "NOR"(A,A) $
+#figure(
+  image("./img/not_with_nor.png", width: 40%),
+  caption: [NOT za pomocą NOR],
+)
+
+=== Bramka AND
+Za pomocą NAND:
+$
+  "AND"(A,B) = A dot B = overline(overline(A dot B)) = overline("NAND"(A,B))\
+  = "NAND"("NAND"(A,B),space"NAND"(A,B))
+$
+#figure(
+  image("./img/and_with_nand.png", width: 70%),
+  caption: [AND za pomocą NAND],
+)
+
+Za pomocą NOR:
+$
+  "AND"(A,B) = A dot B = overline(overline(A)) dot overline(overline(B)) = overline(overline(A) + overline(B)) = "NOR"(overline(A), overline(B))\ =
+  "NOR"("NOR"(A,A),space"NOR"(B,B))
+$
+#figure(
+  image("./img/and_with_nor.png", width: 70%),
+  caption: [AND za pomocą NOR],
+)
+
+=== Bramka OR
+Za pomocą NAND:
+$
+  "OR"(A,B) = A + B = overline(overline(A)) + overline(overline(B)) = overline(overline(A) dot overline(B)) = "NAND"(overline(A), overline(B))\
+  = "NAND"("NAND"(A,A),space"NAND"(B,B))
+$
+#figure(
+  image("./img/or_with_nand.png", width: 70%),
+  caption: [OR za pomocą NAND],
+)
+
+Za pomocą NOR:
+$
+  "OR"(A,B) = A + B = overline(overline(A + B)) = overline("NOR"(A,B))\
+  = "NOR"("NOR"(A,B),space"NOR"(A,B))
+$
+#figure(
+  image("./img/or_with_nor.png", width: 70%),
+  caption: [OR za pomocą NOR],
+)
+
+== Praktyka
+=== NOT
+Za pomocą NAND:
+#grid(
+  columns: 2,
+  column-gutter: -1em,
+  [
+    #figure(
+      image("./img/3.01_nand_not.jpeg"),
+      caption: [NOT za pomocą NAND na płytce UC-1],
+    )
+  ],
+  [
+    #figure(
+      table(
+        columns: 2,
+        table.header([*Od*], [*Do*]),
+        [$Q_1$], [`1A`],
+        [$Q_2$], [`1B`],
+        [`1Y`], [Próbnik],
+        [+5 V], [`Vcc`],
+        [0 V], [`GND`],
+      ),
+      caption: [Schemat połączeń bramki NAND],
+    )
+  ],
+)
+
+#v(1em)
+Za pomocą NOR:
+#grid(
+  columns: 2,
+  column-gutter: -1em,
+  [
+    #figure(
+      image("./img/3.04_nor_not.jpeg"),
+      caption: [NOT za pomocą NOR na płytce UC-1],
+    )
+  ],
+  [
+    #figure(
+      table(
+        columns: 2,
+        table.header([*Od*], [*Do*]),
+        [$Q_1$], [`1A`],
+        [$Q_2$], [`1B`],
+        [`1Y`], [Próbnik],
+        [+5 V], [`Vcc`],
+        [0 V], [`GND`],
+      ),
+      caption: [Schemat połączeń  bramki NOR],
+    )
+  ],
+)
+
+#pagebreak()
+
+=== AND
+Za pomocą NAND:
+#grid(
+  columns: 2,
+  column-gutter: -1em,
+  [
+    #figure(
+      image("./img/3.02_nand_and.jpeg"),
+      caption: [AND za pomocą NAND na płytce UC-1],
+    )
+  ],
+  [
+    #figure(
+      table(
+        columns: 2,
+        table.header([*Od*], [*Do*]),
+        [$Q_1$], [`1A`],
+        [$Q_2$], [`1B`],
+
+        [`1Y`], [`2A`],
+        [`1Y`], [`2B`],
+        [`2Y`], [Próbnik],
+
+        [+5 V], [`Vcc`],
+        [0 V], [`GND`],
+      ),
+      caption: [Schemat połączeń  bramki NAND],
+    )
+  ],
+)
+
+#v(1em)
+Za pomocą NOR:
+#grid(
+  columns: 2,
+  column-gutter: -1em,
+  [
+    #figure(
+      image("./img/3.05_nor_and.jpeg"),
+      caption: [AND za pomocą NOR na płytce UC-1],
+    )
+  ],
+  [
+    #figure(
+      table(
+        columns: 2,
+        table.header([*Od*], [*Do*]),
+        [$Q_1$], [`1A`],
+        [$Q_1$], [`1B`],
+        [$Q_2$], [`2A`],
+        [$Q_2$], [`2B`],
+
+        [`1Y`], [`4B`],
+        [`2Y`], [`4A`],
+        [`4Y`], [Próbnik],
+
+        [+5 V], [`Vcc`],
+        [0 V], [`GND`],
+      ),
+      caption: [Schemat połączeń bramki NOR],
+    )
+  ],
+)
+
+#pagebreak()
+
+=== OR
+Za pomocą NAND:
+#grid(
+  columns: 2,
+  column-gutter: -1em,
+  [
+    #figure(
+      image("./img/3.03_nand_or.jpeg"),
+      caption: [OR za pomocą NAND na płytce UC-1],
+    )
+  ],
+  [
+    #figure(
+      table(
+        columns: 2,
+        table.header([*Od*], [*Do*]),
+        [$Q_1$], [`1A`],
+        [$Q_1$], [`1B`],
+        [$Q_2$], [`2A`],
+        [$Q_2$], [`2B`],
+
+        [`1Y`], [`4A`],
+        [`2Y`], [`4B`],
+        [`4Y`], [Próbnik],
+
+        [+5 V], [`Vcc`],
+        [0 V], [`GND`],
+      ),
+      caption: [Schemat połączeń  bramki NAND],
+    )
+  ],
+)
+
+#v(1em)
+Za pomocą NOR:
+#grid(
+  columns: 2,
+  column-gutter: -1em,
+  [
+    #figure(
+      image("./img/3.06_nor_or.jpeg"),
+      caption: [OR za pomocą NOR na płytce UC-1],
+    )
+  ],
+  [
+    #figure(
+      table(
+        columns: 2,
+        table.header([*Od*], [*Do*]),
+        [$Q_1$], [`1A`],
+        [$Q_2$], [`1B`],
+
+        [`1Y`], [`4B`],
+        [`1Y`], [`4A`],
+        [`4Y`], [Próbnik],
+
+        [+5 V], [`Vcc`],
+        [0 V], [`GND`],
+      ),
+      caption: [Schemat połączeń bramki NOR],
+    )
+  ],
+)
+
+== Podsumowanie
+Zbudowano układy realizujące funkcje NOT, AND oraz OR wyłącznie z funktorów NAND i NOR. Dla każdej funkcji sprawdzono dwie realizacje: na układzie NAND (7400) oraz na układzie NOR (7402). Wyniki obserwowane na próbniku stanów logicznych były zgodne z oczekiwanymi tabelami prawdy, co potwierdza, że bramki NAND i NOR są funktorami pełnymi i mogą być użyte do realizacji podstawowych operacji logicznych.
+
+#pagebreak()
+
 = Notatki
 #raw(read("./notatki.txt"))
+
+#pagebreak()
+#outline(
+  title: [Spis obrazów],
+  target: figure.where(kind: image),
+)
+
+#pagebreak()
+#outline(
+  title: [Spis tabeli],
+  target: figure.where(kind: table),
+)
