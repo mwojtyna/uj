@@ -187,7 +187,7 @@ Podłączono bramkę NAND do płytki UC-1. Na wejścia do bramki podano wyjścia
         [+5 V], [`Vcc`],
         [0 V], [`GND`],
       ),
-      caption: [Schemat połączeń wejść/wyjść bramki NAND],
+      caption: [Schemat połączeń układu 7400],
     )
   ],
 )
@@ -220,7 +220,7 @@ Podłączono bramkę NOR do płytki UC-1. Na wejścia do bramki podano wyjścia 
         [+5 V], [`Vcc`],
         [0 V], [`GND`],
       ),
-      caption: [Schemat połączeń wejść/wyjść bramki NOR],
+      caption: [Schemat połączeń układ 7402],
     )
   ],
 )
@@ -253,7 +253,7 @@ Podłączono bramkę XOR do płytki UC-1. Na wejścia do bramki podano wyjścia 
         [+5 V], [`Vcc`],
         [0 V], [`GND`],
       ),
-      caption: [Schemat połączeń wejść/wyjść bramki XOR],
+      caption: [Schemat połączeń układu 7486],
     )
   ],
 )
@@ -354,7 +354,7 @@ Za pomocą NAND:
         [+5 V], [`Vcc`],
         [0 V], [`GND`],
       ),
-      caption: [Schemat połączeń bramki NAND],
+      caption: [Schemat połączeń układu 7400],
     )
   ],
 )
@@ -381,7 +381,7 @@ Za pomocą NOR:
         [+5 V], [`Vcc`],
         [0 V], [`GND`],
       ),
-      caption: [Schemat połączeń  bramki NOR],
+      caption: [Schemat połączeń układu 7402],
     )
   ],
 )
@@ -414,7 +414,7 @@ Za pomocą NAND:
         [+5 V], [`Vcc`],
         [0 V], [`GND`],
       ),
-      caption: [Schemat połączeń  bramki NAND],
+      caption: [Schemat połączeń układu 7400],
     )
   ],
 )
@@ -447,7 +447,7 @@ Za pomocą NOR:
         [+5 V], [`Vcc`],
         [0 V], [`GND`],
       ),
-      caption: [Schemat połączeń bramki NOR],
+      caption: [Schemat połączeń układu 7402],
     )
   ],
 )
@@ -482,7 +482,7 @@ Za pomocą NAND:
         [+5 V], [`Vcc`],
         [0 V], [`GND`],
       ),
-      caption: [Schemat połączeń  bramki NAND],
+      caption: [Schemat połączeń układu 7400],
     )
   ],
 )
@@ -513,13 +513,125 @@ Za pomocą NOR:
         [+5 V], [`Vcc`],
         [0 V], [`GND`],
       ),
-      caption: [Schemat połączeń bramki NOR],
+      caption: [Schemat połączeń układu 7402],
     )
   ],
 )
 
 == Podsumowanie
 Zbudowano układy realizujące funkcje NOT, AND oraz OR wyłącznie z funktorów NAND i NOR. Dla każdej funkcji sprawdzono dwie realizacje: na układzie NAND (7400) oraz na układzie NOR (7402). Wyniki obserwowane na próbniku stanów logicznych były zgodne z oczekiwanymi tabelami prawdy, co potwierdza, że bramki NAND i NOR są funktorami pełnymi i mogą być użyte do realizacji podstawowych operacji logicznych.
+
+#pagebreak()
+
+= Zadanie 4
+== Treść
+Wyznaczyć średni czas propagacji impulsu przez bramkę mierząc okres drgań generatora zbudowanego z trzech bramek. Użyć do budowy generatora bramek serii podstawowej 7400 a potem bramek serii szybkiej 74S00. Porównaj wyniki.
+
+== Wstęp teoretyczny
+Generator przedstawiony poniżej to generator astabilny zbudowany z bramek NAND. Wykorzystuje sprzężenie zwrotne prowadzące sygnał wyjściowy na wejście generatora. W idealnym przypadku powinien generować fale prostokątne.
+
+#figure(
+  image("./img/nand_gen.png", width: 80%),
+  caption: [Schemat generatora zbudowanego z bramek NAND],
+)
+
+Okres drgań tego generatora dany jest wzorem $T = 6 Delta t$, gdzie $Delta t$ to opóźnienie propagacji sygnału jednej bramki. Zatem, średni czas propagacji impulsu przez jedną bramkę możemy uzyskać wzorem
+$
+  Delta t = T/6"."
+$
+
+== Praktyka
+=== NAND 7400
+Zbudowano układ korzystając z bramki NAND 7400 (@gen_nand_7400). Następnie wykorzystano oscyloskop do zmierzenia okresu drgań, a co za tym, średniego opóźnienia propagacji sygnału (@gen_nand_7400_oscy).
+
+#grid(
+  columns: 2,
+  column-gutter: -1em,
+  [
+    #figure(
+      image("./img/4.01_nand_7400_topview.jpeg"),
+      caption: [Generator zbudowany z NAND 7400 na płytce UC-1],
+    ) <gen_nand_7400>
+  ],
+  [
+    #figure(
+      table(
+        columns: 2,
+        table.header([*Od*], [*Do*]),
+        [`4Y`], [`1A`],
+        [`4Y`], [`1B`],
+
+        [`1Y`], [`2A`],
+        [`1Y`], [`2B`],
+
+        [`2Y`], [`4A`],
+        [`2Y`], [`4B`],
+
+        [`4Y`], [CH1],
+
+        [+5 V], [`Vcc`],
+        [0 V], [`GND`],
+      ),
+      caption: [Schemat połączeń układu 7400],
+    )
+  ],
+)
+
+#figure(
+  image("./img/4.02_nand_7400_oscy.png", width: 100%),
+  caption: [Przebieg fali generatora złożonego z NAND 7400],
+) <gen_nand_7400_oscy>
+
+Zmierzono okres $T = 35.53 "ns"$, czyli średnie opóźnienie propagcji sygnału układu 7400 wyniosło $Delta t = (35.53)/6 "ns" approx 5.92 "ns"$. Można dodatkowo zauważyć, że fala dość miernie przypomina falę prostokątną.
+
+#pagebreak()
+
+=== NAND 74S00
+Zbudowano układ korzystając z bramki NAND 74S00 (@gen_nand_74S00). Następnie wykorzystano oscyloskop do zmierzenia okresu drgań, a co za tym, średniego opóźnienia propagacji sygnału (@gen_nand_74S00_oscy).
+
+#v(1em)
+#grid(
+  columns: 2,
+  column-gutter: -1em,
+  [
+    #figure(
+      image("./img/4.03_nand_74S00_topview.jpeg"),
+      caption: [Generator zbudowany z NAND 74S00 na płytce UC-1],
+    ) <gen_nand_74S00>
+  ],
+  [
+    #figure(
+      table(
+        columns: 2,
+        table.header([*Od*], [*Do*]),
+        [`4Y`], [`1A`],
+        [`4Y`], [`1B`],
+
+        [`1Y`], [`2A`],
+        [`1Y`], [`2B`],
+
+        [`2Y`], [`4A`],
+        [`2Y`], [`4B`],
+
+        [`4Y`], [CH1],
+
+        [+5 V], [`Vcc`],
+        [0 V], [`GND`],
+      ),
+      caption: [Schemat połączeń układu 74S00],
+    )
+  ],
+)
+
+#figure(
+  image("./img/4.04_nand_74S00_oscy.png", width: 100%),
+  caption: [Przebieg fali generatora złożonego z NAND 74S00],
+) <gen_nand_74S00_oscy>
+
+Zmierzono okres $T = 29.52 "ns"$, czyli średnie opóźnienie propagcji sygnału układu 74S00 wyniosło $Delta t = (29.52)/6 "ns" approx 4.92 "ns"$. Można dodatkowo zauważyć, że fala dość miernie przypomina falę prostokątną, ale ma łagodniejszy i dłuższy szczyt niż fala wygenerowana przez generator złożony z układów NAND 7400.
+
+== Podsumowanie
+Wyznaczono średni czas propagacji impulsu przez bramkę NAND na podstawie okresu drgań generatora zbudowanego z trzech bramek. Dla układu 7400 zmierzono okres $T = 35.53 "ns"$, co dało opóźnienie propagacji $Delta t approx 5.92 "ns"$. Dla szybszego układu 74S00 okres wyniósł $T = 29.52 "ns"$, a opóźnienie propagacji $Delta t approx 4.92 "ns"$. Wyniki potwierdzają, że układ 74S00 przełącza się szybciej niż podstawowy układ 7400.
 
 #pagebreak()
 
