@@ -14,9 +14,6 @@
 #set math.vec(delim: "[")
 #set math.equation(numbering: "(1)")
 
-#set image(width: 80%)
-#show grid: set image(width: 100%)
-
 #set figure(supplement: [Obraz])
 #show figure.caption: set text(hyphenate: false)
 #show figure.where(kind: table): set figure(supplement: [Tabela])
@@ -41,8 +38,9 @@ Zapoznać się z płytką UC-1 do badania układów scalonych TTL.
 
 == Wstęp teoretyczny
 #grid(
-  columns: (auto, auto),
+  columns: 2,
   column-gutter: 1em,
+  inset: (bottom: 1em),
   [
     #figure(
       image("./img/uc-1.jpg"),
@@ -57,7 +55,6 @@ Zapoznać się z płytką UC-1 do badania układów scalonych TTL.
   ],
 )
 
-#v(1em)
 Płytka UC-1 służy do testowania układów scalonych. Zbudowana jest z kilku części:
 + *zasilanie 5V* - zasila płytkę i wpięte układy scalone,
 + *impulsator* - przyciski wysyłające impuls napięcia na piny $Q$ oraz $overline(Q)$ (negacja),
@@ -99,77 +96,100 @@ Zbadać tablicę logiczną dla następujących bramek logicznych NAND (7400), NO
 == Wstęp teoretyczny
 === NAND
 Bramka NAND to bramka logiczna przedstawiona za pomocą następującej tabeli prawdy:
-#figure(
-  table(
-    columns: 3,
-    table.header([*$A$*], [*$B$*], [*$A dot B$*]),
-    [0], [0], [1],
-    [0], [1], [1],
-    [1], [0], [1],
-    [1], [1], [0],
-  ),
-  caption: [Tabela logiczna NAND],
-) <nand_truth>
 
-Układ scalony NAND (7400) realizujący funkcję logiczną NAND przedstawiony jest na następującym schemacie:
-#figure(
-  image("./img/nand.jpg", width: 25%),
-  caption: [Schemat układu NAND (7400)],
+#grid(
+  columns: 2,
+  inset: (top: 1em, bottom: 1em),
+  [
+    #figure(
+      table(
+        columns: 3,
+        table.header([*$A$*], [*$B$*], [*$A dot B$*]),
+        [0], [0], [1],
+        [0], [1], [1],
+        [1], [0], [1],
+        [1], [1], [0],
+      ),
+      caption: [Tabela logiczna NAND],
+    ) <nand_truth>
+  ],
+  [
+    #figure(
+      image("./img/nand.jpg", width: 60%),
+      caption: [Schemat układu NAND (7400)],
+    )
+  ],
 )
-Piny `xA` oraz `xB` to wejścia, piny `xY` to wyjścia. Napięcie stałe wprowadzamy do pinu `Vcc`, uziemienie do `GND`.
 
-#pagebreak()
+Układ scalony NAND (7400) realizujący funkcję logiczną NAND przedstawiony jest na powyższym schemacie.
+Piny `xA` oraz `xB` to wejścia, piny `xY` to wyjścia. Napięcie stałe wprowadzamy do pinu `Vcc`, uziemienie do `GND`.
 
 === NOR
 Bramka NOR to bramka logiczna przedstawiona za pomocą następującej tabeli prawdy:
-#figure(
-  table(
-    columns: 3,
-    table.header([*$A$*], [*$B$*], [*$A + B$*]),
-    [0], [0], [1],
-    [0], [1], [0],
-    [1], [0], [0],
-    [1], [1], [0],
-  ),
-  caption: [Tabela logiczna NOR],
-) <nor_truth>
-
-Układ scalony NOR (7402) realizujący funkcję logiczną NOR przedstawiony jest na następującym schemacie:
-#figure(
-  image("./img/nor.jpg", width: 25%),
-  caption: [Schemat układu NOR (7402)],
+#grid(
+  columns: 2,
+  inset: (top: 1em, bottom: 1em),
+  [
+    #figure(
+      table(
+        columns: 3,
+        table.header([*$A$*], [*$B$*], [*$A + B$*]),
+        [0], [0], [1],
+        [0], [1], [0],
+        [1], [0], [0],
+        [1], [1], [0],
+      ),
+      caption: [Tabela logiczna NOR],
+    ) <nor_truth>
+  ],
+  [
+    #figure(
+      image("./img/nor.jpg", width: 60%),
+      caption: [Schemat układu NOR (7402)],
+    )
+  ],
 )
+
+Układ scalony NOR (7402) realizujący funkcję logiczną NOR przedstawiony jest na powyższym schemacie.
 Piny `xA` oraz `xB` to wejścia, piny `xY` to wyjścia. Napięcie stałe wprowadzamy do pinu `Vcc`, uziemienie do `GND`.
 
 === XOR
 Bramka XOR to bramka logiczna przedstawiona za pomocą następującej tabeli prawdy:
-#figure(
-  table(
-    columns: 3,
-    table.header([*$A$*], [*$B$*], [*$A xor B$*]),
-    [0], [0], [0],
-    [0], [1], [1],
-    [1], [0], [1],
-    [1], [1], [0],
-  ),
-  caption: [Tabela logiczna XOR],
-) <xor_truth>
 
-Układ scalony XOR (7486) realizujący funkcję logiczną XOR przedstawiony jest na następującym schemacie:
-#figure(
-  image("./img/xor.jpg", width: 25%),
-  caption: [Schemat układu XOR (7486)],
+#grid(
+  columns: (2fr, 1fr),
+  inset: (1em, 1em),
+  [
+    #figure(
+      table(
+        columns: 3,
+        table.header([*$A$*], [*$B$*], [*$A xor B$*]),
+        [0], [0], [0],
+        [0], [1], [1],
+        [1], [0], [1],
+        [1], [1], [0],
+      ),
+      caption: [Tabela logiczna XOR],
+    ) <xor_truth>
+  ],
+  [
+    #figure(
+      image("./img/xor.jpg", width: 60%),
+      caption: [Schemat układu XOR (7486)],
+    )
+  ],
 )
+
+Układ scalony XOR (7486) realizujący funkcję logiczną XOR przedstawiony jest na powyższym schemacie.
 Piny `xA` oraz `xB` to wejścia, piny `xY` to wyjścia. Napięcie stałe wprowadzamy do pinu `Vcc`, uziemienie do `GND`.
 
 == Praktyka
 === NAND
 Podłączono bramkę NAND do płytki UC-1. Na wejścia do bramki podano wyjścia $Q$ z obu impulsatorów (dalej nazwane $Q_1$ oraz $Q_2$).
 
-#v(1em)
 #grid(
-  columns: 2,
-  column-gutter: -1em,
+  columns: (2fr, 1fr),
+  inset: (top: 1em, bottom: 1em),
   [
     #figure(
       image("./img/2.01_nand.jpeg"),
@@ -192,17 +212,15 @@ Podłączono bramkę NAND do płytki UC-1. Na wejścia do bramki podano wyjścia
   ],
 )
 
-#v(1em)
 Napięcia stanów logicznych wyniosły: $V_"high" = 3.61 "V"$, $V_"low" = 65.4 "mV"$.\
 Po zmierzeniu napięć dla każdej kombinacji stanów $Q_1$, $Q_2$, tablica logiczna tej bramki jest zgodna z teorią (@nand_truth).
 
 === NOR
 Podłączono bramkę NOR do płytki UC-1. Na wejścia do bramki podano wyjścia $Q$ z obu impulsatorów (dalej nazwane $Q_1$ oraz $Q_2$).
 
-#v(1em)
 #grid(
-  columns: 2,
-  column-gutter: -1em,
+  columns: (2fr, 1fr),
+  inset: (bottom: 1em),
   [
     #figure(
       image("./img/2.02_nor.jpeg"),
@@ -225,17 +243,15 @@ Podłączono bramkę NOR do płytki UC-1. Na wejścia do bramki podano wyjścia 
   ],
 )
 
-#v(1em)
 Napięcia stanów logicznych wyniosły: $V_"high" = 3.62 "V"$, $V_"low" = 48.8 "mV"$.\
 Po zmierzeniu napięć dla każdej kombinacji stanów $Q_1$, $Q_2$, tablica logiczna tej bramki jest zgodna z teorią (@nor_truth).
 
 === XOR
 Podłączono bramkę XOR do płytki UC-1. Na wejścia do bramki podano wyjścia $Q$ z obu impulsatorów (dalej nazwane $Q_1$ oraz $Q_2$).
 
-#v(1em)
 #grid(
-  columns: 2,
-  column-gutter: -1em,
+  columns: (2fr, 1fr),
+  inset: (top: 1em, bottom: 1em),
   [
     #figure(
       image("./img/2.03_xor.jpeg"),
@@ -258,7 +274,6 @@ Podłączono bramkę XOR do płytki UC-1. Na wejścia do bramki podano wyjścia 
   ],
 )
 
-#v(1em)
 Napięcia stanów logicznych wyniosły: $V_"high" = 3.62 "V"$, $V_"low" = 48.8 "mV"$.\
 Po zmierzeniu napięć dla każdej kombinacji stanów $Q_1$, $Q_2$, tablica logiczna tej bramki jest zgodna z teorią (@xor_truth).
 
@@ -337,6 +352,7 @@ Za pomocą NAND:
 #grid(
   columns: 2,
   column-gutter: -1em,
+  inset: (bottom: 1em),
   [
     #figure(
       image("./img/3.01_nand_not.jpeg"),
@@ -359,7 +375,6 @@ Za pomocą NAND:
   ],
 )
 
-#v(1em)
 Za pomocą NOR:
 #grid(
   columns: 2,
@@ -391,8 +406,8 @@ Za pomocą NOR:
 === AND
 Za pomocą NAND:
 #grid(
-  columns: 2,
-  column-gutter: -1em,
+  columns: (2fr, 1fr),
+  inset: (bottom: 1em),
   [
     #figure(
       image("./img/3.02_nand_and.jpeg"),
@@ -419,11 +434,9 @@ Za pomocą NAND:
   ],
 )
 
-#v(1em)
 Za pomocą NOR:
 #grid(
-  columns: 2,
-  column-gutter: -1em,
+  columns: (2fr, 1fr),
   [
     #figure(
       image("./img/3.05_nor_and.jpeg"),
@@ -457,8 +470,8 @@ Za pomocą NOR:
 === OR
 Za pomocą NAND:
 #grid(
-  columns: 2,
-  column-gutter: -1em,
+  columns: (2fr, 1fr),
+  inset: (bottom: 1em),
   [
     #figure(
       image("./img/3.03_nand_or.jpeg"),
@@ -487,11 +500,9 @@ Za pomocą NAND:
   ],
 )
 
-#v(1em)
 Za pomocą NOR:
 #grid(
-  columns: 2,
-  column-gutter: -1em,
+  columns: (2fr, 1fr),
   [
     #figure(
       image("./img/3.06_nor_or.jpeg"),
@@ -584,15 +595,11 @@ Zbudowano układ korzystając z bramki NAND 7400 (@gen_nand_7400). Następnie wy
 
 Zmierzono okres $T = 35.53 "ns"$, czyli średnie opóźnienie propagcji sygnału układu 7400 wyniosło $Delta t = (35.53)/6 "ns" approx 5.92 "ns"$. Można dodatkowo zauważyć, że fala dość miernie przypomina falę prostokątną.
 
-#pagebreak()
-
 === NAND 74S00
 Zbudowano układ korzystając z bramki NAND 74S00 (@gen_nand_74S00). Następnie wykorzystano oscyloskop do zmierzenia okresu drgań, a co za tym, średniego opóźnienia propagacji sygnału (@gen_nand_74S00_oscy).
 
-#v(1em)
 #grid(
-  columns: 2,
-  column-gutter: -1em,
+  columns: (2fr, 1fr),
   [
     #figure(
       image("./img/4.03_nand_74S00_topview.jpeg"),
@@ -628,10 +635,82 @@ Zbudowano układ korzystając z bramki NAND 74S00 (@gen_nand_74S00). Następnie 
   caption: [Przebieg fali generatora złożonego z NAND 74S00],
 ) <gen_nand_74S00_oscy>
 
-Zmierzono okres $T = 29.52 "ns"$, czyli średnie opóźnienie propagcji sygnału układu 74S00 wyniosło $Delta t = (29.52)/6 "ns" approx 4.92 "ns"$. Można dodatkowo zauważyć, że fala dość miernie przypomina falę prostokątną, ale ma łagodniejszy i dłuższy szczyt niż fala wygenerowana przez generator złożony z układów NAND 7400.
+Zmierzono okres $T = 29.52 "ns"$, czyli średnie opóźnienie propagcji sygnału układu 74S00 wyniosło $Delta t = (29.52)/6 "ns" approx 4.92 "ns"$. Można dodatkowo zauważyć, że fala dość miernie przypomina falę prostokątną.
 
 == Podsumowanie
 Wyznaczono średni czas propagacji impulsu przez bramkę NAND na podstawie okresu drgań generatora zbudowanego z trzech bramek. Dla układu 7400 zmierzono okres $T = 35.53 "ns"$, co dało opóźnienie propagacji $Delta t approx 5.92 "ns"$. Dla szybszego układu 74S00 okres wyniósł $T = 29.52 "ns"$, a opóźnienie propagacji $Delta t approx 4.92 "ns"$. Wyniki potwierdzają, że układ 74S00 przełącza się szybciej niż podstawowy układ 7400.
+
+#pagebreak()
+
+= Zadanie 5
+== Treść
+Z funktorów NAND (7400) zaprojektować i zmontować przerzutnik asynchroniczny \ R-S. Sprawdzić tabelę przejść.
+
+== Wstęp teoretyczny
+Przerzutnik asynchronicnzy RS jest prostym układem pamiętającym jeden bit informacji. Posiada dwa wejścia sterujące: $S$ (set), które ustawia stan wyjścia, oraz $R$ (reset), które zeruje stan wyjścia. Wyjścia $Q$ i $overline(Q)$ powinny mieć przeciwne stany logiczne. Jest nazwany asynchronicznym, ponieważ nie zależy od taktu zegara.
+
+W przerzutniku zbudowanym z bramek NAND wejścia są aktywne stanem niskim, dlatego oznacza się je jako $overline(S)$ oraz $overline(R)$. Podanie zera na wejście $overline(S)$ ustawia wyjście $Q$ w stan wysoki, a podanie zera na wejście $overline(R)$ zeruje wyjście $Q$. Gdy oba wejścia mają stan wysoki, przerzutnik zachowuje poprzedni stan. Stan, w którym oba wejścia mają wartość zero, jest niedozwolony, ponieważ prowadzi do jednakowych stanów na wyjściach i po jego zakończeniu wynik może być nieokreślony.
+
+#figure(
+  table(
+    columns: 4,
+    table.header([*$overline(S)$*], [*$overline(R)$*], [*$Q_(n+1)$*], [*Opis*]),
+    [0], [1], [1], [Ustawienie],
+    [1], [0], [0], [Zerowanie],
+    [1], [1], [$Q_n$], [Pamiętanie],
+    [0], [0], [Niedozwolony], [Stan zabroniony],
+  ),
+  caption: [Tabela przejść przerzutnika R-S na bramkach NAND],
+)
+
+#figure(
+  image("./img/sr.png", width: 40%),
+  caption: [Schemat budowy przerzutnika RS na bramkach NAND],
+)
+
+#pagebreak()
+
+== Praktyka
+Złożono układ realizujący przerzutnik asynchroniczny RS. Impulsator górny realizuje wejście R (reset), impulsator dolny wejście S (set).
+
+#grid(
+  columns: (2fr, 1fr),
+  inset: (top: 1em, bottom: 1em),
+  [
+    #figure(
+      image("./img/5.1_rs.jpeg"),
+      caption: [Przerzutnik RS zbudowany z NAND 7400 na płytce UC-1],
+    )
+  ],
+  [
+    #figure(
+      table(
+        columns: 2,
+        table.header([*Od*], [*Do*]),
+        [$overline(Q_1)$], [`1A`],
+        [`2Y`], [`1B`],
+        [$overline(Q_2)$], [`2A`],
+        [`1Y`], [`2B`],
+        [`2Y`], [Próbnik],
+        [+5 V], [`Vcc`],
+        [0 V], [`GND`],
+      ),
+      caption: [Schemat połączeń układu 7400],
+    )
+  ],
+)
+
+Zmierzona tabela przejść zgadza się z teoretyczną, przerzutnik działa jak oczekiwano. Przewody podłączono do zanegowanych wyjść $overline(Q)$ impulsatorów, ponieważ dzięki temu zmiana stanu następuje po wciśnięciu przycisku, a nie po jego zwolnieniu, jak miałoby to miejsce w przypadku niezanegowanych wyjść $Q$.
+
+== Podsumowanie
+Zaprojektowano i zmontowano asynchroniczny przerzutnik R-S z dwóch bramek NAND. Sprawdzono działanie wejść ustawiającego i zerującego oraz potwierdzono, że układ zapamiętuje poprzedni stan, gdy oba wejścia sterujące są nieaktywne. Otrzymana tabela przejść była zgodna z teorią, co potwierdza poprawne działanie przerzutnika.
+
+= Podsumowanie końcowe
+W ramach ćwiczenia zapoznano się z płytką UC-1 oraz sposobem badania układów scalonych TTL. Sprawdzono działanie impulsatorów, próbnika stanów logicznych i podstawowych połączeń zasilania. Następnie zbadano bramki NAND, NOR oraz XOR, mierząc odpowiadające im poziomy napięć i porównując otrzymane wyniki z tabelami prawdy.
+
+Wykazano również, że funktory NAND i NOR są funktorami pełnymi, ponieważ za ich pomocą zrealizowano podstawowe operacje logiczne: negację, iloczyn logiczny oraz sumę logiczną. W dalszej części wyznaczono średni czas propagacji impulsu przez bramki NAND serii 7400 i 74S00, potwierdzając szybsze działanie układu 74S00. Na końcu zbudowano asynchroniczny przerzutnik RS z bramek NAND i sprawdzono jego tabelę przejść.
+
+Otrzymane wyniki były zgodne z przewidywaniami teoretycznymi. Ćwiczenie potwierdziło poprawne działanie badanych układów TTL oraz pokazało praktyczne zastosowanie bramek logicznych zarówno w prostych funkcjach kombinacyjnych, jak i w układach sekwencyjnych.
 
 #pagebreak()
 
