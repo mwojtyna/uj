@@ -1,0 +1,5 @@
+[My Computer]
+My Computer = "172.30.36.72"
+
+[RT PXI Target]
+RT PXI Target = "169.254.176.192"
