@@ -3,7 +3,7 @@ Program wczytuje graf zadań w formacie używanym w poprzednich zadaniach:
 
 Uruchomienie:
 
-./a.out plik_wejściowy k1 k2 k3 tmax fmax
+./program plik_wejściowy k1 k2 k3 tmax fmax
 
 Program konstruuje system zachłannie. Zadania są rozpatrywane w porządku
 topologicznym. Dla aktualnego zadania wybierany jest lokalnie najtańszy procesor,

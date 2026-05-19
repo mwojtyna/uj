@@ -6,9 +6,9 @@ SRC := main.cpp
 IN ?= in.txt
 K1 ?= 1
 K2 ?= 1
-K3 ?= 10
-TMAX ?= 1000
-FMAX ?= 254
+K3 ?= 1
+TMAX ?= 30
+FMAX ?= 300
 ARGS ?= $(IN) $(K1) $(K2) $(K3) $(TMAX) $(FMAX)
 
 .PHONY: all run clean

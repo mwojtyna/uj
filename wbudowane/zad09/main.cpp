@@ -31,8 +31,8 @@ struct TaskProfile {
 
 struct Bus {
     std::string name;
-    num_t hookup_cost;
-    num_t bandwidth;
+    num_t hookup_cost = 0;
+    num_t bandwidth = 0;
     std::vector<bool> connected_processors;
 };
 
@@ -41,11 +41,11 @@ struct Input {
     std::vector<Processor> processors;
     std::vector<Bus> buses;
 
-    num_t taskCount() const {
+    [[nodiscard]] num_t taskCount() const {
         return static_cast<num_t>(tasks.size());
     }
 
-    num_t processorCount() const {
+    [[nodiscard]] num_t processorCount() const {
         return static_cast<num_t>(processors.size());
     }
 };
@@ -84,13 +84,13 @@ num_t parseTaskId(const std::string& token) {
     }
 
     if (token[0] == 'T' || token[0] == 't') {
-        return static_cast<num_t>(std::stoi(token.substr(1)));
+        return std::stoi(token.substr(1));
     }
 
-    return static_cast<num_t>(std::stoi(token));
+    return std::stoi(token);
 }
 
-std::vector<num_t> readProcessorVector(const std::string& line, num_t proc_n,
+std::vector<num_t> readProcessorVector(const std::string& line, const num_t proc_n,
                                        const std::string& section) {
     std::istringstream row(line);
     std::vector<num_t> values(proc_n, 0);
@@ -258,8 +258,8 @@ std::vector<num_t> topologicalOrder(const Input& in) {
     return order;
 }
 
-bool hcAvailableForTask(const Input& in, const std::vector<num_t>& assignment, num_t task,
-                        num_t proc) {
+bool hcAvailableForTask(const Input& in, const std::vector<num_t>& assignment, const num_t task,
+                        const num_t proc) {
     if (in.processors[proc].type == ProcessorType::PP) {
         return true;
     }
@@ -340,7 +340,7 @@ num_t calculateCost(const Input& in, const std::vector<num_t>& assignment) {
     return cost;
 }
 
-double calculateF(const Params& params, num_t cost, num_t time) {
+double calculateF(const Params& params, const num_t cost, const num_t time) {
     const num_t penalty = std::max<num_t>(0, time - params.tmax);
     return params.k1 * cost + params.k2 * time + params.k3 * penalty;
 }
@@ -349,9 +349,8 @@ ConstructionResult constructSystem(const Input& in, const Params& params) {
     ConstructionResult result;
     result.task_processor.assign(in.taskCount(), -1);
     result.task_start_time.assign(in.taskCount(), -1);
-    const std::vector<num_t> order = topologicalOrder(in);
 
-    for (const num_t task : order) {
+    for (const std::vector<num_t> order = topologicalOrder(in); const num_t task : order) {
         Candidate best;
         bool found = false;
 
@@ -374,6 +373,7 @@ ConstructionResult constructSystem(const Input& in, const Params& params) {
             if (!found || cost < best.cost ||
                 (cost == best.cost && schedule.total_time < best.time) ||
                 (cost == best.cost && schedule.total_time == best.time && proc < best.proc)) {
+
                 best = Candidate{.proc = proc, .time = schedule.total_time, .cost = cost, .f = f};
                 found = true;
             }
@@ -395,7 +395,7 @@ ConstructionResult constructSystem(const Input& in, const Params& params) {
     return result;
 }
 
-std::string processorTypeName(ProcessorType type) {
+std::string processorTypeName(const ProcessorType type) {
     return type == ProcessorType::HC ? "HC" : "PP";
 }
 
@@ -420,7 +420,7 @@ void printResult(const Input& in, const Params& params, const ConstructionResult
     }
 }
 
-int main(int argc, char* argv[]) {
+int main(const int argc, char* argv[]) {
     if (argc != 7) {
         std::cout << "Złe argumenty! Poprawne argumenty:\n";
         std::cout << "plik_wejściowy k1 k2 k3 tmax fmax\n";
@@ -429,12 +429,13 @@ int main(int argc, char* argv[]) {
 
     try {
         const std::string infile = argv[1];
-        Params params;
-        params.k1 = std::stod(argv[2]);
-        params.k2 = std::stod(argv[3]);
-        params.k3 = std::stod(argv[4]);
-        params.tmax = static_cast<num_t>(std::stoi(argv[5]));
-        params.fmax = std::stod(argv[6]);
+        const Params params = {
+            .k1 = std::stod(argv[2]),
+            .k2 = std::stod(argv[3]),
+            .k3 = std::stod(argv[4]),
+            .tmax = std::stoi(argv[5]),
+            .fmax = std::stod(argv[6]),
+        };
 
         const Input input = readInput(infile);
         const ConstructionResult result = constructSystem(input, params);
