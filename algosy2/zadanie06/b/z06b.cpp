@@ -10,7 +10,7 @@
 using Node = std::string;
 using Graph = std::unordered_map<Node, std::vector<Node>>;
 
-std::vector<std::string> readWords(std::string filename) {
+std::vector<std::string> readWords(const std::string& filename) {
     std::ifstream file(filename);
 
     std::vector<std::string> words;
@@ -23,8 +23,8 @@ std::vector<std::string> readWords(std::string filename) {
     return words;
 }
 
-std::vector<std::string> shortestPath(std::string startWord, std::string endWord,
-                                      std::vector<std::string> words) {
+std::vector<std::string> shortestPath(const std::string& startWord, const std::string& endWord,
+                                      const std::vector<std::string>& words) {
     // word with wildcard -> normal word
     Graph graph;
     std::unordered_map<Node, Node> prev;
