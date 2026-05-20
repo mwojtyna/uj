@@ -1,19 +1,21 @@
 #include <algorithm>
+#include <cctype>
 #include <cstdint>
 #include <fstream>
-#include <iomanip>
 #include <iostream>
+#include <limits>
 #include <queue>
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 using num_t = std::int32_t;
 
 struct Dependency {
     num_t to;
-    num_t communication_cost;
+    num_t data_size;
 };
 
 enum class ProcessorType { HC, PP };
@@ -24,6 +26,7 @@ struct Processor {
 };
 
 struct TaskProfile {
+    std::string name;
     std::vector<Dependency> dependencies;
     std::vector<num_t> time_by_proc;
     std::vector<num_t> cost_by_proc;
@@ -50,14 +53,6 @@ struct Input {
     }
 };
 
-struct Params {
-    double k1 = 0.0;
-    double k2 = 0.0;
-    double k3 = 0.0;
-    num_t tmax = 0;
-    double fmax = 0.0;
-};
-
 struct Schedule {
     std::vector<num_t> task_start_time;
     num_t total_time = 0;
@@ -67,7 +62,7 @@ struct Candidate {
     num_t proc = -1;
     num_t time = 0;
     num_t cost = 0;
-    double f = 0.0;
+    num_t load = 0;
 };
 
 struct ConstructionResult {
@@ -75,29 +70,73 @@ struct ConstructionResult {
     std::vector<num_t> task_start_time;
     num_t total_time = 0;
     num_t total_cost = 0;
-    double f = 0.0;
 };
 
-num_t parseTaskId(const std::string& token) {
-    if (token.empty()) {
-        throw std::runtime_error("Pusty identyfikator zadania");
-    }
+struct RawDependency {
+    num_t from;
+    std::string to_token;
+    num_t data_size;
+};
 
-    if (token[0] == 'T' || token[0] == 't') {
-        return std::stoi(token.substr(1));
-    }
-
-    return std::stoi(token);
+bool startsWith(const std::string& text, const std::string& prefix) {
+    return text.rfind(prefix, 0) == 0;
 }
 
-std::vector<num_t> readProcessorVector(const std::string& line, const num_t proc_n,
-                                       const std::string& section) {
+bool isBlank(const std::string& text) {
+    return std::all_of(text.begin(), text.end(),
+                       [](const char c) { return std::isspace(static_cast<unsigned char>(c)); });
+}
+
+std::string normalizeTaskToken(std::string token) {
+    for (char& c : token) {
+        c = static_cast<char>(std::toupper(static_cast<unsigned char>(c)));
+    }
+    return token;
+}
+
+bool isUnexpectedTask(const std::string& name) {
+    return startsWith(normalizeTaskToken(name), "UT");
+}
+
+bool isNumber(const std::string& token) {
+    return !token.empty() && std::all_of(token.begin(), token.end(), [](const char c) {
+        return std::isdigit(static_cast<unsigned char>(c));
+    });
+}
+
+num_t parseRegularTaskNumber(const std::string& token) {
+    const std::string normalized = normalizeTaskToken(token);
+    if (isNumber(normalized)) {
+        return std::stoi(normalized);
+    }
+    if (startsWith(normalized, "T") && normalized.size() > 1 && isNumber(normalized.substr(1))) {
+        return std::stoi(normalized.substr(1));
+    }
+
+    return -1;
+}
+
+num_t resolveTaskToken(const std::unordered_map<std::string, num_t>& task_id_by_name,
+                       const std::string& token, const num_t tasks_n) {
+    const std::string normalized = normalizeTaskToken(token);
+    const auto it = task_id_by_name.find(normalized);
+    if (it != task_id_by_name.end()) {
+        return it->second;
+    }
+
+    const num_t regular_id = parseRegularTaskNumber(normalized);
+    if (regular_id >= 0 && regular_id < tasks_n) {
+        return regular_id;
+    }
+
+    throw std::runtime_error("Nieznany identyfikator zadania: " + token);
+}
+
+std::vector<num_t> readProcessorVector(const std::string& line, const num_t proc_n) {
     std::istringstream row(line);
     std::vector<num_t> values(proc_n, 0);
     for (num_t i = 0; i < proc_n; i++) {
-        if (!(row >> values[i])) {
-            throw std::runtime_error("Za mało wartości w sekcji " + section);
-        }
+        row >> values[i];
     }
 
     return values;
@@ -110,12 +149,14 @@ Input readInput(const std::string& filename) {
     }
 
     Input input;
+    std::vector<RawDependency> raw_dependencies;
+    std::unordered_map<std::string, num_t> task_id_by_name;
     std::string line;
     num_t tasks_n = 0;
     num_t proc_n = 0;
 
     while (std::getline(file, line)) {
-        if (line.empty()) {
+        if (isBlank(line)) {
             continue;
         }
 
@@ -127,17 +168,18 @@ Input readInput(const std::string& filename) {
             header >> tasks_n;
             input.tasks.assign(tasks_n, TaskProfile{});
 
-            for (num_t i = 0; i < tasks_n; i++) {
+            for (num_t row_idx = 0; row_idx < tasks_n; row_idx++) {
                 std::getline(file, line);
                 std::istringstream row(line);
 
                 std::string task_token;
                 num_t edge_count = 0;
                 row >> task_token >> edge_count;
-                const num_t task_id = parseTaskId(task_token);
-                if (task_id < 0 || task_id >= tasks_n) {
-                    throw std::runtime_error("Identyfikator zadania poza zakresem");
-                }
+
+                const num_t task_id = row_idx;
+                input.tasks[task_id].name = task_token;
+                task_id_by_name[normalizeTaskToken(task_token)] = task_id;
+                task_id_by_name[std::to_string(task_id)] = task_id;
 
                 for (num_t j = 0; j < edge_count; j++) {
                     std::string edge_token;
@@ -145,21 +187,20 @@ Input readInput(const std::string& filename) {
 
                     const std::size_t open_pos = edge_token.find('(');
                     const std::size_t close_pos = edge_token.find(')');
-                    if (open_pos == std::string::npos || close_pos == std::string::npos ||
-                        close_pos <= open_pos) {
-                        throw std::runtime_error("Niepoprawny opis krawędzi: " + edge_token);
-                    }
 
-                    const num_t node = std::stoi(edge_token.substr(0, open_pos));
-                    const num_t weight =
-                        std::stoi(edge_token.substr(open_pos + 1, close_pos - open_pos - 1));
-
-                    if (node < 0 || node >= tasks_n) {
-                        throw std::runtime_error("Krawędź prowadzi do zadania poza zakresem");
-                    }
-                    input.tasks[task_id].dependencies.push_back(
-                        Dependency{.to = node, .communication_cost = weight});
+                    raw_dependencies.push_back(RawDependency{
+                        .from = task_id,
+                        .to_token = edge_token.substr(0, open_pos),
+                        .data_size =
+                            std::stoi(edge_token.substr(open_pos + 1, close_pos - open_pos - 1)),
+                    });
                 }
+            }
+
+            for (const RawDependency& dependency : raw_dependencies) {
+                const num_t to = resolveTaskToken(task_id_by_name, dependency.to_token, tasks_n);
+                input.tasks[dependency.from].dependencies.push_back(
+                    Dependency{.to = to, .data_size = dependency.data_size});
             }
         } else if (section == "@proc") {
             header >> proc_n;
@@ -181,17 +222,17 @@ Input readInput(const std::string& filename) {
         } else if (section == "@times") {
             for (num_t i = 0; i < tasks_n; i++) {
                 std::getline(file, line);
-                input.tasks[i].time_by_proc = readProcessorVector(line, proc_n, "@times");
+                input.tasks[i].time_by_proc = readProcessorVector(line, proc_n);
             }
         } else if (section == "@cost") {
             for (num_t i = 0; i < tasks_n; i++) {
                 std::getline(file, line);
-                input.tasks[i].cost_by_proc = readProcessorVector(line, proc_n, "@cost");
+                input.tasks[i].cost_by_proc = readProcessorVector(line, proc_n);
             }
         } else if (section == "@comm") {
             input.buses.clear();
 
-            while (std::getline(file, line) && !line.empty()) {
+            while (std::getline(file, line) && !isBlank(line)) {
                 std::istringstream row(line);
                 Bus bus;
 
@@ -208,13 +249,6 @@ Input readInput(const std::string& filename) {
             }
             break;
         }
-    }
-
-    if (input.tasks.empty()) {
-        throw std::runtime_error("Brak sekcji @tasks");
-    }
-    if (input.processors.empty()) {
-        throw std::runtime_error("Brak sekcji @proc albo brak procesorów");
     }
 
     return input;
@@ -272,6 +306,33 @@ bool hcAvailableForTask(const Input& in, const std::vector<num_t>& assignment, c
     return true;
 }
 
+num_t communicationDelay(const Input& in, const num_t from_proc, const num_t to_proc,
+                         const num_t data_size) {
+    if (from_proc == to_proc || data_size == 0) {
+        return 0;
+    }
+
+    num_t best = std::numeric_limits<num_t>::max();
+    for (const Bus& bus : in.buses) {
+        if (bus.bandwidth <= 0) {
+            continue;
+        }
+        if (from_proc < static_cast<num_t>(bus.connected_processors.size()) &&
+            to_proc < static_cast<num_t>(bus.connected_processors.size()) &&
+            bus.connected_processors[from_proc] && bus.connected_processors[to_proc]) {
+            const num_t delay = (data_size + bus.bandwidth - 1) / bus.bandwidth;
+            best = std::min(best, delay);
+        }
+    }
+
+    if (best == std::numeric_limits<num_t>::max()) {
+        throw std::runtime_error("Brak wspólnej szyny komunikacyjnej dla procesorów P" +
+                                 std::to_string(from_proc) + " i P" + std::to_string(to_proc));
+    }
+
+    return best;
+}
+
 Schedule calculateSchedule(const Input& in, const std::vector<num_t>& assignment) {
     std::vector<num_t> ready_times(in.taskCount(), 0);
     std::vector<num_t> start_times(in.taskCount(), -1);
@@ -283,12 +344,6 @@ Schedule calculateSchedule(const Input& in, const std::vector<num_t>& assignment
         const num_t proc = assignment[task];
         if (proc == -1) {
             continue;
-        }
-        if (proc < 0 || proc >= in.processorCount() || in.tasks[task].time_by_proc[proc] < 0) {
-            throw std::runtime_error("Niepoprawny przydział procesora do zadania");
-        }
-        if (!hcAvailableForTask(in, assignment, task, proc)) {
-            throw std::runtime_error("Ten sam procesor HC został przypisany do kilku zadań");
         }
 
         if (in.processors[proc].type == ProcessorType::PP) {
@@ -302,7 +357,14 @@ Schedule calculateSchedule(const Input& in, const std::vector<num_t>& assignment
         max_time = std::max(max_time, finish);
 
         for (const Dependency& dependency : in.tasks[task].dependencies) {
-            ready_times[dependency.to] = std::max(ready_times[dependency.to], finish);
+            if (assignment[dependency.to] == -1) {
+                continue;
+            }
+            const num_t child_proc = assignment[dependency.to];
+            const num_t communication_time =
+                communicationDelay(in, proc, child_proc, dependency.data_size);
+            ready_times[dependency.to] =
+                std::max(ready_times[dependency.to], finish + communication_time);
         }
     }
 
@@ -339,48 +401,60 @@ num_t calculateCost(const Input& in, const std::vector<num_t>& assignment) {
     return cost;
 }
 
-double calculateF(const Params& params, const num_t cost, const num_t time) {
-    const num_t penalty = std::max<num_t>(0, time - params.tmax);
-    return params.k1 * cost + params.k2 * time + params.k3 * penalty;
+num_t assignedTaskCount(const std::vector<num_t>& assignment, const num_t proc) {
+    return static_cast<num_t>(std::count(assignment.begin(), assignment.end(), proc));
 }
 
-ConstructionResult constructSystem(const Input& in, const Params& params) {
+ConstructionResult constructSystem(const Input& in) {
     ConstructionResult result;
     result.task_processor.assign(in.taskCount(), -1);
     result.task_start_time.assign(in.taskCount(), -1);
 
-    for (const std::vector<num_t> order = topologicalOrder(in); const num_t task : order) {
+    const std::vector<num_t> order = topologicalOrder(in);
+    for (const num_t task : order) {
         Candidate best;
         bool found = false;
+        const bool unexpected = isUnexpectedTask(in.tasks[task].name);
 
         for (num_t proc = 0; proc < in.processorCount(); proc++) {
             if (in.tasks[task].time_by_proc[proc] < 0 ||
                 !hcAvailableForTask(in, result.task_processor, task, proc)) {
                 continue;
             }
-
-            std::vector<num_t> candidate_assignment = result.task_processor;
-            candidate_assignment[task] = proc;
-            const Schedule schedule = calculateSchedule(in, candidate_assignment);
-            const num_t cost = calculateCost(in, candidate_assignment);
-            const double f = calculateF(params, cost, schedule.total_time);
-
-            if (f > params.fmax) {
+            if (unexpected && in.processors[proc].type != ProcessorType::PP) {
                 continue;
             }
 
-            if (!found || cost < best.cost ||
-                (cost == best.cost && schedule.total_time < best.time) ||
-                (cost == best.cost && schedule.total_time == best.time && proc < best.proc)) {
+            std::vector<num_t> candidate_assignment = result.task_processor;
+            candidate_assignment[task] = proc;
 
-                best = Candidate{.proc = proc, .time = schedule.total_time, .cost = cost, .f = f};
+            const Schedule schedule = calculateSchedule(in, candidate_assignment);
+            const num_t cost = calculateCost(in, candidate_assignment);
+            const num_t load = assignedTaskCount(result.task_processor, proc);
+
+            const bool better_regular =
+                !unexpected &&
+                (!found || cost < best.cost ||
+                 (cost == best.cost && schedule.total_time < best.time) ||
+                 (cost == best.cost && schedule.total_time == best.time && proc < best.proc));
+
+            const bool better_unexpected =
+                unexpected &&
+                (!found || load < best.load || (load == best.load && cost < best.cost) ||
+                 (load == best.load && cost == best.cost && schedule.total_time < best.time) ||
+                 (load == best.load && cost == best.cost && schedule.total_time == best.time &&
+                  proc < best.proc));
+
+            if (better_regular || better_unexpected) {
+                best = Candidate{
+                    .proc = proc, .time = schedule.total_time, .cost = cost, .load = load};
                 found = true;
             }
         }
 
         if (!found) {
-            throw std::runtime_error("Nie istnieje lokalnie dopuszczalny zasób dla zadania T" +
-                                     std::to_string(task));
+            throw std::runtime_error("Nie istnieje lokalnie dopuszczalny zasób dla zadania " +
+                                     in.tasks[task].name);
         }
 
         result.task_processor[task] = best.proc;
@@ -388,7 +462,6 @@ ConstructionResult constructSystem(const Input& in, const Params& params) {
         result.task_start_time = schedule.task_start_time;
         result.total_time = schedule.total_time;
         result.total_cost = calculateCost(in, result.task_processor);
-        result.f = calculateF(params, result.total_cost, result.total_time);
     }
 
     return result;
@@ -398,21 +471,16 @@ std::string processorTypeName(const ProcessorType type) {
     return type == ProcessorType::HC ? "HC" : "PP";
 }
 
-void printResult(const Input& in, const Params& params, const ConstructionResult& result) {
-    const num_t penalty = std::max<num_t>(0, result.total_time - params.tmax);
-
+void printResult(const Input& in, const ConstructionResult& result) {
     std::cout << "Całkowity koszt: " << result.total_cost << "\n";
     std::cout << "Całkowity czas: " << result.total_time << "\n";
-    std::cout << "Kara: " << penalty << "\n";
-    std::cout << std::fixed << std::setprecision(4);
-    std::cout << "F: " << result.f << "\n";
 
     std::cout << "Przydział zadań:\n";
     for (num_t task = 0; task < in.taskCount(); task++) {
         const num_t proc = result.task_processor[task];
         const num_t start = result.task_start_time[task];
         const num_t finish = start + in.tasks[task].time_by_proc[proc];
-        std::cout << "T" << task << " -> P" << proc << " ("
+        std::cout << in.tasks[task].name << " -> P" << proc << " ("
                   << processorTypeName(in.processors[proc].type) << ", start " << start
                   << ", koniec " << finish << ", czas " << in.tasks[task].time_by_proc[proc]
                   << ", koszt wykonania " << in.tasks[task].cost_by_proc[proc] << ")\n";
@@ -420,25 +488,17 @@ void printResult(const Input& in, const Params& params, const ConstructionResult
 }
 
 int main(const int argc, char* argv[]) {
-    if (argc != 7) {
+    if (argc != 2) {
         std::cout << "Złe argumenty! Poprawne argumenty:\n";
-        std::cout << "plik_wejściowy k1 k2 k3 tmax fmax\n";
+        std::cout << "plik_wejściowy\n";
         return 1;
     }
 
     try {
         const std::string infile = argv[1];
-        const Params params = {
-            .k1 = std::stod(argv[2]),
-            .k2 = std::stod(argv[3]),
-            .k3 = std::stod(argv[4]),
-            .tmax = std::stoi(argv[5]),
-            .fmax = std::stod(argv[6]),
-        };
-
         const Input input = readInput(infile);
-        const ConstructionResult result = constructSystem(input, params);
-        printResult(input, params, result);
+        const ConstructionResult result = constructSystem(input);
+        printResult(input, result);
         return 0;
     } catch (const std::exception& e) {
         std::cout << "Błąd: " << e.what() << "\n";
