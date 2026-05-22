@@ -39,15 +39,88 @@ Zbadaj przerzutnik jednozboczowy D korzystając z układu scalonego 7474. Stan l
 == Wstęp teoretyczny
 Przerzutnik typu D jest podstawowym synchronicznym elementem pamiętającym, stosowanym w układach cyfrowych. Jego zadaniem jest zapamiętanie wartości logicznej doprowadzonej do wejścia danych `D` w chwili aktywnego zbocza sygnału zegarowego `CLK`. W przypadku przerzutnika jednozboczowego stan wyjścia nie zmienia się przez cały czas trwania impulsu zegarowego, lecz tylko w krótkim momencie przejścia zegara ze stanu niskiego do wysokiego. Dzięki temu przerzutnik może służyć jako jednobitowy rejestr, element synchronizujący lub część liczników i automatów sekwencyjnych.
 
-#figure(
-  image("./img/7474_table.png", width: 70%),
-  caption: [Tabela logiczna układu 7474 (jednozboczowego)],
+#grid(
+  columns: 2,
+  gutter: 1em,
+  inset: (top: 1em, bottom: 1em,),
+  [
+    #figure(image("./img/7474.png"), caption: [Schemat układu 7474])
+  ],
+  [
+    #figure(image("./img/7474_table.png"), caption: [Tabela logiczna układu 7474])
+  ],
 )
 
-Wejścia `PR` oraz `CLR` działają asynchronicznie, więc wymuszają stan wyjść niezależnie od sygnału zegarowego i wejścia `D`. Są one aktywne stanem niskim: podanie zera logicznego na `PR` ustawia wyjście $Q$ w stan wysoki, natomiast podanie zera logicznego na `CLR` zeruje przerzutnik i wymusza $Q = 0$. Jednoczesne uaktywnienie obu wejść asynchronicznych jest stanem niedozwolonym, ponieważ prowadzi do niejednoznacznego działania układu.
 
+Wejścia `PR` oraz `CLR` działają asynchronicznie, więc wymuszają stan wyjść niezależnie od sygnału zegarowego i wejścia `D`. Są one aktywne stanem niskim: podanie zera logicznego na `PR` ustawia wyjście `Q` w stan wysoki, natomiast podanie zera logicznego na `CLR` zeruje przerzutnik i wymusza `Q` = 0. Jednoczesne uaktywnienie obu wejść asynchronicznych jest stanem niedozwolonym, ponieważ prowadzi do niejednoznacznego działania układu.
+
+#pagebreak()
 == Praktyka
 Najpierw zmierzono kilka wielkości:
 - napięcie $5 "V"$ wyniosło $5.04 "V"$,
 - rezystor $1000 space Omega$ w rzeczywistości miał oporność $990 space Omega$,
 - rezystor $400 space Omega$ w rzeczywistości miał oporność $393 space Omega$.
+
+\
+Następnie złożono układ realizujący przerzutnik jednozboczowy D. Przetestowano działanie wejść `PR` oraz `CLR`. Poniższy schemat połączeń jest identyczny dla wszystkich zdjęć.
+
+#figure(
+  table(
+    columns: 2,
+    table.header([*Od*], [*Do*]),
+    [Impulsator 1], [`CLK1`],
+    [Impulsator 2], [`D1`],
+    [`Q1`], [Próbnik],
+    [+5 V], [`Vcc`],
+    [0 V], [`GND`],
+  ),
+  caption: [Schemat połączeń],
+)
+
+=== PR=1, CLR=1
+W tej konfiguracji przerzutnik zapamiętuje podany stan. 
+Nagranie przedstawiające testowanie przerzutnika znajduje się #link("https://ujchmura-my.sharepoint.com/:v:/g/personal/mateusz_wojtyna_student_uj_edu_pl/IQDatjfgIwZ5QofoZ1x_eXK4AdmNmsgBKPtfzJJnMCcmS80?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=VpN9Vh")[#underline("tutaj")].
+
+#v(-1em)
+#figure(
+  image("./img/1.01_PR=H_CLR=H.jpeg", width: 98%),
+  caption: [Przerzutnik jednozboczowy D: `PR`=`1`, `CLR`=`1`],
+)
+
+=== PR=L, CLR=H
+W tej konfiguracji przerzutnik zawsze podaje stan wysoki.
+Nagranie przedstawiające testowanie przerzutnika (próba przełączenia na stan niski) znajduje się #link("https://ujchmura-my.sharepoint.com/:v:/g/personal/mateusz_wojtyna_student_uj_edu_pl/IQB-sUV5GQp0Rb4skTAqQAqzATgSHPA0ojAFTfSHEKWoX6M?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=RnRfFj")[#underline("tutaj")].
+
+#v(-1em)
+#figure(
+  image("./img/1.03_PR=L_CLR=H.jpeg", width: 78%),
+  caption: [Przerzutnik jednozboczowy D: `PR`=`0`, `CLR`=`1`],
+)
+
+=== PR=H, CLR=L
+W tej konfiguracji przerzutnik zawsze podaje stan niski.
+Nagranie przedstawiające testowanie przerzutnika (próba przełączenia na stan wysoki) znajduje się #link("https://ujchmura-my.sharepoint.com/:v:/g/personal/mateusz_wojtyna_student_uj_edu_pl/IQDCXZo-NJ-kRrs3oFJCcP87AbZ7h5WvekGL7d9hygM5F7I?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=w3c06H")[#underline("tutaj")].
+
+#v(-1em)
+#figure(
+  image("./img/1.05_PR=H_CLR=L.jpeg", width: 78%),
+  caption: [Przerzutnik jednozboczowy D: `PR`=`1`, `CLR`=`0`],
+)
+
+== Podsumowanie
+Badany układ 7474 działał zgodnie z tabelą logiczną przerzutnika D. Przy
+nieaktywnych wejściach asynchronicznych, czyli dla `PR`=`1` i `CLR`=`1`,
+przerzutnik zapamiętywał stan podany na wejście `D` w chwili zbocza sygnału
+zegarowego. Potwierdza to, że w normalnym trybie pracy układ może być traktowany
+jako jednobitowy element pamiętający sterowany zegarem.
+
+Sprawdzono również działanie wejść asynchronicznych. Podanie stanu niskiego na
+wejście `PR` powodowało wymuszenie stanu wysokiego na wyjściu, niezależnie od
+sygnałów `D` i `CLK`. Analogicznie podanie stanu niskiego na wejście `CLR`
+zerowało przerzutnik i wymuszało stan niski na wyjściu. Otrzymane wyniki
+potwierdzają, że wejścia `PR` i `CLR` są aktywne stanem niskim oraz mają
+priorytet względem pracy synchronicznej przerzutnika.
+
+Zmierzona wartość napięcia zasilania wynosiła $5.04 "V"$, a wartości użytych
+rezystorów były bliskie wartościom nominalnym, dlatego zastosowane poziomy
+logiczne były poprawne dla układu TTL.
