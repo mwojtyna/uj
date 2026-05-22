@@ -124,3 +124,20 @@ priorytet względem pracy synchronicznej przerzutnika.
 Zmierzona wartość napięcia zasilania wynosiła $5.04 "V"$, a wartości użytych
 rezystorów były bliskie wartościom nominalnym, dlatego zastosowane poziomy
 logiczne były poprawne dla układu TTL.
+
+#pagebreak()
+
+= Notatki
+#raw(read("./notatki.txt"))
+
+#pagebreak()
+#outline(
+  title: [Spis obrazów],
+  target: figure.where(kind: image),
+)
+
+#pagebreak()
+#outline(
+  title: [Spis tabeli],
+  target: figure.where(kind: table),
+)
