@@ -1,0 +1,25 @@
+zad 1
+5V lewy = 5V prawy = 5.04 V
+rezystor 1k Ohm = 990 Ohm
+rezystor 400 Ohm = 393 Ohm
+
+impulsator górny = CLK
+impulsator dolny = D
+
+PR=H, CLR=H: jak oczekiwano
+PR=L, CLR=H: ustawia zawsze 1
+PR=H, CLR=L: ustawia zawsze 0
+
+zad 2
+impulsator górny = CLK
+impulsator dolny = D
+
+zad 3
+amplituda 5 V żeby był stan wysoki w standardzie ttl
+offset 2.5 V żeby zacząć od 0 V a nie -2.5 V
+ch1 = oryginalny
+ch2 = zmieniony
+
+zad 4
+mod 16 = podłączamy szeregowo QA do CKB
+mod 10 = podłączamy QB i QD do resetów obu, wtedy jak te bity są włączone to się od razu resetuje
