@@ -42,7 +42,7 @@ Przerzutnik typu D jest podstawowym synchronicznym elementem pamiętającym, sto
 #grid(
   columns: 2,
   gutter: 1em,
-  inset: (top: 1em, bottom: 1em,),
+  inset: (top: 1em, bottom: 1em),
   [
     #figure(image("./img/7474.png"), caption: [Schemat układu 7474])
   ],
@@ -68,17 +68,17 @@ Następnie złożono układ realizujący przerzutnik jednozboczowy D. Przetestow
   table(
     columns: 2,
     table.header([*Od*], [*Do*]),
-    [Impulsator 1], [`CLK1`],
-    [Impulsator 2], [`D1`],
+    [Impulsator górny], [`CLK1`],
+    [Impulsator dolny], [`D1`],
     [`Q1`], [Próbnik],
     [+5 V], [`Vcc`],
     [0 V], [`GND`],
   ),
-  caption: [Schemat połączeń],
+  caption: [Schemat połączeń 7474],
 )
 
 === PR=1, CLR=1
-W tej konfiguracji przerzutnik zapamiętuje podany stan. 
+W tej konfiguracji przerzutnik zapamiętuje podany stan.
 Nagranie przedstawiające testowanie przerzutnika znajduje się #link("https://ujchmura-my.sharepoint.com/:v:/g/personal/mateusz_wojtyna_student_uj_edu_pl/IQDatjfgIwZ5QofoZ1x_eXK4AdmNmsgBKPtfzJJnMCcmS80?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=VpN9Vh")[#underline("tutaj")].
 
 #v(-1em)
@@ -124,6 +124,64 @@ priorytet względem pracy synchronicznej przerzutnika.
 Zmierzona wartość napięcia zasilania wynosiła $5.04 "V"$, a wartości użytych
 rezystorów były bliskie wartościom nominalnym, dlatego zastosowane poziomy
 logiczne były poprawne dla układu TTL.
+
+#pagebreak()
+
+= Zadanie 2
+== Treść
+Wybierz jeden z czterech przerzutników D Latch (wyzwalanych poziomem) w układzie scalonym 7475 i zbadaj jego działanie. Podaj na wejście zegarowe sygnał taktujący z impulsatora płytki UC-1. Na wejście informacyjne podaj sygnał z drugiego impulsatora przed, w czasie trwania oraz po sygnale taktującym. Opisz działanie tego przerzutnika.
+
+== Wstęp teoretyczny
+Przerzutnik D Latch, to przerzutnik D, który pozwala na zmianę stanu gdy impuls zegara jest w stanie wysokim, a w stanie niskim zapamiętuje obecny stan.
+
+#grid(
+  columns: 2,
+  gutter: 1em,
+  inset: (top: 1em, bottom: 1em),
+  [
+    #figure(image("./img/7475.png", width: 90%), caption: [Schemat układu 7475])
+  ],
+  [
+    #figure(image("./img/7475_table.png", width: 80%), caption: [Tabela logiczna układu 7475])
+  ],
+)
+
+Układ 7575 nie posiada wejść `PR` oraz `CLR`.
+
+== Praktyka
+Złożono układ realizujący przerzutnik D Latch. Przetestowano działanie układu.
+
+#figure(
+  table(
+    columns: 2,
+    table.header([*Od*], [*Do*]),
+    [Impulsator górny], [`1C, 2C`],
+    [Impulsator dolny], [`1D`],
+    [`Q1`], [Próbnik],
+    [+5 V], [`Vcc`],
+    [0 V], [`GND`],
+  ),
+  caption: [Schemat połączeń 7475],
+)
+
+Nagranie przedstawiające testowanie przerzutnika znajduje się #link("https://ujchmura-my.sharepoint.com/:v:/g/personal/mateusz_wojtyna_student_uj_edu_pl/IQAEl6wo__FXSYrylW993rXEAcE3MiXsPzsh1Uf6NrOBGNk?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=Pmz3KN")[#underline("tutaj")]. Jak oczekiwano, stan można zmienić tylko wtedy, jeśli sygnał zegara jest w stanie wysokim.
+
+#figure(
+  image("./img/2.01_topview.jpeg"),
+  caption: [Przerzutnik D Latch na płytce UC-1]
+)
+
+== Podsumowanie
+Badany układ 7475 działał zgodnie z zasadą pracy przerzutnika D Latch. Gdy wejście zegarowe znajdowało się w stanie wysokim, zmiana stanu na wejściu `D` była bezpośrednio przenoszona na wyjście `Q`.
+
+Po przejściu sygnału zegarowego do stanu niskiego wyjście zachowywało ostatnią
+wartość zapamiętaną przed zakończeniem impulsu zegarowego. Zmiany podawane na
+wejście `D` przy niskim stanie zegara nie wpływały już na stan wyjścia.
+Potwierdza to, że układ 7475 jest przerzutnikiem wyzwalanym poziomem, a nie
+zboczem, jak układ 7474 badany w poprzednim zadaniu.
+
+Wyniki doświadczenia potwierdziły poprawne działanie zatrzasku D oraz zgodność
+obserwacji z tabelą logiczną układu 7475.
 
 #pagebreak()
 
