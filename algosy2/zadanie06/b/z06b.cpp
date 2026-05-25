@@ -105,6 +105,7 @@ int main(int argc, char* argv[]) {
     std::vector<std::string> words = readWords("./slowa4.txt");
     std::vector<std::string> path = shortestPath(startWord, endWord, words);
 
+    std::cout << "Długość: " << path.size() << "\n";
     printPath(path);
 
     return 0;
