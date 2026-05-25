@@ -19,7 +19,6 @@
 #show figure.where(kind: table): set figure(supplement: [Tabela])
 #show table: set table(stroke: 0.5pt)
 #set enum(numbering: "a)")
-#show link: it => underline(it)
 
 #maketitle(
   title: "Elektronika cyfrowa - sprawozdanie 5",
@@ -80,7 +79,7 @@ Następnie złożono układ realizujący przerzutnik jednozboczowy D. Przetestow
 
 === PR=1, CLR=1
 W tej konfiguracji przerzutnik zapamiętuje podany stan.
-Nagranie przedstawiające testowanie przerzutnika znajduje się #link("https://ujchmura-my.sharepoint.com/:v:/g/personal/mateusz_wojtyna_student_uj_edu_pl/IQDatjfgIwZ5QofoZ1x_eXK4AdmNmsgBKPtfzJJnMCcmS80?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=VpN9Vh")[tutaj].
+Nagranie przedstawiające testowanie przerzutnika znajduje się #link("https://ujchmura-my.sharepoint.com/:v:/g/personal/mateusz_wojtyna_student_uj_edu_pl/IQDatjfgIwZ5QofoZ1x_eXK4AdmNmsgBKPtfzJJnMCcmS80?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=VpN9Vh")[#underline("tutaj")].
 
 #v(-1em)
 #figure(
@@ -90,7 +89,7 @@ Nagranie przedstawiające testowanie przerzutnika znajduje się #link("https://u
 
 === PR=L, CLR=H
 W tej konfiguracji przerzutnik zawsze podaje stan wysoki.
-Nagranie przedstawiające testowanie przerzutnika (próba przełączenia na stan niski) znajduje się #link("https://ujchmura-my.sharepoint.com/:v:/g/personal/mateusz_wojtyna_student_uj_edu_pl/IQB-sUV5GQp0Rb4skTAqQAqzATgSHPA0ojAFTfSHEKWoX6M?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=RnRfFj")[tutaj].
+Nagranie przedstawiające testowanie przerzutnika (próba przełączenia na stan niski) znajduje się #link("https://ujchmura-my.sharepoint.com/:v:/g/personal/mateusz_wojtyna_student_uj_edu_pl/IQB-sUV5GQp0Rb4skTAqQAqzATgSHPA0ojAFTfSHEKWoX6M?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=RnRfFj")[#underline("tutaj")].
 
 #v(-1em)
 #figure(
@@ -100,7 +99,7 @@ Nagranie przedstawiające testowanie przerzutnika (próba przełączenia na stan
 
 === PR=H, CLR=L
 W tej konfiguracji przerzutnik zawsze podaje stan niski.
-Nagranie przedstawiające testowanie przerzutnika (próba przełączenia na stan wysoki) znajduje się #link("https://ujchmura-my.sharepoint.com/:v:/g/personal/mateusz_wojtyna_student_uj_edu_pl/IQDCXZo-NJ-kRrs3oFJCcP87AbZ7h5WvekGL7d9hygM5F7I?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=w3c06H")[tutaj].
+Nagranie przedstawiające testowanie przerzutnika (próba przełączenia na stan wysoki) znajduje się #link("https://ujchmura-my.sharepoint.com/:v:/g/personal/mateusz_wojtyna_student_uj_edu_pl/IQDCXZo-NJ-kRrs3oFJCcP87AbZ7h5WvekGL7d9hygM5F7I?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=w3c06H")[#underline("tutaj")].
 
 #v(-1em)
 #figure(
@@ -165,7 +164,7 @@ Złożono układ realizujący przerzutnik D Latch. Przetestowano działanie ukł
   caption: [Schemat połączeń 7475],
 )
 
-Nagranie przedstawiające testowanie przerzutnika znajduje się #link("https://ujchmura-my.sharepoint.com/:v:/g/personal/mateusz_wojtyna_student_uj_edu_pl/IQAEl6wo__FXSYrylW993rXEAcE3MiXsPzsh1Uf6NrOBGNk?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=Pmz3KN")[tutaj]. Jak oczekiwano, stan można zmienić tylko wtedy, jeśli sygnał zegara jest w stanie wysokim.
+Nagranie przedstawiające testowanie przerzutnika znajduje się #link("https://ujchmura-my.sharepoint.com/:v:/g/personal/mateusz_wojtyna_student_uj_edu_pl/IQC-Ahw2cr1PSq_PExzjIhrlAWgpCEGsoi3ynLgJug4SGf4?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=12bgTy")[#underline("tutaj")]. Jak oczekiwano, stan można zmienić tylko wtedy, jeśli sygnał zegara jest w stanie wysokim.
 
 #figure(
   image("./img/2.01_topview.jpeg"),
@@ -266,6 +265,104 @@ niezamierzonemu zerowaniu układu podczas pracy.
 
 Wyniki doświadczenia potwierdziły, że pierwszy stopień licznika binarnego 7493
 może być użyty jako prosty dzielnik częstotliwości przez dwa.
+
+#pagebreak()
+
+= Zadanie 4
+== Treść
+Zbudować liczniki modulo 16 oraz modulo 10. Wyzwalając ręcznie impulsator obserwować kolejne stany licznika przy pomocy diod elektroluminescencyjnych i zapisać je w formie tabeli stanów.
+
+== Wstęp teoretyczny
+=== Licznik modulo 16
+Układ TTL 7493 posiada dwa liczniki: modulo 2 oraz modulo 8. Aby zbudować liczik modulo 16, wystarczy podłączyć wyjście z licznika modulo 2 do wejścia taktującego licznik modulo 8.
+
+=== Licznik modulo 10
+Układ TTL 7493 dodatkowo posiada dwa wejścia resetujące. Jeżeli na oba z tych wejść jest podany stan wysoki, licznik się resetuje. Liczba 10 w systemie binarnym wynosi 1010, możemy więc podać wyjścia odpowiadające za te dwie jedynki na wejścia resetujące. Wtedy gdy licznik będzie równy 10, automatycznie się zresetuje do stanu 0, zachowując się jak licznik modulo 10.
+
+== Praktyka
+=== Licznik modulo 16
+#v(-1em)
+#figure(
+  image("./img/4.01_mod16_topview.jpeg", width: 92%),
+  caption: [Licznik mod 16 na płytce UC-1]
+)
+
+#figure(
+  table(
+    columns: 2,
+    table.header([*Od*], [*Do*]),
+    [Impulsator dolny], [`INPUT A`],
+    [`QA`], [`INPUT B`],
+    [`QA`], [LED4],
+    [`QB`], [LED3],
+    [`QC`], [LED2],
+    [`QD`], [LED1],
+    [Logiczne 0], [`R0(1)`],
+    [Logiczne 0], [`R0(2)`],
+    [+5 V], [`Vcc`],
+    [0 V], [`GND`],
+  ),
+  caption: [Schemat połączeń 7493 \ (LEDx to diody numerowane od lewej)],
+)
+Nagranie przedstawiające testowanie licznika znajduje się #link("https://ujchmura-my.sharepoint.com/:v:/g/personal/mateusz_wojtyna_student_uj_edu_pl/IQC-Ahw2cr1PSq_PExzjIhrlAWgpCEGsoi3ynLgJug4SGf4?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=hhc2wr")[#underline("tutaj")]. Jak oczekiwano, licznik pokazuje liczby od 0 do 15.
+
+=== Licznik modulo 10
+#v(-1em)
+#figure(
+  image("./img/4.04_mod10_topview.jpeg"),
+  caption: [Licznik mod 10 na płytce UC-1]
+)
+
+#figure(
+  table(
+    columns: 2,
+    table.header([*Od*], [*Do*]),
+    [Impulsator dolny], [`INPUT A`],
+    [`QA`], [`INPUT B`],
+    [`QA`], [LED4],
+    [`QB`], [LED3],
+    [`QC`], [LED2],
+    [`QD`], [LED1],
+    [`QD`], [`R0(1)`],
+    [`QB`], [`R0(2)`],
+    [+5 V], [`Vcc`],
+    [0 V], [`GND`],
+  ),
+  caption: [Schemat połączeń 7493 \ (LEDx to diody numerowane od lewej)],
+)
+Nagranie przedstawiające testowanie licznika znajduje się #link("https://ujchmura-my.sharepoint.com/:v:/g/personal/mateusz_wojtyna_student_uj_edu_pl/IQC9qldSkP27TICFYfqmfQplAVY1mi-g08mFwolnLTUaTlI?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=ttY7Mf")[#underline("tutaj")]. Jak oczekiwano, licznik pokazuje liczby od 0 do 9.
+
+== Podsumowanie
+Zbudowane liczniki modulo 16 oraz modulo 10 działały zgodnie z oczekiwaniami.
+W przypadku licznika modulo 16 połączenie wyjścia `QA` z wejściem `INPUT B`
+pozwoliło wykorzystać wszystkie cztery przerzutniki układu 7493. Dzięki temu
+układ przechodził kolejno przez wszystkie stany binarne od 0000 do 1111, czyli
+zliczał impulsy od 0 do 15.
+
+Licznik modulo 10 uzyskano przez doprowadzenie wyjść `QB` oraz `QD` do wejść
+resetujących `R0(1)` i `R0(2)`. Po osiągnięciu stanu 1010, odpowiadającego
+liczbie 10, oba wejścia resetujące otrzymywały stan wysoki, co powodowało
+natychmiastowe wyzerowanie licznika. W efekcie na diodach obserwowano cykliczne
+zliczanie od 0 do 9.
+
+= Podsumowanie końcowe
+W ramach ćwiczenia zbadano działanie podstawowych układów sekwencyjnych TTL:
+przerzutników typu D oraz licznika binarnego 7493. Otrzymane wyniki były zgodne
+z tabelami logicznymi badanych układów oraz z przewidywaniami wynikającymi z
+teorii.
+
+Przerzutnik 7474 potwierdził działanie układu wyzwalanego zboczem sygnału
+zegarowego. Sprawdzenie wejść `PR` i `CLR` pokazało, że są one aktywne stanem
+niskim i działają asynchronicznie, czyli mają pierwszeństwo przed wejściami `D`
+oraz `CLK`. Układ 7475 działał natomiast jako zatrzask D, w którym stan wejścia
+jest przenoszony na wyjście podczas aktywnego poziomu sygnału zegarowego, a po
+jego zaniku zostaje zapamiętany.
+
+W drugiej części ćwiczenia wykorzystano licznik 7493. Układ poprawnie dzielił
+częstotliwość przez dwa, a po odpowiednim połączeniu jego wejść i wyjść działał
+jako licznik modulo 16 oraz modulo 10. W przypadku licznika modulo 10 kluczowe
+było użycie wejść resetujących, które powodowały wyzerowanie układu po
+osiągnięciu stanu odpowiadającego liczbie 10.
 
 #pagebreak()
 
