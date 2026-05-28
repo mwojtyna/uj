@@ -83,34 +83,24 @@ bool startsWith(const std::string& text, const std::string& prefix) {
 }
 
 bool isBlank(const std::string& text) {
-    return std::all_of(text.begin(), text.end(),
-                       [](const char c) { return std::isspace(static_cast<unsigned char>(c)); });
-}
-
-std::string normalizeTaskToken(std::string token) {
-    for (char& c : token) {
-        c = static_cast<char>(std::toupper(static_cast<unsigned char>(c)));
-    }
-    return token;
+    return std::ranges::all_of(text, [](const char c) { return std::isspace(c); });
 }
 
 bool isUnexpectedTask(const std::string& name) {
-    return startsWith(normalizeTaskToken(name), "UT");
+    return startsWith(name, "UT");
 }
 
 bool isNumber(const std::string& token) {
-    return !token.empty() && std::all_of(token.begin(), token.end(), [](const char c) {
-        return std::isdigit(static_cast<unsigned char>(c));
-    });
+    return !token.empty() &&
+           std::ranges::all_of(token, [](const char c) { return std::isdigit(c); });
 }
 
 num_t parseRegularTaskNumber(const std::string& token) {
-    const std::string normalized = normalizeTaskToken(token);
-    if (isNumber(normalized)) {
-        return std::stoi(normalized);
+    if (isNumber(token)) {
+        return std::stoi(token);
     }
-    if (startsWith(normalized, "T") && normalized.size() > 1 && isNumber(normalized.substr(1))) {
-        return std::stoi(normalized.substr(1));
+    if (startsWith(token, "T") && token.size() > 1 && isNumber(token.substr(1))) {
+        return std::stoi(token.substr(1));
     }
 
     return -1;
@@ -118,13 +108,12 @@ num_t parseRegularTaskNumber(const std::string& token) {
 
 num_t resolveTaskToken(const std::unordered_map<std::string, num_t>& task_id_by_name,
                        const std::string& token, const num_t tasks_n) {
-    const std::string normalized = normalizeTaskToken(token);
-    const auto it = task_id_by_name.find(normalized);
+    const auto it = task_id_by_name.find(token);
     if (it != task_id_by_name.end()) {
         return it->second;
     }
 
-    const num_t regular_id = parseRegularTaskNumber(normalized);
+    const num_t regular_id = parseRegularTaskNumber(token);
     if (regular_id >= 0 && regular_id < tasks_n) {
         return regular_id;
     }
@@ -178,7 +167,7 @@ Input readInput(const std::string& filename) {
 
                 const num_t task_id = row_idx;
                 input.tasks[task_id].name = task_token;
-                task_id_by_name[normalizeTaskToken(task_token)] = task_id;
+                task_id_by_name[task_token] = task_id;
                 task_id_by_name[std::to_string(task_id)] = task_id;
 
                 for (num_t j = 0; j < edge_count; j++) {
@@ -402,7 +391,7 @@ num_t calculateCost(const Input& in, const std::vector<num_t>& assignment) {
 }
 
 num_t assignedTaskCount(const std::vector<num_t>& assignment, const num_t proc) {
-    return static_cast<num_t>(std::count(assignment.begin(), assignment.end(), proc));
+    return static_cast<num_t>(std::ranges::count(assignment, proc));
 }
 
 ConstructionResult constructSystem(const Input& in) {
@@ -430,6 +419,7 @@ ConstructionResult constructSystem(const Input& in) {
 
             const Schedule schedule = calculateSchedule(in, candidate_assignment);
             const num_t cost = calculateCost(in, candidate_assignment);
+            // load = ile zadań jest zostało już przydzielonych do procesora
             const num_t load = assignedTaskCount(result.task_processor, proc);
 
             const bool better_regular =
