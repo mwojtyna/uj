@@ -90,37 +90,6 @@ bool isUnexpectedTask(const std::string& name) {
     return startsWith(name, "UT");
 }
 
-bool isNumber(const std::string& token) {
-    return !token.empty() &&
-           std::ranges::all_of(token, [](const char c) { return std::isdigit(c); });
-}
-
-num_t parseRegularTaskNumber(const std::string& token) {
-    if (isNumber(token)) {
-        return std::stoi(token);
-    }
-    if (startsWith(token, "T") && token.size() > 1 && isNumber(token.substr(1))) {
-        return std::stoi(token.substr(1));
-    }
-
-    return -1;
-}
-
-num_t resolveTaskToken(const std::unordered_map<std::string, num_t>& task_id_by_name,
-                       const std::string& token, const num_t tasks_n) {
-    const auto it = task_id_by_name.find(token);
-    if (it != task_id_by_name.end()) {
-        return it->second;
-    }
-
-    const num_t regular_id = parseRegularTaskNumber(token);
-    if (regular_id >= 0 && regular_id < tasks_n) {
-        return regular_id;
-    }
-
-    throw std::runtime_error("Nieznany identyfikator zadania: " + token);
-}
-
 std::vector<num_t> readProcessorVector(const std::string& line, const num_t proc_n) {
     std::istringstream row(line);
     std::vector<num_t> values(proc_n, 0);
@@ -168,7 +137,6 @@ Input readInput(const std::string& filename) {
                 const num_t task_id = row_idx;
                 input.tasks[task_id].name = task_token;
                 task_id_by_name[task_token] = task_id;
-                task_id_by_name[std::to_string(task_id)] = task_id;
 
                 for (num_t j = 0; j < edge_count; j++) {
                     std::string edge_token;
@@ -187,7 +155,7 @@ Input readInput(const std::string& filename) {
             }
 
             for (const RawDependency& dependency : raw_dependencies) {
-                const num_t to = resolveTaskToken(task_id_by_name, dependency.to_token, tasks_n);
+                const num_t to = task_id_by_name[dependency.to_token];
                 input.tasks[dependency.from].dependencies.push_back(
                     Dependency{.to = to, .data_size = dependency.data_size});
             }
@@ -419,7 +387,6 @@ ConstructionResult constructSystem(const Input& in) {
 
             const Schedule schedule = calculateSchedule(in, candidate_assignment);
             const num_t cost = calculateCost(in, candidate_assignment);
-            // load = ile zadań jest zostało już przydzielonych do procesora
             const num_t load = assignedTaskCount(result.task_processor, proc);
 
             const bool better_regular =
