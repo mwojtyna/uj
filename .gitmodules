@@ -43,3 +43,7 @@
 [submodule "c++/laboratorium-13-mwojtyna"]
 	path = c++/laboratorium-13-mwojtyna
 	url = git@github.com:wfais/laboratorium-13-mwojtyna.git
+[submodule "wbudowane/GeneticAlgorithm"]
+	path = wbudowane/GeneticAlgorithm
+	url = git@github.com:NotEmbeddedEngineering/GeneticAlgorithm.git
+	branch = main
