@@ -71,8 +71,8 @@ struct RawDependency {
 };
 
 bool isBlank(const std::string& text) {
-    return std::all_of(text.begin(), text.end(),
-                       [](const char c) { return std::isspace(static_cast<unsigned char>(c)); });
+    return std::ranges::all_of(
+        text, [](const char c) { return std::isspace(static_cast<unsigned char>(c)); });
 }
 
 std::string edgeTargetToken(const std::string& edge_token) {
@@ -234,7 +234,7 @@ std::vector<num_t> topologicalOrder(const Input& in) {
 }
 
 bool processorUsed(const std::vector<num_t>& assignment, const num_t proc) {
-    return std::find(assignment.begin(), assignment.end(), proc) != assignment.end();
+    return std::ranges::find(assignment, proc) != assignment.end();
 }
 
 bool resourceSelectableForTask(const Input& in, const std::vector<num_t>& assignment,
@@ -354,9 +354,9 @@ bool tryConstructSystem(const Input& in, const num_t time_limit, std::mt19937& r
     return result.total_time <= time_limit;
 }
 
-ConstructionResult constructSystem(const Input& in, const num_t time_limit,
+ConstructionResult constructSystem(const Input& in, const num_t time_limit, const num_t seed,
                                    const num_t max_attempts) {
-    std::mt19937 rng(67);
+    std::mt19937 rng(seed);
     ConstructionResult result;
 
     for (num_t attempt = 1; attempt <= max_attempts; attempt++) {
@@ -406,13 +406,18 @@ int main(const int argc, char* argv[]) {
             throw std::runtime_error("Ograniczenie czasowe nie może być ujemne");
         }
 
-        num_t max_attempts = 10000;
+        num_t seed = 67;
         if (argc == 4) {
-            max_attempts = std::stoi(argv[3]);
+            seed = std::stoi(argv[3]);
+        }
+
+        num_t max_attempts = 10000;
+        if (argc == 5) {
+            max_attempts = std::stoi(argv[4]);
         }
 
         const Input input = readInput(infile);
-        const ConstructionResult result = constructSystem(input, time_limit, max_attempts);
+        const ConstructionResult result = constructSystem(input, time_limit, seed, max_attempts);
         printResult(input, time_limit, result);
         return 0;
     } catch (const std::exception& e) {

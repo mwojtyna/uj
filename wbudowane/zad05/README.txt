@@ -2,11 +2,7 @@ Program rozwiązuje problem kosyntezy systemów wbudowanych losowym algorytmem
 konstrukcyjnym.
 
 Uruchomienie:
-
-./program plik_wejściowy ograniczenie_czasowe [ziarno] [liczba_prób]
-
-Format wejścia jest taki jak w poprzednich zadaniach:
-@tasks, @proc, @times, @cost, @comm.
+./program graf_zadań ograniczenie_czasowe [random_seed] [liczba_prób]
 
 Algorytm:
 1. Zadania są rozpatrywane w porządku topologicznym.
@@ -25,5 +21,4 @@ traktowane jako zerowe, więc komunikacja nie zwiększa czasu harmonogramu.
 Koszt obejmuje koszt wykonania zadań, koszt użytych procesorów oraz koszt
 podpięcia użytych procesorów do szyn z sekcji @comm.
 
-Program wypisuje koszt, czas, liczbę prób, przydział zadań do procesorów oraz
-szyny komunikacyjne z procesorami, które łączą.
+Program wypisuje koszt, czas, liczbę prób, przydział zadań do procesorów.
