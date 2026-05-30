@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CidrRootsConfiguration">
+    <sourceRoots>
+      <file path="$PROJECT_DIR$/zadanie00" />
+      <file path="$PROJECT_DIR$/zadanie01" />
+      <file path="$PROJECT_DIR$/zadanie02" />
+      <file path="$PROJECT_DIR$/zadanie03" />
+      <file path="$PROJECT_DIR$/zadanie04" />
+      <file path="$PROJECT_DIR$/zadanie05" />
+      <file path="$PROJECT_DIR$/zadanie06" />
+      <file path="$PROJECT_DIR$/zadanie07" />
+    </sourceRoots>
+  </component>
+</project>
