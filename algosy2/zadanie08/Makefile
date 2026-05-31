@@ -1,7 +1,7 @@
 CC=g++
-CFLAGS=-std=c++20 -Wall -Wpedantic -O2 -g
+CFLAGS=-std=c++23 -Wall -Wpedantic -O2 -g
 
-SRC=z07.cpp
+SRC=z08.cpp
 HDRS=
 EXE=a.out
 
@@ -14,3 +14,4 @@ run: $(EXE)
 
 $(EXE): $(SRC) $(HDRS)
 	$(CC) $(CFLAGS) $(SRC) -o $(EXE)
+

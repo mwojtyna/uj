@@ -1,0 +1,12 @@
+{
+    "configurations": [
+        {
+            "name": "CLion",
+            "includePath": [
+                "${workspaceFolder}/**"
+            ],
+            "cppStandard": "c++23"
+        }
+    ],
+    "version": 4
+}
