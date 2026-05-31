@@ -19,7 +19,9 @@ struct Graph {
     std::vector<Edge> edges;
 };
 
-Graph readFile(const std::string& filename) {
+constexpr num_t INF = std::numeric_limits<num_t>::max();
+
+Graph readGraph(const std::string& filename) {
     std::ifstream file(filename);
 
     std::vector<Node> nodes;
@@ -56,26 +58,25 @@ Graph readFile(const std::string& filename) {
     return Graph{.nodes = std::move(nodes), .edges = std::move(edges)};
 }
 
-int main() {
-    Graph graph = readFile("./czasy");
-
-    constexpr num_t INF = std::numeric_limits<num_t>::max();
-    std::vector<std::vector<num_t>> distances;
-    distances.reserve(graph.nodes.size());
-    for (size_t i = 0; i < graph.nodes.size(); ++i) {
-        distances.emplace_back(graph.nodes.size(), std::numeric_limits<num_t>::max());
-    }
+std::vector<std::vector<num_t>> floydWarshall(const Graph& graph) {
+    std::vector<std::vector<num_t>> distances(graph.nodes.size(),
+                                              std::vector<num_t>(graph.nodes.size(), INF));
 
     for (const Edge& edge : graph.edges) {
         distances[edge.fromIdx][edge.toIdx] = edge.weight;
+        distances[edge.toIdx][edge.fromIdx] = edge.weight;
     }
     for (size_t v = 0; v < graph.nodes.size(); ++v) {
         distances[v][v] = 0;
     }
     for (size_t k = 0; k < graph.nodes.size(); ++k) {
         for (size_t i = 0; i < graph.nodes.size(); ++i) {
+            if (distances[i][k] == INF) {
+                continue;
+            }
+
             for (size_t j = 0; j < graph.nodes.size(); ++j) {
-                if (distances[i][j] == INF || distances[i][k] == INF || distances[k][j] == INF) {
+                if (distances[k][j] == INF) {
                     continue;
                 }
 
@@ -86,6 +87,13 @@ int main() {
             }
         }
     }
+
+    return distances;
+}
+
+int main() {
+    Graph graph = readGraph("./czasy");
+    auto distances = floydWarshall(graph);
 
     std::println("Czas:");
     for (size_t i = 0; i < graph.nodes.size(); ++i) {

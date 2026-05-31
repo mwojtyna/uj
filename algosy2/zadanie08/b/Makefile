@@ -1,7 +1,7 @@
 CC=g++
 CFLAGS=-std=c++23 -Wall -Wpedantic -O2 -g
 
-SRC=z08.cpp
+SRC=z08b.cpp
 HDRS=
 EXE=a.out
 
