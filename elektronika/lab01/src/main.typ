@@ -16,11 +16,12 @@
   page-margins: 2.5cm,
   page-paper: "a4",
   text-size: 12pt,
+  eq-numbering: "(1)"
 )
 
 #maketitle(
   title: "Elektronika cyfrowa - sprawozdanie 1",
-  authors: ("Mateusz Wojtyna",),
+  authors: ("Mateusz Wojtyna, gr 9",),
   date: "22 marca 2026",
 )
 
@@ -35,31 +36,22 @@ sygnałami o tej samej częstotliwości z wykorzystaniem kursorów oscyloskopu, 
 automatycznego pomiaru. Porównać zmierzone wartości z wartościami ustawień generatora.
 
 == Wstęp teoretyczny
+Sygnał okresowy to przebieg, którego wartości powtarzają się po stałym czasie nazywanym okresem $T$. Jednym z podstawowych parametrów takiego sygnału jest częstotliwość $f$, czyli liczba pełnych okresów w ciągu jednej sekundy. Częstotliwość wyrażana jest w hercach (Hz) i spełnia zależność:
+$
+  f = 1 / T
+$
+
+Amplituda określa maksymalne wychylenie sygnału od poziomu odniesienia. W praktyce pomiarowej często używa się także wartości międzyszczytowej $V_"pp"$, czyli różnicy między największą i najmniejszą wartością napięcia przebiegu. Dla sygnału symetrycznego względem zera wartość międzyszczytowa jest równa dwukrotności amplitudy.
+
+Faza opisuje przesunięcie przebiegu okresowego względem przyjętego punktu odniesienia. Dla dwóch sygnałów o tej samej częstotliwości przesunięcie fazowe informuje, o jaką część okresu jeden przebieg jest opóźniony lub przyspieszony względem drugiego. Można je wyrażać w stopniach, gdzie $360degree$ odpowiada pełnemu okresowi.
+
 === Oscyloskop
-Jest to urządzenie, którego zadaniem jest mierzenie i badanie przebiegów napięcia elektrycznego w czasie. Umożliwia pomiar m.in. amplitudy, częstotliwości oraz przesunięcia fazy badanych przebiegów.
+Oscyloskop jest przyrządem pomiarowym służącym do obserwacji zmian napięcia elektrycznego w czasie. Na ekranie przedstawia przebieg sygnału, gdzie oś pozioma odpowiada czasowi, a oś pionowa wartości napięcia. Dzięki regulacji podstawy czasu oraz skali napięciowej można dopasować widok do badanego sygnału i odczytywać jego najważniejsze parametry.
+
+Nowoczesny oscyloskop cyfrowy umożliwia nie tylko obserwację kształtu przebiegu, lecz także wykonywanie pomiarów za pomocą kursorów oraz automatycznych funkcji pomiarowych. W ten sposób można wyznaczać między innymi amplitudę, częstotliwość, okres, wartość międzyszczytową oraz przesunięcie fazowe między sygnałami doprowadzonymi do różnych kanałów. Dokładność pomiaru zależy jednak od poprawnego ustawienia skali, sondy pomiarowej, impedancji wejściowej oraz stabilnego wyzwalania.
 
 === Generator funkcyjny
-Urządzenie, które służy do generowanie napięć o danym kształcie (sinusoida, prostokąt, trójkąt) oraz amplitudzie, częstotliwości i przesunięciu fazowym.
-
-// \
-// #align(center)[
-//   #grid(
-//     columns: (50%, 50%),
-//     gutter: 1em,
-//     [
-//       #figure(
-//         image("img/oscyloskop_schemat.png", width: 100%),
-//         caption: [Schemat oscyloskopu Tektronix MSO22]
-//       ) <oscy>
-//     ],
-//     [
-//       #figure(
-//         image("img/generator_schemat.png", width: 100%),
-//         caption: [Schemat generatora Tektronix AFG3000]
-//       ) <gen>
-//     ]
-//   )
-// ]
+Generator funkcyjny jest źródłem sygnałów elektrycznych o zadanych parametrach. Pozwala generować przebiegi o różnych kształtach, na przykład sinusoidalne, prostokątne i trójkątne. Użytkownik może ustawić między innymi amplitudę, częstotliwość, składową stałą oraz przesunięcie fazowe sygnału.
 
 #figure(
   image("img/oscyloskop_schemat.png", width: 55%),
@@ -93,8 +85,6 @@ kanału na środku ekranu.
   image("img/1.1.01_skala_polozenie.png"),
   caption: [Widok sygnałów po konfiguracji],
 )
-
-#pagebreak()
 
 === Zapoznanie się z działaniem generatora funkcyjnego (zob. @gen)
 *Polecenie*: Na 2 drugie wejście oscyloskopu podać
@@ -166,8 +156,6 @@ o podanych parametrach.
 - *Użycie wbudowanych funkcji*: automatyczne odczytywanie właściwości sygnału używające wbudowanych algorytmów. Najbardziej precyzyjne, jednak czasami zawodne dla niektórych sygnałów.
 
 
-#pagebreak()
-
 #figure(
   image("img/1.1.09_tabelka_sinus_cursor_amp.png"),
   caption: [Sinusoida (1 V, 3 kHz) - amplituda mierzona \ kursorem oraz wbudowaną funkcją],
@@ -178,28 +166,28 @@ o podanych parametrach.
 )
 
 #figure(
-  image("img/1.1.10_tabelka_trojkat_cursor_amp.png", width: 60%),
+  image("img/1.1.10_tabelka_trojkat_cursor_amp.png"),
   caption: [Trójkąt (2.5 V, 10 kHz, 10$degree$) - amplituda mierzona \ kursorem oraz wbudowaną funkcją],
 )
 #figure(
-  image("img/1.1.11_tabelka_trojkat_cursor_freq.png", width: 60%),
+  image("img/1.1.11_tabelka_trojkat_cursor_freq.png"),
   caption: [Trójkąt (2.5 V, 10 kHz, 10$degree$) - częstotliwość \ mierzona metodą kursorów oraz wbudowaną funkcją],
 )
 #figure(
-  image("img/1.1.12_tabelka_trojkat_faza.jpeg", width: 60%),
+  image("img/1.1.12_tabelka_trojkat_faza.jpeg"),
   caption: [Trójkąt (2.5 V, 10 kHz, 10$degree$) - generator],
 )
 
 #figure(
-  image("img/1.1.13_tabelka_square_cursor_amp.png", width: 60%),
+  image("img/1.1.13_tabelka_square_cursor_amp.png"),
   caption: [Prostokąt (0.5 V, 50 kHz, 180$degree$) - amplituda \ mierzona kursorem oraz wbudowaną funkcją],
 )
 #figure(
-  image("img/1.1.14_tabelka_square_cursor_freq.png", width: 60%),
+  image("img/1.1.14_tabelka_square_cursor_freq.png"),
   caption: [Prostokąt (0.5 V, 50 kHz, 180$degree$) - częstotliwość \ mierzona metodą kursorów oraz wbudowaną funkcją],
 )
 #figure(
-  image("img/1.1.15_tabelka_square_faza.jpeg", width: 60%),
+  image("img/1.1.15_tabelka_square_faza.jpeg"),
   caption: [Prostokąt (0.5 V, 50 kHz, 180$degree$) - generator],
 )
 
@@ -447,6 +435,15 @@ Na zajęciach nie wystarczyło czasu na skończenie ćwiczenia, więc wykonano j
   image("img/1.4.01_plytka.jpeg"),
   caption: [Układ zrealizowany na płytce RLC. W tle widać dwa sygnały na oscyloskopie, oryginalny i skopiowany.],
 )
+
+#pagebreak()
+
+= Podsumowanie końcowe
+W trakcie ćwiczenia zapoznano się z podstawową obsługą oscyloskopu i generatora funkcyjnego oraz wykonano pomiary parametrów sygnałów okresowych. Porównanie metod pomiarowych pokazało, że odczyt "na oko" jest wystarczający jedynie do szybkiej kontroli poprawności ustawień, natomiast dokładniejsze wyniki zapewniają kursory oraz automatyczne funkcje pomiarowe oscyloskopu. Istotne okazało się również poprawne ustawienie parametrów, w szczególności tłumienia sondy i impedancji obciążenia generatora, ponieważ błędna konfiguracja prowadziła do niepoprawnego odczytu amplitudy.
+
+W trybie X-Y zaobserwowano krzywe Lissajous dla różnych stosunków częstotliwości i przesunięć fazowych. Otrzymane obrazy w większości były zgodne z przewidywaniami teoretycznymi, co potwierdza zależność kształtu krzywej od stosunku częstotliwości obu sygnałów oraz ich przesunięcia fazowego. Zbadano także zjawisko dudnień powstające przy sumowaniu dwóch sinusoid o zbliżonych częstotliwościach. Zmierzone wartości częstotliwości wypadkowej i częstotliwości dudnień były bardzo bliskie wartościom teoretycznym, co potwierdza poprawność modelu opisanego we wstępie.
+
+Ostatnie zadanie dotyczące dzielnika napięcia nie zostało w pełni zrealizowane z powodu ograniczonego czasu, dlatego nie wykonano serii pomiarów pozwalających na regresję liniową i porównanie współczynnika podziału z wartością teoretyczną. Udało się jednak przygotować układ pomiarowy i zaobserwować przeniesienie sygnału na oscyloskopie. Całość ćwiczenia pozwoliła utrwalić praktyczne zasady konfiguracji aparatury pomiarowej oraz pokazała, że dokładność wyników zależy nie tylko od samej metody pomiaru, ale także od poprawnego ustawienia generatora, oscyloskopu i badanego układu.
 
 #pagebreak()
 #outline(
