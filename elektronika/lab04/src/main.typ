@@ -23,6 +23,7 @@
 #maketitle(
   title: "Elektronika cyfrowa - sprawozdanie 4",
   authors: ("Mateusz Wojtyna, gr 9",),
+  date: "29 kwietnia 2026",
 )
 
 #heading([Dane], numbering: none, level: 3, outlined: false)
@@ -593,7 +594,15 @@ Zbudowano układ korzystając z bramki NAND 7400 (@gen_nand_7400). Następnie wy
   caption: [Przebieg fali generatora złożonego z NAND 7400],
 ) <gen_nand_7400_oscy>
 
-Zmierzono okres $T = 35.53 "ns"$, czyli średnie opóźnienie propagcji sygnału układu 7400 wyniosło $Delta t = (35.53)/6 "ns" approx 5.92 "ns"$. Można dodatkowo zauważyć, że fala dość miernie przypomina falę prostokątną.
+Zmierzono okres $T = 35.53 "ns"$, czyli średnie opóźnienie propagcji sygnału układu 7400 wyniosło $Delta t = (35.53)/6 "ns" approx 5.92 "ns"$. Typowe opóźnienie (@7400_timings) dla tego układu wynosi od 7 do 11 ns, w zależności czy sygnał zmienił się ze stanu niskiego na wysoki, czy odwrotnie. Z pomiarów wynika, że nasz układ jest szybszy od średniego.
+
+Można dodatkowo zauważyć, że fala dość miernie przypomina falę prostokątną.
+
+#figure(
+  image("./img/7400_timings.png"),
+  caption: [Czasy propagacji sygnału dla układu 7400],
+  kind: table,
+) <7400_timings>
 
 === NAND 74S00
 Zbudowano układ korzystając z bramki NAND 74S00 (@gen_nand_74S00). Następnie wykorzystano oscyloskop do zmierzenia okresu drgań, a co za tym, średniego opóźnienia propagacji sygnału (@gen_nand_74S00_oscy).
@@ -635,7 +644,15 @@ Zbudowano układ korzystając z bramki NAND 74S00 (@gen_nand_74S00). Następnie 
   caption: [Przebieg fali generatora złożonego z NAND 74S00],
 ) <gen_nand_74S00_oscy>
 
-Zmierzono okres $T = 29.52 "ns"$, czyli średnie opóźnienie propagcji sygnału układu 74S00 wyniosło $Delta t = (29.52)/6 "ns" approx 4.92 "ns"$. Można dodatkowo zauważyć, że fala dość miernie przypomina falę prostokątną.
+Zmierzono okres $T = 29.52 "ns"$, czyli średnie opóźnienie propagacji sygnału układu 74S00 wyniosło $Delta t = (29.52)/6 "ns" approx 4.92 "ns"$. Typowe opóźnienie (@74S00_timings) dla tego układu wynosi od 3 do 5 ns, w zależności od konfiguracji rezystancji i pojemności oraz tego, czy sygnał zmienił się ze stanu niskiego na wysoki, czy odwrotnie. Z pomiarów wynika, że nasz układ ma porównywalną szybkość do średniego układu tego typu.
+
+Można dodatkowo zauważyć, że fala dość miernie przypomina falę prostokątną.
+
+#figure(
+  image("./img/74S00_timings.png"),
+  caption: [Czasy propagacji sygnału dla układu 74S00],
+  kind: table,
+) <74S00_timings>
 
 == Podsumowanie
 Wyznaczono średni czas propagacji impulsu przez bramkę NAND na podstawie okresu drgań generatora zbudowanego z trzech bramek. Dla układu 7400 zmierzono okres $T = 35.53 "ns"$, co dało opóźnienie propagacji $Delta t approx 5.92 "ns"$. Dla szybszego układu 74S00 okres wyniósł $T = 29.52 "ns"$, a opóźnienie propagacji $Delta t approx 4.92 "ns"$. Wyniki potwierdzają, że układ 74S00 przełącza się szybciej niż podstawowy układ 7400.

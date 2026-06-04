@@ -26,6 +26,7 @@
 #maketitle(
   title: "Elektronika cyfrowa - sprawozdanie 3",
   authors: ("Mateusz Wojtyna, gr 9",),
+  date: "15 kwietnia 2026",
 )
 
 #heading([Dane], numbering: none, level: 3, outlined: false)
@@ -379,7 +380,7 @@ $
   2 R_2/(R_1+R_2) dot plus.minus E = plus.minus 1 "V" \
   R_2/(R_1+R_2) dot plus.minus 20 "V" = plus.minus 1 "V" \
   R_2/(R_1+R_2) = 1/20 = 50/1000 \
-$
+$ 
 
 Wybrano oporniki:
 #math.equation(
@@ -414,7 +415,8 @@ Następnie zbudowano przerzutnik Schmitta na płytce:
   caption: [Działanie przerzutnika Schmitta dla fali sinusoidalnej (dół), oraz wykres histerezy (góra)],
 )
 
-Z wykresu XY widać metodą "na oko", że szerokość histerezy wynosi około $0.8 "V"$.
+Z wykresu XY widać metodą "na oko", że szerokość histerezy wynosi około $1 "V"$ i przerzuca na około $0.5 "V"$. Szerokość histerezy jest równa dwukrotności napięcia przerzutu, więc dla zmierzonej szerokości $1 "V"$, zmierzone $U_p = 0.5 "V"$ jest zgodne z oczekiwaniami. 
+
 Niestety przez pomyłkę nie dokonałem pomiarów dla fali trójkątnej.
 
 == Podsumowanie
@@ -454,7 +456,7 @@ Wybrano oporniki
   numbering: none,
   $
       R & = 10 "k"Omega \
-    R_1 & = 992 space Omega approx 1000 "k"Omega \
+    R_1 & = 992 space Omega approx 1000 space Omega \
     R_2 & = 49.7 space Omega approx 50 space Omega"."
   $,
 )

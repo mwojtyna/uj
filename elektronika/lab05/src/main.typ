@@ -23,6 +23,7 @@
 #maketitle(
   title: "Elektronika cyfrowa - sprawozdanie 5",
   authors: ("Mateusz Wojtyna, gr 9",),
+  date: "13 maja 2026",
 )
 
 #heading([Dane], numbering: none, level: 3, outlined: false)
