@@ -1,0 +1,34 @@
+stanowisko 02
+miernik 14
+
+zad1
+wyjście +12V = 11.98V
+rezystor żółty = R2 = 22.5 Ohm do 126 Ohm
+rezystor czerwony = R1 = 10.83 kOhm do 27.6 Ohm
+dzielnik napięcia był niepotrzebny
+
+ramp freq max 200 kHz
+
+charakterystyka amplitudowa tylko dla sinusów, reszta poglądowo
+
+zad3
+dc gen 10 V, 0.45 A
+zmierzone dc gen to równe 10 V 
+diody w części 2a są negacją
+
+3.2
+rozdzielczość amplitudy = 0.7 V (zmierzona ręcznie)
+
+3.3
+rozdzielczość amplitudy = 0.7 V (zmierzona na oscyloskopie)
+rozdzielczość częstotliwości = 43 us
+
+3.4
+żeby odwrócić amplitudę trzeba zaprogramować negację dla każdej liczby
+
+3.5
+poprawne od poniżej 1 Hz do 10 kHz
+
+zad4
+4.3
+rozdzielczość amplitudy = 13.4 mV
