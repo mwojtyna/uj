@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Debug z10a" type="CppFileRunConfiguration" factoryName="CppFileRunConfiguration" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="algosy2" TARGET_NAME="Debug z10a" CONFIG_NAME="Debug z10a">
+    <option name="compilerOptions" value="--std=c++23" />
+    <option name="sourceFile" value="$PROJECT_DIR$/zadanie10/a/z10a.cpp" />
+    <method v="2">
+      <option name="com.jetbrains.cidr.cpp.runfile.CppFileBuildBeforeRunTaskProvider$BasicBuildBeforeRunTask" enabled="true" />
+    </method>
+  </configuration>
+</component>
