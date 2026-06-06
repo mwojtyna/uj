@@ -95,6 +95,8 @@ Po ustawieniu odpowiednich oporów, podano przebiegi sinusoidalne, prostokątne 
   caption: [Dane do wykresu amplitudy sygnału wyjściowego komparatora (@komparator_sinus_amplituda)],
 )
 
+Jak widać, używając komparatora, amplituda sygnału wyjściowego prawie się nie zmienia, dopóki częstotliwość nie osiągnie wartości $~850 "kHz"$.
+
 #figure(
   grid(
     columns: (1fr, 1fr),
@@ -224,7 +226,7 @@ Gdy sygnał wejściowy ma dodatnie napięcie, sygnał wyjściowy jest w stanie 
 === Układ ze wzmacniaczem operacyjnym
 #v(-1em)
 #figure(
-  image("img/1.14_opamp_topview.jpeg"),
+  image("img/1.14_opamp_topview.jpeg", width: 80%),
   caption: [Układ ze wzmacniaczem operacyjnym na płytce UA-1],
 )
 
@@ -252,6 +254,8 @@ Gdy sygnał wejściowy ma dodatnie napięcie, sygnał wyjściowy jest w stanie 
   ),
   caption: [Dane do wykresu amplitudy sygnału wyjściowego wzmacniacza operacyjnego (@opamp_sinus_amplituda)],
 )
+
+Używając wzmacniacza operacyjnego, amplituda sygnału wyjściowego spada razem ze wzrostem częstotliwości i zanika całkowicie dla $~600 "kHz"$.
 
 #figure(
   grid(
@@ -387,7 +391,7 @@ Gdy sygnał wejściowy ma dodatnie napięcie, sygnał wyjściowy jest w stanie 
 #pagebreak()
 
 == Podsumowanie
-W przeprowadzonym doświadczeniu porównano działanie dedykowanego komparatora napięcia LM311 oraz wzmacniacza operacyjnego pracującego bez sprzężenia zwrotnego. Pomiary przeprowadzono dla różnych kształtów sygnału wejściowego (sinusoidalny, prostokątny, trójkątny) w szerokim zakresie częstotliwości. Na podstawie uzyskanych wyników sformułowano następujące wnioski:
+W przeprowadzonym doświadczeniu porównano działanie komparatora napięcia oraz wzmacniacza operacyjnego pracującego bez sprzężenia zwrotnego. Pomiary przeprowadzono dla różnych kształtów sygnału wejściowego (sinusoidalny, prostokątny, trójkątny) w szerokim zakresie częstotliwości. Na podstawie uzyskanych wyników sformułowano następujące wnioski:
 
 1. Komparator wykazuje się znacznie większą szybkością działania i krótszym czasem przełączania niż wzmacniacz operacyjny. Dla przebiegu sinusoidalnego i prostokątnego komparator pracował poprawnie do bardzo wysokich częstotliwości (odpowiednio około $850 "kHz"$ oraz $640 "kHz"$), zachowując strome zbocza i stabilną amplitudę wyjściową. Dopiero blisko tych częstotliwości granicznych następowało gwałtowne tłumienie i zanik sygnału.
 
@@ -401,7 +405,178 @@ W przeprowadzonym doświadczeniu porównano działanie dedykowanego komparatora 
 
 = Zadanie 3
 == Treść
-// TODO
+3.1 Zapoznać się z budową i działaniem modułów przetwornika A/C typu FLASH:
+- modułu komparatorów,
+- transkodera RPP-S (Ręcznie Programowana Pamięć Stała),
+- transkodera RPP-SRAM (Ręcznie Programowana Pamięć SRAM).
+\
+3.2 *Programowanie transkodera RPP-S.* \ Połączyć moduł komparatorów z transkoderem RPP-S. Na wejście modułu komparatora podać regulowane napięcie stałe. Zmieniając poziom napięcia wejściowego zaprogramować transkoder w ten sposób, aby wartość binarna na wyjściu transkodera odpowiadała ilości zapalonych diod na module komparatorów (czyli była proporcjonalna do napięcia wejściowego). Zwrócić uwagę iż diody na wyjściu RPP-S reprezentują stany zanegowane.
+\ \
+3.3 *Badanie działania przetwornika.* \ Po zaprogramowaniu pamięci stałej dołączyć do układu płytkę konwertera C/A a na wejście modułu komparatorów podać sinusoidalne napięcie zmienne. Pamiętać, ze konwerter pracuje prawidłowo tylko w zakresie napięcia powyżej 0 V. Używając oscyloskopu porównać przebieg napięcia wejściowego i napięcia po kolejnych konwersjach w układach A/C i C/A. Jaka jest rozdzielczość napięciowa konwertera typy FLASH. Porównać ją z odpowiednią wartością otrzymaną dla przetwornika badanego w punkcie 2.
+\ \
+3.4 *Użycie modułu z pamięcią SRAM.* \ Zmodyfikować konfigurację układu przetwornika zastępując transkoder RPP-S transkoderem z pamięcią SRAM. Postępując analogicznie jak opisano w punktach 3.2 i 3.3 zaprogramować pamięć SRAM i sprawdzić działanie przetwornika. Układ można zaprojektować w ten sposób aby amplituda sygnału po konwersji ulegała odwróceniu.
+\ \
+3.5 Dla przebiegu sinusoidalnego określić zakres częstotliwości, w którym przetwornik działa prawidłowo.
+
+== Wstęp teoretyczny
+*Przetwornik analogowo-cyfrowy (A/C) typu FLASH* (równoległy) charakteryzuje się bardzo krótkim czasem konwersji, ponieważ porównanie napięcia wejściowego z napięciami odniesienia odbywa się jednocześnie na wszystkich komparatorach. Układ składa się z dzielnika napięciowego, zestawu komparatorów oraz transkodera kodującego stan komparatorów na postać binarną. Dla przetwornika $n$-bitowego wymagane jest użycie $2^n - 1$ komparatorów. Komparatory dają na wyjściu kod termometryczny (liczba aktywnych komparatorów jest proporcjonalna do napięcia wejściowego). Zadaniem transkodera jest konwersja kodu termometrycznego na wyjściowy kod dwójkowy (np. NKB). W ćwiczeniu rolę transkodera pełniła pamięć stała RPP-S oraz pamięć SRAM, programowane ręcznie za pomocą przełączników.
+
+== Praktyka
+
+=== Budowa modułów (Punkt 3.1)
+Zapoznano się z modułami wchodzącymi w skład przetwornika FLASH na płytce UA-1. Zidentyfikowano moduł komparatorów, moduł transkodera z pamięcią stałą RPP-S oraz moduł transkodera z pamięcią SRAM.
+
+=== Programowanie transkodera RPP-S (Punkt 3.2)
+#v(-1em)
+#figure(
+  image("img/3.2.1_topview.jpeg", width: 80%),
+  caption: [Układ połączeń z transkoderem RPP-S na płytce UA-1],
+)
+
+Połączono moduł komparatorów z transkoderem RPP-S. Jako zasilanie pomocnicze podano napięcie $10 "V"$ z ograniczeniem prądowym $0.45 "A"$. Na wejście układu podano regulowane napięcie stałe z zasilacza. Zmieniając poziom napięcia wejściowego i obserwując zapalone diody na module komparatorów, zaprogramowano pamięć transkodera RPP-S tak, aby binarny stan wyjściowy odpowiadał liczbie aktywnych komparatorów (czyli był proporcjonalny do napięcia wejściowego). Zwrócono uwagę na to, że diody na wyjściu RPP-S reprezentują stany zanegowane, co uwzględniono przy programowaniu (zob. #link("https://ujchmura-my.sharepoint.com/:v:/g/personal/mateusz_wojtyna_student_uj_edu_pl/IQA3M8Tmj3rSRoCIf2OsKTDAAWEw7rhdp--LAPNNO2jLx0s?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=PmRAcW")[#underline("nagranie wideo z testowania programowania transkodera RPP-S")]).
+
+Ręcznie wyznaczona rozdzielczość napięciowa (amplitudy) na tym etapie wynosiła $0.7 "V"$.
+
+=== Badanie działania przetwornika (Punkt 3.3)
+Do układu dołączono konwerter cyfrowo-analogowy (C/A). Na wejście modułu komparatorów podano sinusoidalne napięcie zmienne z generatora. Sygnał wejściowy został odpowiednio przesunięty w składową stałą, tak aby jego wartości były zawsze większe od $0 "V"$, ponieważ konwerter C/A pracuje prawidłowo wyłącznie dla napięć dodatnich (zob. #link("https://ujchmura-my.sharepoint.com/:v:/g/personal/mateusz_wojtyna_student_uj_edu_pl/IQD5LCx3Gpj2TLPNeOA8CUssAWweQX8Iloxtr28mv38jm_s?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=3s4h1i")[#underline("nagranie wideo z działania przetwornika z transkoderem RPP-S")]).
+
+#figure(
+  grid(
+    columns: (1fr, 1fr),
+    gutter: 1em,
+    align(center, [
+      #image("img/3.3.3_sinus_oscy.png", width: 100%)
+      #v(-1em)
+      #text(size: 9pt)[Przebieg sinusoidalny]
+    ]),
+    align(center, [
+      #image("img/3.3.4_ramp_oscy.png", width: 100%)
+      #v(-1em)
+      #text(size: 9pt)[Przebieg trójkątny]
+    ]),
+  ),
+  caption: [Przebiegi wejściowe (żółte) oraz po konwersji A/C i C/A (niebieskie) dla transkodera RPP-S],
+)
+
+Na oscyloskopie zaobserwowano charakterystyczne schodki kwantyzacji sygnału wyjściowego.
+
+#figure(
+  grid(
+    columns: (1fr, 1fr),
+    gutter: 1em,
+    align(center, [
+      #image("img/3.3.5_rozdzielczosc_amplituda.png", width: 100%)
+      #v(-1em)
+      #text(size: 9pt)[Pomiar rozdzielczości amplitudy]
+    ]),
+    align(center, [
+      #image("img/3.3.5_rozdzielczosc_freq.png", width: 100%)
+      #v(-1em)
+      #text(size: 9pt)[Pomiar kroku czasowego (próbkowania)]
+    ]),
+  ),
+  caption: [Pomiary rozdzielczości sygnału wyjściowego na oscyloskopie dla transkodera RPP-S],
+)
+
+Na podstawie pomiarów oscyloskopowych określono parametry przetwornika:
+- *Rozdzielczość napięciowa (amplitudy)*: wyniosła $0.7 "V"$, co jest zgodne z wartością wyznaczoną ręcznie. W porównaniu do przetwornika z zadania 4 (gdzie rozdzielczość napięciowa wynosiła $13.4 "mV"$), rozdzielczość przetwornika FLASH jest znacznie gorsza (krok kwantyzacji jest większy). Wynika to bezpośrednio z małej rozdzielczości bitowej przetwornika FLASH na płycie UA-1 (tylko 3 bity, co daje 7 poziomów kwantyzacji, w porównaniu do 8-bitowego przetwornika z zadania 4).
+- *Rozdzielczość czasowa (krok próbkowania)*: szerokość pojedynczego schodka próbkowania zmierzona na oscyloskopie wyniosła $43 space mu"s"$.
+
+=== Użycie modułu z pamięcią SRAM (Punkt 3.4)
+#v(-1em)
+#figure(
+  image("img/3.4.1_topview.jpeg", width: 80%),
+  caption: [Układ połączeń z transkoderem SRAM na płytce UA-1],
+)
+
+Zastąpiono transkoder RPP-S modułem z pamięcią SRAM. Należy pamiętać, że pamięć SRAM traci dane po odłączeniu zasilania.
+
+Następnie zaprogramowano pamięć SRAM (zob. #link("https://ujchmura-my.sharepoint.com/:v:/g/personal/mateusz_wojtyna_student_uj_edu_pl/IQD8f5HHtnyJRY-kYmhf3dz3AY45llFOb_sbAISn4_9G8zY?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=wCUV7Z")[#underline("nagranie wideo z testowania programowania pamięci SRAM")] oraz #link("https://ujchmura-my.sharepoint.com/:v:/g/personal/mateusz_wojtyna_student_uj_edu_pl/IQCeVObX_s36TqKeM6wn0imVAdJvW9jiZWNJcQO1ME9k6-Q?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=7z1WHm")[#underline("nagranie wideo z działania przetwornika z pamięcią SRAM")]).
+
+#figure(
+  grid(
+    columns: (1fr, 1fr),
+    gutter: 1em,
+    align(center, [
+      #image("img/3.4.3_sinus_oscy.png", width: 100%)
+      #v(-1em)
+      #text(size: 9pt)[Przebieg sinusoidalny]
+    ]),
+    align(center, [
+      #image("img/3.4.4_ramp_oscy.png", width: 100%)
+      #v(-1em)
+      #text(size: 9pt)[Przebieg trójkątny]
+    ]),
+  ),
+  caption: [Przebiegi wejściowe (żółte) oraz po konwersji (niebieskie) dla transkodera SRAM],
+)
+
+Na zarejestrowanych przebiegach wyraźnie znowu widać schodki kwantyzacji sygnału wyjściowego.
+
+#figure(
+  grid(
+    columns: (1fr, 1fr),
+    gutter: 1em,
+    align(center, [
+      #image("img/3.4.5_rozdzielczosc_amplituda.png", width: 100%)
+      #v(-1em)
+      #text(size: 9pt)[Pomiar rozdzielczości amplitudy]
+    ]),
+    align(center, [
+      #image("img/3.4.5_rozdzielczosc_freq.png", width: 100%)
+      #v(-1em)
+      #text(size: 9pt)[Pomiar kroku czasowego (próbkowania)]
+    ]),
+  ),
+  caption: [Pomiary rozdzielczości sygnału wyjściowego dla transkodera SRAM],
+)
+
+Zmierzone parametry były identyczne jak w przypadku pamięci RPP-S: rozdzielczość napięciowa wyniosła $0.7 "V"$, a krok czasowy próbkowania $41 space mu"s"$.
+
+Żeby odwrócić amplitudę sygnału po konwersji, wystarczyłoby zaprogramować negację dla każdej liczby.
+
+=== Zakres prawidłowego działania przetwornika (Punkt 3.5)
+#v(-1em)
+#figure(
+  grid(
+    columns: (1fr, 1fr),
+    gutter: 1em,
+    align(center, [
+      #image("img/3.5.1_10kHz.png", width: 100%)
+      #v(-1em)
+      #text(size: 9pt)[$f = 10 "kHz"$]
+    ]),
+    align(center, [
+      #image("img/3.5.1_20kHz.png", width: 100%)
+      #v(-1em)
+      #text(size: 9pt)[$f = 20 "kHz"$]
+    ]),
+
+    align(center, [
+      #image("img/3.5.1_40kHz.png", width: 100%)
+      #v(-1em)
+      #text(size: 9pt)[$f = 40 "kHz"$]
+    ]),
+    align(center, [
+      #image("img/3.5.1_50kHz.png", width: 100%)
+      #v(-1em)
+      #text(size: 9pt)[$f = 50 "kHz"$]
+    ]),
+  ),
+  caption: [Przebiegi przy wyższych częstotliwościach dla badania pasma przenoszenia],
+)
+
+Zbadano poprawność działania przetwornika w funkcji częstotliwości sygnału wejściowego sinusoidalnego.
+Na podstawie pomiarów oscyloskopowych określono zakres prawidłowego działania przetwornika:
+- Układ pracuje w pełni poprawnie od częstotliwości poniżej $1 "Hz"$ do około $10 "kHz"$.
+- Powyżej częstotliwości $10 "kHz"$ (co pokazano na przebiegach dla $20 "kHz"$, $40 "kHz"$ i $50 "kHz"$) sygnał wyjściowy zaczyna ulegać coraz silniejszym zniekształceniom (opóźnienie fazowe względem wejścia, zniekształcenia kształtu schodków oraz gubienie niektórych poziomów kwantyzacji).
+
+== Podsumowanie
+W ramach zadania 3 zrealizowano i przetestowano przetwornik analogowo-cyfrowy typu FLASH z dwoma modułami transkodera (pamięć stała RPP-S oraz pamięć SRAM) współpracujący z przetwornikiem cyfrowo-analogowym (C/A). Na podstawie przeprowadzonych badań sformułowano następujące wnioski:
+
++ *Praca z transkoderem RPP-S*: Ręcznie zaprogramowano pamięć stałą tak, aby kodowała stany wyjściowe komparatorów (kod termometryczny) na postać binarną. W przebiegach wyjściowych (sinusoidalnym i trójkątnym) zaobserwowano charakterystyczne schodki kwantyzacji. Rozdzielczość napięciowa (amplitudy) wyniosła $0.7 "V"$, a krok próbkowania w dziedzinie czasu wyniósł $43 space mu"s"$.
++ *Praca z transkoderem SRAM*: Po zaprogramowaniu pamięci SRAM, należało uważać, żeby nie odłączyć zasilania, gdyż wtedy pamięć straciłaby dane. Rozdzielczość napięciowa i czasowa była prawie taka sama jak w RPP-S.
++ *Pasmo przenoszenia*: Przetwornik FLASH pracuje w pełni prawidłowo w pasmie częstotliwości od poniżej $1 "Hz"$ do około $10 "kHz"$. Powyżej $10 "kHz"$ (co zaobserwowano przy $20 "kHz"$, $40 "kHz"$ i $50 "kHz"$) w przebiegach wyjściowych pojawiają się zniekształcenia, opóźnienia fazowe oraz gubienie schodków kwantyzacji.
 
 #pagebreak()
 
