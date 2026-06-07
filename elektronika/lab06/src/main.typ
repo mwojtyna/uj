@@ -419,7 +419,10 @@ W przeprowadzonym doświadczeniu porównano działanie komparatora napięcia ora
 3.5 Dla przebiegu sinusoidalnego określić zakres częstotliwości, w którym przetwornik działa prawidłowo.
 
 == Wstęp teoretyczny
-*Przetwornik analogowo-cyfrowy (A/C) typu FLASH* (równoległy) charakteryzuje się bardzo krótkim czasem konwersji, ponieważ porównanie napięcia wejściowego z napięciami odniesienia odbywa się jednocześnie na wszystkich komparatorach. Układ składa się z dzielnika napięciowego, zestawu komparatorów oraz transkodera kodującego stan komparatorów na postać binarną. Dla przetwornika $n$-bitowego wymagane jest użycie $2^n - 1$ komparatorów. Komparatory dają na wyjściu kod termometryczny (liczba aktywnych komparatorów jest proporcjonalna do napięcia wejściowego). Zadaniem transkodera jest konwersja kodu termometrycznego na wyjściowy kod dwójkowy (np. NKB). W ćwiczeniu rolę transkodera pełniła pamięć stała RPP-S oraz pamięć SRAM, programowane ręcznie za pomocą przełączników.
+Układ przetwornika analogowo-cyfrowego umożliwia zamianę informacji o podanej
+wielkości fizycznej, z postaci analogowej (ciągłej) na postać cyfrową (skwantowaną).
+
+Przetwornik analogowo-cyfrowy (A/C) typu FLASH charakteryzuje się bardzo krótkim czasem konwersji, ponieważ porównanie napięcia wejściowego z napięciami odniesienia odbywa się jednocześnie na wszystkich komparatorach. Układ składa się z dzielnika napięciowego, zestawu komparatorów oraz transkodera kodującego stan komparatorów na postać binarną. Dla przetwornika $n$-bitowego wymagane jest użycie $2^n - 1$ komparatorów. Komparatory dają na wyjściu kod termometryczny (liczba aktywnych komparatorów jest proporcjonalna do napięcia wejściowego). Zadaniem transkodera jest konwersja kodu termometrycznego na wyjściowy kod dwójkowy (np. NKB). W ćwiczeniu rolę transkodera pełniła pamięć stała RPP-S oraz pamięć SRAM, programowane ręcznie za pomocą przełączników.
 
 == Praktyka
 
@@ -577,6 +580,98 @@ W ramach zadania 3 zrealizowano i przetestowano przetwornik analogowo-cyfrowy ty
 + *Praca z transkoderem RPP-S*: Ręcznie zaprogramowano pamięć stałą tak, aby kodowała stany wyjściowe komparatorów (kod termometryczny) na postać binarną. W przebiegach wyjściowych (sinusoidalnym i trójkątnym) zaobserwowano charakterystyczne schodki kwantyzacji. Rozdzielczość napięciowa (amplitudy) wyniosła $0.7 "V"$, a krok próbkowania w dziedzinie czasu wyniósł $43 space mu"s"$.
 + *Praca z transkoderem SRAM*: Po zaprogramowaniu pamięci SRAM, należało uważać, żeby nie odłączyć zasilania, gdyż wtedy pamięć straciłaby dane. Rozdzielczość napięciowa i czasowa była prawie taka sama jak w RPP-S.
 + *Pasmo przenoszenia*: Przetwornik FLASH pracuje w pełni prawidłowo w pasmie częstotliwości od poniżej $1 "Hz"$ do około $10 "kHz"$. Powyżej $10 "kHz"$ (co zaobserwowano przy $20 "kHz"$, $40 "kHz"$ i $50 "kHz"$) w przebiegach wyjściowych pojawiają się zniekształcenia, opóźnienia fazowe oraz gubienie schodków kwantyzacji.
+
+#pagebreak()
+
+= Zadanie 4
+== Treść
+4.1 Zapoznać się ze schematem przetwornika A/C działającego w oparciu o przetwornik C/A. Zwrócić uwagę na następujące elementy: przetwornik C/A, komparator, generator sygnału zegarowego, licznik, rejestr SAR, wyjście na wyświetlacz. \ \
+4.2 *Zbadać poprawność działania przetwornika.* \ Zworkę regulacji częstotliwości ustawić w pozycji Z2, za pomocą zworki przełącznik ustawić w pozycję „KOMPENS.”. Przy pomocy potencjometru ustawić napięcie wejściowe na wybranym poziomie (około 3 V). Zresetować licznik przyciskiem RESET, zaobserwować uzyskaną wartość cyfrową. Zmierzyć napięcie na wyjściu przetwornika C/A przy pomocy oscyloskopu i sprawdzić czy jest ono takie samo jak napięcie podawane przez potencjometr.\ \
+4.3 *Określić rozdzielczość napięciową przetwornika.* \ Zworkę regulacji częstotliwości ustawić w pozycji Z2. Zresetować licznik przyciskiem RESET. Zwiększać napięcie na potencjometrze aż do uzyskania skoku napięcia na wyjściu C/A. Następnie powoli zwiększać napięcie wejściowe by uzyskać skok napięcia. Wykonując pomiar napięcia przed i po skoku można wyznaczyć rozdzielczość napięciową.
+
+\
+Dalszej części zadaniu już nie zdążyłem zrobić.
+
+== Wstęp teoretyczny
+Przetwornik analogowo-cyfrowy (A/C) działający w oparciu o przetwornik cyfrowo-analogowy (C/A) w działa w pętli sprzężenia zwrotnego. Kluczowymi elementami układu są:
+- *Komparator*, porównujący mierzone napięcie wejściowe $U_"we"$ z napięciem wyjściowym z przetwornika C/A ($U_"DAC"$).
+- *Licznik*, zliczający impulsy z generatora zegarowego.
+- *Przetwornik C/A*, konwertujący wartość cyfrową licznika z powrotem na napięcie analogowe.
+
+Po zresetowaniu licznika, zlicza on impulsy w górę od zera. Napięcie $U_"DAC"$ rośnie schodkowo. W momencie, gdy napięcie $U_"DAC"$ zrówna się lub nieznacznie przekroczy $U_"we"$, komparator zmienia swój stan wyjściowy, blokując dalsze dopływanie impulsów zegarowych do licznika. Stan licznika w chwili zatrzymania odpowiada cyfrowej reprezentacji napięcia wejściowego.
+
+== Praktyka
+
+=== Zapoznanie ze schematem (Punkt 4.1)
+Układ połączono zgodnie ze schematem blokowym przetwornika. 
+
+#v(-1em)
+#figure(
+  image("img/4.1.1_topview.jpeg", width: 80%),
+  caption: [Układ pomiarowy przetwornika A/C opartego na C/A na płycie UA-1 (początkowy stan)],
+)
+
+Zidentyfikowano elementy składowe na płycie: generator sygnału zegarowego (zworka ustawiona w pozycji Z2), licznik cyfrowy, rejestr SAR oraz przetwornik C/A. Wyjście cyfrowe podłączono do modułu wyświetlacza wyświetlającego wartość w postaci binarnej (diody LED), dziesiętnej oraz napięcia wyjściowego C/A.
+
+=== Badanie poprawności działania (Punkt 4.2)
+Zworkę wyboru częstotliwości ustawiono w pozycji Z2, a przełącznik wyboru trybu w pozycję „KOMPENS.”. Za pomocą potencjometru „NAP. WEJŚCIOWE” zadano napięcie wejściowe bliskie $3 "V"$.
+
+#v(-1em)
+#figure(
+  image("img/4.2.1_topview.jpeg", width: 80%),
+  caption: [Układ pomiarowy w trakcie pomiaru],
+)
+
+Po wciśnięciu przycisku RESET licznik zliczył impulsy i zatrzymał się w punkcie równowagi. Odczytano następujące wartości:
+- Napięcie DAC: $2.98 "V"$
+- Wartość dziesiętna: $152$
+- Wartość binarna: $10011000$ ($128 + 16 + 8 = 152$)
+
+W celu weryfikacji poprawności pomiaru, do wyjścia przetwornika C/A podłączono oscyloskop.
+
+#v(-1em)
+#figure(
+  image("img/4.2.3_voltage.png"),
+  caption: [Rzeczywiste napięcie na wyjściu przetwornika C/A mierzone oscyloskopem],
+)
+
+Napięcie wyjściowe C/A zmierzone na oscyloskopie wyniosło około $3 "V"$, co w granicach tolerancji i błędów pomiarowych odpowiada wartości wskazywanej przez wyświetlacz oraz napięciu zadanemu potencjometrem. Cały proces kompensacji po resecie zarejestrowano na nagraniu wideo (zob. #link("https://ujchmura-my.sharepoint.com/:v:/g/personal/mateusz_wojtyna_student_uj_edu_pl/IQD7iZwEl3dcSrsJazyTWic7AR-QBNe30hpcip2wr8U2O8s?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=qf9vGI")[#underline("nagranie wideo - badanie działania przetwornika")]).
+
+=== Określenie rozdzielczości napięciowej (Punkt 4.3)
+W celu określenia rozdzielczości napięciowej przetwornika, zresetowano licznik przyciskiem RESET, a następnie powoli i precyzyjnie zwiększano napięcie wejściowe za pomocą potencjometru, aż do zaobserwowania skoku napięcia wyjściowego o jeden najmniej znaczący bit. Przebieg wyjściowy obserwowano na oscyloskopie przy odpowiednio małej czułości pionowej ($50 "mV/div"$).
+
+#v(-1em)
+#figure(
+  image("img/4.3.1_rozdzielczość_amplitudy.png"),
+  caption: [Pomiar kroku kwantyzacji (rozdzielczości) za pomocą kursorów oscyloskopu],
+)
+
+Korzystając z kursorów oscyloskopu, zmierzono różnicę poziomów napięć przed i po skoku:
+- Poziom dolny: $381.591 "mV"$
+- Poziom górny: $394.991 "mV"$
+- Różnica ($Delta v$): $13.399 "mV"$
+  
+Eksperymentalnie wyznaczona *rozdzielczość napięciowa* badanego przetwornika wynosi zatem około $13.4 "mV"$.
+
+Rozdzielczość ta jest niemal 50-krotnie lepsza od rozdzielczości przetwornika typu FLASH z zadania 3 (która wynosiła $0.7 "V"$). Wynika to z faktu, że badany przetwornik jest przetwornikiem 8-bitowym (256 poziomów kwantyzacji), podczas gdy przetwornik FLASH dysponował jedynie rozdzielczością 3-bitową (7 poziomów kwantyzacji). 
+
+== Podsumowanie zadania 4
+W ramach zadania zbadano działanie oraz określono parametry przetwornika analogowo-cyfrowego działającego w oparciu o przetwornik C/A. Sformułowano następujące wnioski:
++ Układ działa w pełni poprawnie. Po zresetowaniu układu napięcie wyjściowe C/A zbliża się schodkowo do poziomu napięcia wejściowego, a po osiągnięciu stanu równowagi wartość cyfrowa zostaje przestaje wzrastać i zaprezentowana na wyświetlaczach.
++ Zmierzona eksperymentalnie rozdzielczość napięciowa wynosi $13.4 "mV"$.
+
+#pagebreak()
+
+= Podsumowanie końcowe
+Celem ćwiczenia było zapoznanie się z działaniem wybranych układów elektroniki cyfrowej i analogowej wykorzystywanych do przetwarzania sygnałów. W trakcie zajęć zbadano właściwości komparatora napięcia oraz wzmacniacza operacyjnego pracującego jako komparator, a także działanie dwóch typów przetworników analogowo-cyfrowych: przetwornika FLASH oraz przetwornika opartego na przetworniku C/A.
+
+W pierwszej części ćwiczenia wykazano, że komparator napięcia charakteryzuje się znacznie lepszymi właściwościami dynamicznymi niż wzmacniacz operacyjny pracujący bez sprzężenia zwrotnego. Komparator zachowywał prawidłowy kształt sygnału wyjściowego przy częstotliwościach sięgających setek kiloherców, podczas gdy wzmacniacz operacyjny ulegał wyraźnym zniekształceniom już przy znacznie niższych częstotliwościach.
+
+W drugiej części zrealizowano przetwornik A/C typu FLASH wykorzystujący moduł komparatorów oraz programowalne transkodery RPP-S i SRAM. Zaobserwowano proces kwantyzacji sygnału analogowego oraz wyznaczono rozdzielczość napięciową wynoszącą około $0.7 "V"$. Stwierdzono również, że zastosowanie pamięci SRAM nie wpływa na parametry przetwarzania, a jedynie na sposób przechowywania informacji. Badany przetwornik działał poprawnie dla częstotliwości do około $10 "kHz"$.
+
+W ostatniej części przebadano przetwornik wykorzystujący przetwornik C/A i komparator. Potwierdzono poprawność działania układu oraz wyznaczono jego rozdzielczość napięciową równą około $13.4 "mV"$. Oznacza to rozdzielczość około 50 razy lepszą od uzyskanej dla badanego wcześniej przetwornika FLASH, co wynika z większej liczby poziomów kwantyzacji dostępnych w 8-bitowym układzie.
+
+Przeprowadzone doświadczenia pozwoliły w praktyce zaobserwować wpływ parametrów elementów elektronicznych na jakość przetwarzania sygnałów. 
 
 #pagebreak()
 
