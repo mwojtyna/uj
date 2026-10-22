@@ -28,4 +28,7 @@ linii nie można umieścić `if`. Potrzebne jest wcięcie.
 for i in "axby": print (ord(i) if ord(i) < 100 else i)
 ```
 
-Kod jest poprawny: można wywołać funkcję w tej samej lini co `if`.
+Zależne od interpretacji:
+
+- Kod jest niepoprawny (zakładając, że chcemy printować tylko znaki): teraz gdy `ord(i) < 100` jest `False`, to i tak jest printowany indeks, co jest zbędne
+- Kod jest poprawny: można wywołać funkcję w tej samej lini co `if`.
