@@ -98,7 +98,8 @@ def make_common_denominator(frac1: list[int], frac2: list[int]) -> None:
     if frac1[1] == frac2[1]:
         return
 
-    lcm = math.lcm(frac1[1], frac2[1])
+    gcd = math.gcd(frac1[1], frac2[1])
+    lcm = abs(frac1[1] * frac2[1]) / gcd
     frac1_factor = lcm / frac1[1]
     frac2_factor = lcm / frac2[1]
 
