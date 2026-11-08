@@ -1,5 +1,7 @@
 import math
 
+ZERO = [0, 1]
+
 
 def add_frac(frac1: list[int], frac2: list[int]) -> list[int]:
     validate_frac(frac1)
@@ -27,7 +29,7 @@ def mul_frac(frac1: list[int], frac2: list[int]):
     validate_frac(frac2)
 
     if is_zero(frac1) or is_zero(frac2):
-        return [0, 1]
+        return ZERO
 
     return simplify_frac([frac1[0] * frac2[0], frac1[1] * frac2[1]])
 
@@ -126,10 +128,6 @@ import unittest
 
 
 class TestFractions(unittest.TestCase):
-    @override
-    def setUp(self):
-        self.zero = [0, 1]
-
     def test_add_frac(self):
         self.assertEqual(add_frac([1, 4], [2, 4]), [3, 4])
         self.assertEqual(add_frac([1, 2], [1, 3]), [5, 6])
@@ -154,7 +152,7 @@ class TestFractions(unittest.TestCase):
         self.assertEqual(mul_frac([-1, 2], [1, 3]), [-1, 6])
         self.assertEqual(mul_frac([1, 2], [-1, 3]), [-1, 6])
         self.assertEqual(mul_frac([-1, 2], [-1, 3]), [1, 6])
-        self.assertEqual(mul_frac([-1, 2], [0, 3]), self.zero)
+        self.assertEqual(mul_frac([-1, 2], [0, 3]), ZERO)
         self.assertRaises(ZeroDivisionError, lambda: add_frac([-1, 0], [1, 0]))
 
     def test_div_frac(self):
