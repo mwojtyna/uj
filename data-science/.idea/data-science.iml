@@ -5,7 +5,7 @@
       <excludeFolder url="file://$MODULE_DIR$/.venv" />
       <excludeFolder url="file://$MODULE_DIR$/2_data_exploration_advanced/.venv" />
     </content>
-    <orderEntry type="jdk" jdkName="~/Developer/uj/data-science/.venv" jdkType="Python SDK" />
+    <orderEntry type="jdk" jdkName="~/developer/uj/data-science/.venv" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>
 </module>
